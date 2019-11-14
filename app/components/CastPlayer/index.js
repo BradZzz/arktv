@@ -8,6 +8,7 @@ import playHover from './images/play-hover.png';
 import playPress from './images/play-press.png';
 
 import Button from '@material-ui/core/Button';
+import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => {
@@ -72,50 +73,49 @@ const PLAYER_STATE = {
   PAUSED: 'PAUSED'
 };
 
+let playerState = PLAYER_STATE.IDLE;
+
+var PlayerHandler = function (player) {
+  let current_target = {};
+
+  this.setTarget = function (target) {
+    current_target = target;
+  };
+
+  this.play = function () {
+    console.log('this.target play', current_target)
+    current_target.play();
+    playerState = PLAYER_STATE.PLAYING;
+  };
+
+  this.pause = function () {
+    console.log('this.target pause', current_target)
+    current_target.pause();
+    playerState = PLAYER_STATE.PAUSED;
+  };
+
+  this.load = function () {
+    current_target.load(demo_media);
+    console.log('this.target load', current_target)
+  };
+
+  this.getCurrentMediaTime = function () {
+    console.log("current_target.getCurrentMediaTime()", current_target)
+    return current_target.getCurrentMediaTime();
+  };
+
+  this.getMediaDuration = function () {
+    console.log("current_target.getMediaDuration()", current_target)
+    return current_target.getMediaDuration();
+  };
+
+  this.seekTo = function (time) {
+    current_target.seekTo(time);
+  };
+}
+
 function CastPlayer() {
   const classes = useStyles();
-  let playerState = PLAYER_STATE.IDLE;
-
-  var PlayerHandler = function () {
-    let current_target = {};
-
-    this.setTarget = function (target) {
-      current_target = target;
-    };
-
-    this.play = function () {
-      console.log('this.target play', current_target)
-      if ('play' in current_target) {
-        current_target.play();
-      }
-      playerState = PLAYER_STATE.PLAYING;
-    };
-
-    this.pause = function () {
-      console.log('this.target pause', current_target)
-      if ('pause' in current_target) {
-        current_target.pause();
-      }
-      playerState = PLAYER_STATE.PAUSED;
-    };
-
-    this.load = function () {
-      current_target.load(demo_media);
-      console.log('this.target load', current_target)
-    };
-
-    this.getCurrentMediaTime = function () {
-      return current_target.getCurrentMediaTime();
-    };
-
-    this.getMediaDuration = function () {
-      return current_target.getMediaDuration();
-    };
-
-    this.seekTo = function (time) {
-      current_target.seekTo(time);
-    };
-  }
 
   var playerHandler = new PlayerHandler(this);
 
@@ -166,14 +166,20 @@ function CastPlayer() {
           }.bind(this)
         )
         var playerTarget = {}
-        /*
-          {
-            title: 'Malcolm in the middle',
-            subtitle: 'Description',
-            thumb: 'https://images-na.ssl-images-amazon.com/images/M/MV5BODQ0NTE3Mjg3N15BMl5BanBnXkFtZTcwNDY2MDMwNw@@._V1_SX300.jpg',
-            url: 'https://s3.amazonaws.com/mytv.media.out.video/tv2/Malcolm_In_The_Middle/0513/index.mp4',
-          }
-        */
+
+        playerTarget.getCurrentMediaTime = function () {
+          return remotePlayer.currentTime;
+        }.bind(this);
+
+        playerTarget.getMediaDuration = function () {
+          return remotePlayer.duration;
+        }.bind(this);
+
+        playerTarget.seekTo = function (time) {
+          remotePlayer.currentTime = time;
+          remotePlayerController.seek();
+        }.bind(this);
+
         playerTarget.play = function () {
           if (remotePlayer.isPaused) {
             remotePlayerController.playOrPause();
@@ -221,8 +227,21 @@ function CastPlayer() {
     }
   };
 
+  var handleSeek = (e, val) => {
+    console.log("handleSeek", val)
+    playerHandler.seekTo((playerHandler.getMediaDuration() / 100) * val)
+  }
+
   return (
     <div>
+      <Slider
+        defaultValue={0}
+        aria-labelledby="discrete-slider"
+        valueLabelDisplay="auto"
+        onChange={handleSeek}
+        min={0}
+        max={100}
+      />
       <div className={classes.mediaWrap}>
         <Button id="play" className={classes.play} onClick={ playerHandler.play }/>
         <Button id="pause" className={classes.pause} onClick={ playerHandler.pause }/>
