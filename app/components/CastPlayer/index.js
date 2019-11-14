@@ -6,6 +6,8 @@ import pauseHover from './images/pause-hover.png';
 import pausePress from './images/pause-press.png';
 import playHover from './images/play-hover.png';
 import playPress from './images/play-press.png';
+import audioOff from './images/audio_off.png';
+import audioOn from './images/audio_on.png';
 
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/core/Slider';
@@ -14,6 +16,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => {
   return {
     castWrap: {
+      width: '3em',
       height: '3em',
       display: 'inline-flex',
       right: 0,
@@ -24,6 +27,29 @@ const useStyles = makeStyles(theme => {
       height: '4em',
       background: '#000000',
       position: 'relative',
+    },
+    audioWrap: {
+      right: '5em',
+      display: 'inline-flex',
+      position: 'absolute',
+      width: '12em',
+      height: '3em',
+      margin: '.5em 1em',
+    },
+    audioOff: {
+      height: '3em',
+      width: '3em',
+      backgroundPosition: 'center',
+      backgroundImage: 'url("' + audioOff + '")',
+    },
+    audioOn: {
+      height: '3em',
+      width: '3em',
+      backgroundPosition: 'center',
+      backgroundImage: 'url("' + audioOn + '")',
+    },
+    audioSlider: {
+      margin: '.8em 1em'
     },
     play: {
       height: '3em',
@@ -112,6 +138,10 @@ var PlayerHandler = function (player) {
   this.seekTo = function (time) {
     current_target.seekTo(time);
   };
+
+  this.setVolume = function (pos) {
+    current_target.setVolume(pos);
+  };
 }
 
 function CastPlayer() {
@@ -180,6 +210,11 @@ function CastPlayer() {
           remotePlayerController.seek();
         }.bind(this);
 
+        playerTarget.setVolume = function (pos) {
+          remotePlayer.volumeLevel = pos;
+          remotePlayerController.setVolumeLevel();
+        }.bind(this);
+
         playerTarget.play = function () {
           if (remotePlayer.isPaused) {
             remotePlayerController.playOrPause();
@@ -232,6 +267,11 @@ function CastPlayer() {
     playerHandler.seekTo((playerHandler.getMediaDuration() / 100) * val)
   }
 
+  var handleVolume = (e, val) => {
+    console.log("handleVolume", val)
+    playerHandler.setVolume(val / parseFloat(100))
+  }
+
   return (
     <div>
       <Slider
@@ -245,6 +285,19 @@ function CastPlayer() {
       <div className={classes.mediaWrap}>
         <Button id="play" className={classes.play} onClick={ playerHandler.play }/>
         <Button id="pause" className={classes.pause} onClick={ playerHandler.pause }/>
+        <div className={classes.audioWrap}>
+          <div className={classes.audioOff}></div>
+          <Slider
+            defaultValue={0}
+            aria-labelledby="discrete-slider"
+            valueLabelDisplay="auto"
+            onChange={handleVolume}
+            className={classes.audioSlider}
+            min={0}
+            max={100}
+          />
+          <div className={classes.audioOn}></div>
+        </div>
         <div className={classes.castWrap}>
           <google-cast-launcher id="castbutton"></google-cast-launcher>
         </div>
