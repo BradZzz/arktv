@@ -228,8 +228,6 @@ function CastPlayer() {
         }.bind(this);
 
         playerTarget.load = function (meta) {
-//          console.log('Loading...' + this.mediaContents[mediaIndex]['title']);
-
           let mediaInfo = new chrome.cast.media.MediaInfo(meta.url, 'video/mp4');
           mediaInfo.streamType = chrome.cast.media.StreamType.BUFFERED;
           mediaInfo.metadata = new chrome.cast.media.TvShowMediaMetadata();

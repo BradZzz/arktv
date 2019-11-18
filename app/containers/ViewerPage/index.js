@@ -10,9 +10,9 @@ import { FormattedMessage } from 'react-intl';
 import H1 from 'components/H1';
 import CastPlayer from 'components/CastPlayer';
 import messages from './messages';
-import List from './List';
-import ListItem from './ListItem';
-import ListItemTitle from './ListItemTitle';
+import PropTypes from 'prop-types';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
 //import CastPlayer from './Cast';
 
 import play from './images/play.png';
@@ -24,6 +24,9 @@ import playPress from './images/play-press.png';
 
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+
+import { makeSelectMedia } from './selectors';
+import { checkMedia } from './actions';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -56,8 +59,12 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-export default function ViewerPage() {
+export function ViewerPage(props) {
   const classes = useStyles();
+
+  console.log("props", props)
+
+  props.onCheckMedia()
 
   let player = (<></>)
   window['__onGCastApiAvailable'] = function (isAvailable) {
@@ -80,6 +87,26 @@ export default function ViewerPage() {
         <FormattedMessage {...messages.header} />
       </H1>
       <CastPlayer/>
+
     </div>
   )
 }
+
+ViewerPage.propTypes = {
+  media: PropTypes.array,
+  onCheckMedia: PropTypes.func,
+};
+
+const mapStateToProps = createStructuredSelector({
+  media: makeSelectMedia(),
+})
+
+export function mapDispatchToProps(dispatch) {
+  return {
+    onCheckMedia: () => dispatch(checkMedia()),
+    dispatch,
+  };
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(ViewerPage);

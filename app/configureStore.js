@@ -5,6 +5,7 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
+import sagas from './sagas/'
 import createReducer from './reducers';
 
 export default function configureStore(initialState = {}, history) {
@@ -27,7 +28,9 @@ export default function configureStore(initialState = {}, history) {
     /* eslint-enable */
   }
 
-  const sagaMiddleware = createSagaMiddleware(reduxSagaMonitorOptions);
+//  const sagaMiddleware = createSagaMiddleware(reduxSagaMonitorOptions);
+
+  const sagaMiddleware = createSagaMiddleware();
 
   // Create the store with two middlewares
   // 1. sagaMiddleware: Makes redux-sagas work
@@ -43,7 +46,7 @@ export default function configureStore(initialState = {}, history) {
   );
 
   // Extensions
-  store.runSaga = sagaMiddleware.run;
+  store.runSaga = sagaMiddleware.run(sagas);
   store.injectedReducers = {}; // Reducer registry
   store.injectedSagas = {}; // Saga registry
 
