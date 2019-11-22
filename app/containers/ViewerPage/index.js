@@ -26,7 +26,7 @@ import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { makeSelectMedia } from './selectors';
-import { checkMedia } from './actions';
+import { checkMedia, setMedia } from './actions';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -64,7 +64,9 @@ export function ViewerPage(props) {
 
   console.log("props", props)
 
-  props.onCheckMedia()
+  const { media, onCheckMedia, onSetMedia } = props
+
+  onCheckMedia()
 
   let player = (<></>)
   window['__onGCastApiAvailable'] = function (isAvailable) {
@@ -87,7 +89,14 @@ export function ViewerPage(props) {
         <FormattedMessage {...messages.header} />
       </H1>
       <CastPlayer/>
-
+      { media.map(med => (
+        <div key={ med.imdbID } onClick={() => onSetMedia(med)} style={{ height: '5em', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
+          <img src={med.Poster} style={{ height: '100%', maxWidth: '4em' }}/>
+          <span>
+            { med.Title }
+          </span>
+        </div>
+      )) }
     </div>
   )
 }
@@ -95,6 +104,7 @@ export function ViewerPage(props) {
 ViewerPage.propTypes = {
   media: PropTypes.array,
   onCheckMedia: PropTypes.func,
+  onSetMedia: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -104,9 +114,9 @@ const mapStateToProps = createStructuredSelector({
 export function mapDispatchToProps(dispatch) {
   return {
     onCheckMedia: () => dispatch(checkMedia()),
+    onSetMedia: (media) => dispatch(setMedia(media)),
     dispatch,
   };
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewerPage);

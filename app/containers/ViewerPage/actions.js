@@ -4,7 +4,15 @@
  *
  */
 
-import { CHECK_MEDIA, UPDATE_MEDIA } from './constants';
+import { PLAYER_AVAILABLE, CHECK_MEDIA, UPDATE_MEDIA, SET_SELECTED_MEDIA, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL } from './constants';
+
+export function setMediaPlayerAvailable(playerAvailable) {
+  return {
+    type: PLAYER_AVAILABLE,
+    playerAvailable
+  };
+}
+
 
 export function checkMedia() {
   return {
@@ -16,5 +24,26 @@ export function updateMedia(media) {
   return {
     type: UPDATE_MEDIA,
     media,
+  };
+}
+
+export function setMedia(currentMedia) {
+  return {
+    type: SET_SELECTED_MEDIA,
+    currentMedia
+  };
+}
+
+export function setMediaSignedUrl(signedURL) {
+  return {
+    type: SET_MEDIA_SIGNED_URL,
+    signedURL
+  };
+}
+
+export function loadSignedUrl(loading) {
+  return {
+    type: LOADING_SIGNED_URL,
+    loading
   };
 }

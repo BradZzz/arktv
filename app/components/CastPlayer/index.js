@@ -13,6 +13,13 @@ import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
 
+import PropTypes from 'prop-types';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+
+import { setMediaPlayerAvailable } from '../../containers/ViewerPage/actions';
+import { makeSelectPlayerAvailable, makeSelectCurrentMedia, makeSelectSignedUrl } from '../../containers/ViewerPage/selectors';
+
 const useStyles = makeStyles(theme => {
   return {
     castWrap: {
@@ -76,13 +83,6 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-const demo_media = {
-                    title: 'Malcolm in the middle',
-                    subtitle: 'Description',
-                    thumb: 'https://images-na.ssl-images-amazon.com/images/M/MV5BODQ0NTE3Mjg3N15BMl5BanBnXkFtZTcwNDY2MDMwNw@@._V1_SX300.jpg',
-                    url: 'https://s3.amazonaws.com/mytv.media.out.video/tv2/Malcolm_In_The_Middle/0513/index.mp4',
-                  }
-
 /** @enum {string} Constants of states for media for both local and remote playback */
 const PLAYER_STATE = {
   // No media is loaded into the player. For remote playback, maps to
@@ -120,9 +120,12 @@ var PlayerHandler = function (player) {
     playerState = PLAYER_STATE.PAUSED;
   };
 
-  this.load = function () {
-    current_target.load(demo_media);
-    console.log('this.target load', current_target)
+  this.load = function (media) {
+    console.log("loading...", media, current_target)
+    if (current_target != null && 'load' in current_target) {
+      current_target.load(media);
+      console.log('this.target load', current_target)
+    }
   };
 
   this.getCurrentMediaTime = function () {
@@ -144,130 +147,175 @@ var PlayerHandler = function (player) {
   };
 }
 
-function CastPlayer() {
+function CastPlayer(props) {
+  const { selected, url, onSelectAvailable, playerAvailable } = props
+
+//  const demo_media = selected ?
+//    {
+//      title: selected.Title,
+//      subtitle: selected.Plot,
+//      thumb: selected.Poster,
+//      url: url,
+//    } : {
+//      title: 'Malcolm in the middle',
+//      subtitle: 'Description',
+//      thumb: 'https://images-na.ssl-images-amazon.com/images/M/MV5BODQ0NTE3Mjg3N15BMl5BanBnXkFtZTcwNDY2MDMwNw@@._V1_SX300.jpg',
+//      url: 'https://s3.amazonaws.com/mytv.media.out.video/tv2/Malcolm_In_The_Middle/0513/index.mp4',
+//    }
+  console.log("props", props)
+
+  const demo_media = {
+                      title: selected.Title,
+                      subtitle: selected.Plot,
+                      thumb: selected.Poster,
+                      url: url,
+                    }
+
   const classes = useStyles();
 
   var playerHandler = new PlayerHandler(this);
 
-  var options = {};
-  window['__onGCastApiAvailable'] = function (isAvailable) {
-    if (isAvailable) {
-      options.receiverApplicationId = '72A3C8A4';
-      options.autoJoinPolicy = chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED;
-      cast.framework.CastContext.getInstance().setOptions(options);
-      var remotePlayer = new cast.framework.RemotePlayer();
-      var remotePlayerController = new cast.framework.RemotePlayerController(remotePlayer);
-      remotePlayerController.addEventListener(cast.framework.RemotePlayerEventType.IS_CONNECTED_CHANGED,
+  function InitializePlayer() {
+    var options = {};
+    options.receiverApplicationId = '72A3C8A4';
+    options.autoJoinPolicy = chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED;
+    cast.framework.CastContext.getInstance().setOptions(options);
+    var remotePlayer = new cast.framework.RemotePlayer();
+    var remotePlayerController = new cast.framework.RemotePlayerController(remotePlayer);
+//    remotePlayerController.addEventListener(cast.framework.RemotePlayerEventType.IS_CONNECTED_CHANGED,
+//      function (event) {
+      console.log("Connected!")
+
+      remotePlayerController.addEventListener(
+        cast.framework.RemotePlayerEventType.CURRENT_TIME_CHANGED,
         function (event) {
-        console.log("Connected!")
+          console.log('CURRENT_TIME_CHANGED', event);
+        }.bind(this)
+      );
 
-        remotePlayerController.addEventListener(
-          cast.framework.RemotePlayerEventType.CURRENT_TIME_CHANGED,
-          function (event) {
-            console.log('CURRENT_TIME_CHANGED', event);
-          }.bind(this)
-        );
-
-        remotePlayerController.addEventListener(
-          cast.framework.RemotePlayerEventType.MEDIA_INFO_CHANGED,
-          function (event) {
-            let session = cast.framework.CastContext.getInstance().getCurrentSession();
-            if (!session) {
-              this.mediaInfo = null;
-              this.isLiveContent = false;
-//              playerHandler.updateDisplay();
-              return;
-            }
-
-            let media = session.getMediaSession();
-            console.log("media", media)
-            if (!media) {
-              this.mediaInfo = null;
-              this.isLiveContent = false;
-//              playerHandler.updateDisplay();
-              return;
-            }
-
-//            if (media.playerState == PLAYER_STATE.PLAYING && this.playerState !== PLAYER_STATE.PLAYING) {
-//              playerHandler.prepareToPlay();
-//            }
-
-//            playerHandler.updateDisplay();
-          }.bind(this)
-        )
-        var playerTarget = {}
-
-        playerTarget.getCurrentMediaTime = function () {
-          return remotePlayer.currentTime;
-        }.bind(this);
-
-        playerTarget.getMediaDuration = function () {
-          return remotePlayer.duration;
-        }.bind(this);
-
-        playerTarget.seekTo = function (time) {
-          remotePlayer.currentTime = time;
-          remotePlayerController.seek();
-        }.bind(this);
-
-        playerTarget.setVolume = function (pos) {
-          remotePlayer.volumeLevel = pos;
-          remotePlayerController.setVolumeLevel();
-        }.bind(this);
-
-        playerTarget.play = function () {
-          if (remotePlayer.isPaused) {
-            remotePlayerController.playOrPause();
+      remotePlayerController.addEventListener(
+        cast.framework.RemotePlayerEventType.MEDIA_INFO_CHANGED,
+        function (event) {
+          let session = cast.framework.CastContext.getInstance().getCurrentSession();
+          if (!session) {
+            this.mediaInfo = null;
+            this.isLiveContent = false;
+            return;
           }
-        }.bind(this);
 
-        playerTarget.pause = function () {
-          if (!remotePlayer.isPaused) {
-            remotePlayerController.playOrPause();
+          let media = session.getMediaSession();
+          console.log("media", media)
+          if (!media) {
+            this.mediaInfo = null;
+            this.isLiveContent = false;
+            return;
           }
-        }.bind(this);
+        }.bind(this)
+      )
+      var playerTarget = {}
 
-        playerTarget.load = function (meta) {
-          let mediaInfo = new chrome.cast.media.MediaInfo(meta.url, 'video/mp4');
-          mediaInfo.streamType = chrome.cast.media.StreamType.BUFFERED;
-          mediaInfo.metadata = new chrome.cast.media.TvShowMediaMetadata();
-          mediaInfo.metadata.title = meta.title;
-          mediaInfo.metadata.subtitle = meta.subtitle;
-          mediaInfo.metadata.images = [{
-            'url': meta.thumb
-          }];
+      playerTarget.getCurrentMediaTime = function () {
+        return remotePlayer.currentTime;
+      }.bind(this);
 
-          let request = new chrome.cast.media.LoadRequest(mediaInfo);
+      playerTarget.getMediaDuration = function () {
+        return remotePlayer.duration;
+      }.bind(this);
+
+      playerTarget.seekTo = function (percent) {
+        console.log("playerTarget.seekTo", percent)
+        console.log("playerHandler.getMediaDuration()", remotePlayer.duration)
+        console.log("remotePlayer", remotePlayer)
+        var seek = (remotePlayer.duration / parseFloat(100)) * percent
+        console.log("playerTarget.seekTo", seek)
+        remotePlayer.currentTime = seek;
+        remotePlayerController.seek();
+      }.bind(this);
+
+      playerTarget.setVolume = function (pos) {
+        console.log("playerTarget.setVolume", pos)
+        remotePlayer.volumeLevel = pos;
+        remotePlayerController.setVolumeLevel();
+      }.bind(this);
+
+      playerTarget.play = function () {
+        console.log("playerTarget.play")
+//        if (remotePlayer.isPaused) {
+          remotePlayerController.playOrPause();
+//        }
+      }.bind(this);
+
+      playerTarget.pause = function () {
+        console.log("playerTarget.pause")
+//        if (!remotePlayer.isPaused) {
+          remotePlayerController.playOrPause();
+//        }
+      }.bind(this);
+
+      playerTarget.load = function (meta) {
+        if (cast.framework.CastContext.getInstance().getCurrentSession() === null)
+          return
+
+        let mediaInfo = new chrome.cast.media.MediaInfo(meta.url, 'video/mp4');
+        mediaInfo.streamType = chrome.cast.media.StreamType.BUFFERED;
+        mediaInfo.metadata = new chrome.cast.media.TvShowMediaMetadata();
+        mediaInfo.metadata.title = meta.title;
+        mediaInfo.metadata.subtitle = meta.subtitle;
+        mediaInfo.metadata.images = [{
+          'url': meta.thumb
+        }];
+
+        let request = new chrome.cast.media.LoadRequest(mediaInfo);
 //          request.currentTime = this.currentMediaTime;
 
-          request.autoplay = true;
+        request.autoplay = true;
 
-          cast.framework.CastContext.getInstance().getCurrentSession().loadMedia(request).then(
-            function () {
-              console.log('Remote media loaded', request);
-            }.bind(this),
-            function (errorCode) {
-              playerState = PLAYER_STATE.IDLE;
-              console.log('Remote media load error: ', errorCode, request)
+        cast.framework.CastContext.getInstance().getCurrentSession().loadMedia(request).then(
+          function () {
+            console.log('Remote media loaded', request);
+          }.bind(this),
+          function (errorCode) {
+            playerState = PLAYER_STATE.IDLE;
+            console.log('Remote media load error: ', errorCode, request)
 //                CastPlayer.getErrorMessage(errorCode));
 //              playerHandler.updateDisplay();
-            }.bind(this));
-        }.bind(this);
+          }.bind(this));
+      }.bind(this);
 
-        playerHandler.setTarget(playerTarget);
-        playerHandler.load();
-      });
-    }
+      playerHandler.setTarget(playerTarget);
+      console.log("demo_media", demo_media)
+      playerHandler.load(demo_media);
+//    });
+  }
+
+  var options = {};
+  window['__onGCastApiAvailable'] = function (isAvailable) {
+    onSelectAvailable(isAvailable)
   };
+
+  if (playerAvailable) {
+    console.log("playerAvailable init")
+    InitializePlayer()
+  }
 
   var handleSeek = (e, val) => {
     console.log("handleSeek", val)
-    playerHandler.seekTo((playerHandler.getMediaDuration() / 100) * val)
+    playerHandler.seekTo(val)
   }
 
   var handleVolume = (e, val) => {
     console.log("handleVolume", val)
     playerHandler.setVolume(val / parseFloat(100))
+  }
+
+  var handlePause = (e, val) => {
+    console.log("handlePause")
+    playerHandler.pause()
+  }
+
+  var handlePlay = (e, val) => {
+    console.log("handlePlay")
+    playerHandler.play()
   }
 
   return (
@@ -281,8 +329,8 @@ function CastPlayer() {
         max={100}
       />
       <div className={classes.mediaWrap}>
-        <Button id="play" className={classes.play} onClick={ playerHandler.play }/>
-        <Button id="pause" className={classes.pause} onClick={ playerHandler.pause }/>
+        <Button id="play" className={classes.play} onClick={ handlePlay }/>
+        <Button id="pause" className={classes.pause} onClick={ handlePause }/>
         <div className={classes.audioWrap}>
           <div className={classes.audioOff}></div>
           <Slider
@@ -304,4 +352,30 @@ function CastPlayer() {
   );
 }
 
-export default CastPlayer;
+CastPlayer.defaultProps = {
+  onSelectAvailable: () => {},
+  selected: {},
+  url: '',
+};
+
+CastPlayer.propTypes = {
+  onSelectAvailable: PropTypes.func,
+  selected: PropTypes.object,
+  playerAvailable: PropTypes.bool,
+  url: PropTypes.string,
+};
+
+const mapStateToProps = createStructuredSelector({
+  playerAvailable: makeSelectPlayerAvailable(),
+  selected: makeSelectCurrentMedia(),
+  url: makeSelectSignedUrl(),
+})
+
+export function mapDispatchToProps(dispatch) {
+  return {
+    onSelectAvailable: avail => dispatch(setMediaPlayerAvailable(avail)),
+    dispatch,
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CastPlayer);
