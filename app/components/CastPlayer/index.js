@@ -220,11 +220,30 @@ CastWrapper.prototype.setupRemotePlayer = function() {
   )
 
   this.remotePlayerController.addEventListener(
+    cast.framework.RemotePlayerEventType.IS_MEDIA_LOADED_CHANGED,
+    function (event) {
+      console.log('IS_MEDIA_LOADED_CHANGED', event);
+      if (!event.value) {
+        console.log('Media Has Ended!');
+      } else {
+        console.log('Media Has Loaded!');
+      }
+    }.bind(this)
+  )
+
+  this.remotePlayerController.addEventListener(
     cast.framework.RemotePlayerEventType.DURATION_CHANGED,
     function (event) {
       console.log('DURATION_CHANGED', event);
     }.bind(this)
   )
+
+//  this.remotePlayerController.addEventListener(
+//    cast.framework.RemotePlayerEventType.ANY_CHANGE,
+//    function (event) {
+//      console.log('ANY_CHANGE', event);
+//    }.bind(this)
+//  )
 
   var playerTarget = {}
 
@@ -356,7 +375,7 @@ function CastPlayer(props) {
       player.handlePlay()
     }
 
-    if (player.currentMedia().thumb != demo_media.thumb) {
+    if (player.currentMedia().url != demo_media.url) {
       player.loadMedia(demo_media)
     }
   } else if (!playerAvailable){
