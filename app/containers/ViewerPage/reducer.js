@@ -30,6 +30,7 @@ const MediaReducer = (state = initialState, action) =>
         break;
       case PLAYER_SET:
         draft.player = action.player;
+        draft.playerAvailable = true;
         break;
       case UPDATE_MEDIA:
         draft.media = action.media;

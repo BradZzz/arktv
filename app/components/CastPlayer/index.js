@@ -104,6 +104,7 @@ let playerState = PLAYER_STATE.IDLE;
 
 var PlayerHandler = function (player) {
   let current_target = {};
+  this.currentMedia = {}
 
   this.setTarget = function (target) {
     current_target = target;
@@ -123,6 +124,7 @@ var PlayerHandler = function (player) {
 
   this.load = function (media) {
     console.log("loading...", media, current_target)
+    this.currentMedia = media
     if (current_target != null && 'load' in current_target) {
       current_target.load(media);
       console.log('this.target load', current_target)
@@ -314,7 +316,9 @@ CastWrapper.prototype.handlePlay = function () {
   this.playerHandler.play()
 }
 
-//var castWrapper = new CastWrapper()
+CastWrapper.prototype.currentMedia = function () {
+  return this.playerHandler.currentMedia
+}
 
 function CastPlayer(props) {
   const { selected, url, onSelectAvailable, onSelectPlayer, player, playerAvailable } = props
@@ -352,12 +356,13 @@ function CastPlayer(props) {
       player.handlePlay()
     }
 
-    player.loadMedia(demo_media)
-  } else {
+    if (player.currentMedia().thumb != demo_media.thumb) {
+      player.loadMedia(demo_media)
+    }
+  } else if (!playerAvailable){
     var castWrapper = new CastWrapper()
     castWrapper.initializeCastPlayer()
     onSelectPlayer(castWrapper)
-    onSelectAvailable(true)
   }
 
   return (
