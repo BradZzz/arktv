@@ -11,78 +11,13 @@ import audioOn from './images/audio_on.png';
 
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/core/Slider';
-import { makeStyles } from '@material-ui/core/styles';
 
 import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 
-//import { CastWrapper } from '../CastWrapper';
-import { setMediaPlayerObject, setMediaPlayerAvailable } from '../../containers/ViewerPage/actions';
-import { makeSelectPlayerAvailable, makeSelectCurrentMedia, makeSelectSignedUrl, makeSelectPlayer } from '../../containers/ViewerPage/selectors';
-
-const useStyles = makeStyles(theme => {
-  return {
-    castWrap: {
-      width: '3em',
-      height: '3em',
-      display: 'inline-flex',
-      right: 0,
-      position: 'absolute',
-      margin: '.5em 1em',
-    },
-    mediaWrap: {
-      height: '4em',
-      background: '#000000',
-      position: 'relative',
-    },
-    audioWrap: {
-      right: '5em',
-      display: 'inline-flex',
-      position: 'absolute',
-      width: '12em',
-      height: '3em',
-      margin: '.5em 1em',
-    },
-    audioOff: {
-      height: '3em',
-      width: '3em',
-      backgroundPosition: 'center',
-      backgroundImage: 'url("' + audioOff + '")',
-    },
-    audioOn: {
-      height: '3em',
-      width: '3em',
-      backgroundPosition: 'center',
-      backgroundImage: 'url("' + audioOn + '")',
-    },
-    audioSlider: {
-      margin: '.8em 1em'
-    },
-    play: {
-      height: '3em',
-      margin: '1em',
-      backgroundImage: 'url("' + play + '")',
-      '&:hover': {
-        backgroundImage: 'url("' + playHover + '")',
-      },
-      '&:press': {
-        backgroundImage: 'url("' + playPress + '")',
-      },
-    },
-    pause: {
-      height: '3em',
-      margin: '1em',
-      backgroundImage: 'url("' + pause + '")',
-      '&:hover': {
-        backgroundImage: 'url("' + pauseHover + '")',
-      },
-      '&:press': {
-        backgroundImage: 'url("' + pausePress + '")',
-      },
-    },
-  };
-});
+import { setMediaPlayerAvailable } from '../../containers/ViewerPage/actions';
+import { makeSelectPlayerAvailable, makeSelectCurrentMedia, makeSelectSignedUrl } from '../../containers/ViewerPage/selectors';
 
 /** @enum {string} Constants of states for media for both local and remote playback */
 const PLAYER_STATE = {
@@ -151,10 +86,7 @@ var PlayerHandler = function (player) {
 var CastWrapper = function () {
   this.playerHandler = new PlayerHandler(this);
 
-//  this.setupRemotePlayer();
-}
-
-CastWrapper.prototype.initializeCastPlayer = function () {
+  this.initializeCastPlayer = function () {
   var options = {};
 
   // Set the receiver application ID to your own (created in the
@@ -179,10 +111,9 @@ CastWrapper.prototype.initializeCastPlayer = function () {
       console.log("switchPlayer")
     }.bind(this)
   );
-  this.setupRemotePlayer();
-};
+  };
 
-CastWrapper.prototype.setupRemotePlayer = function() {
+  this.setupRemotePlayer = function() {
   this.remotePlayerController.addEventListener(
     cast.framework.RemotePlayerEventType.CURRENT_TIME_CHANGED,
     function (event) {
@@ -209,21 +140,6 @@ CastWrapper.prototype.setupRemotePlayer = function() {
       }
     }.bind(this)
   )
-
-  this.remotePlayerController.addEventListener(
-    cast.framework.RemotePlayerEventType.VIDEO_INFO_CHANGED,
-    function (event) {
-      console.log('VIDEO_INFO_CHANGED', event);
-    }.bind(this)
-  )
-
-  this.remotePlayerController.addEventListener(
-    cast.framework.RemotePlayerEventType.DURATION_CHANGED,
-    function (event) {
-      console.log('DURATION_CHANGED', event);
-    }.bind(this)
-  )
-
   var playerTarget = {}
 
   playerTarget.getCurrentMediaTime = function () {
@@ -236,9 +152,9 @@ CastWrapper.prototype.setupRemotePlayer = function() {
 
   playerTarget.seekTo = function (percent) {
     console.log("playerTarget.seekTo", percent)
-    console.log("playerHandler.getMediaDuration()", this.remotePlayer.duration)
-    console.log("remotePlayer", this.remotePlayer)
-    var seek = (this.remotePlayer.duration / parseFloat(100)) * percent
+    console.log("playerHandler.getMediaDuration()", remotePlayer.duration)
+    console.log("remotePlayer", remotePlayer)
+    var seek = (remotePlayer.duration / parseFloat(100)) * percent
     console.log("playerTarget.seekTo", seek)
     this.remotePlayer.currentTime = seek;
     this.remotePlayerController.seek();
@@ -292,135 +208,29 @@ CastWrapper.prototype.setupRemotePlayer = function() {
   }.bind(this);
 
   this.playerHandler.setTarget(playerTarget);
-}
-
-CastWrapper.prototype.loadMedia = function (media) {
-  this.playerHandler.load(media);
-}
-
-CastWrapper.prototype.handleSeek = function (val) {
-  this.playerHandler.seekTo(val)
-}
-
-CastWrapper.prototype.handleVolume = function (val) {
-  this.playerHandler.setVolume(val / parseFloat(100))
-}
-
-CastWrapper.prototype.handlePause = function () {
-  this.playerHandler.pause()
-}
-
-CastWrapper.prototype.handlePlay = function () {
-  this.playerHandler.play()
-}
-
-//var castWrapper = new CastWrapper()
-
-function CastPlayer(props) {
-  const { selected, url, onSelectAvailable, onSelectPlayer, player, playerAvailable } = props
-
-  console.log("props", props)
-  console.log("player", player)
-
-  const demo_media = {
-                      title: selected.Title,
-                      subtitle: selected.Plot,
-                      thumb: selected.Poster,
-                      url: url,
-                    }
-
-  const classes = useStyles();
-
-  if (playerAvailable) {
-    var handleSeek = (e, val) => {
-      console.log("handleSeek", val)
-      player.handleSeek(val)
-    }
-
-    var handleVolume = (e, val) => {
-      console.log("handleVolume", val)
-      player.handleVolume(val)
-    }
-
-    var handlePause = (e, val) => {
-      console.log("handlePause")
-      player.handlePause()
-    }
-
-    var handlePlay = (e, val) => {
-      console.log("handlePlay")
-      player.handlePlay()
-    }
-
-    player.loadMedia(demo_media)
-  } else {
-    var castWrapper = new CastWrapper()
-    castWrapper.initializeCastPlayer()
-    onSelectPlayer(castWrapper)
-    onSelectAvailable(true)
   }
 
-  return (
-    <div>
-      <Slider
-        defaultValue={0}
-        aria-labelledby="discrete-slider"
-        valueLabelDisplay="auto"
-        onChange={handleSeek}
-        min={0}
-        max={100}
-      />
-      <div className={classes.mediaWrap}>
-        <Button id="play" className={classes.play} onClick={ handlePlay }/>
-        <Button id="pause" className={classes.pause} onClick={ handlePause }/>
-        <div className={classes.audioWrap}>
-          <div className={classes.audioOff}></div>
-          <Slider
-            defaultValue={0}
-            aria-labelledby="discrete-slider"
-            valueLabelDisplay="auto"
-            onChange={handleVolume}
-            className={classes.audioSlider}
-            min={0}
-            max={100}
-          />
-          <div className={classes.audioOn}></div>
-        </div>
-        <div className={classes.castWrap}>
-          <google-cast-launcher id="castbutton"></google-cast-launcher>
-        </div>
-      </div>
-    </div>
-  );
+  this.loadMedia = function (media) {
+    this.playerHandler.load(media);
+  }
+
+  this.handleSeek = function (val) {
+    this.playerHandler.seekTo(val)
+  }
+
+  this.handleVolume = function (val) {
+    this.playerHandler.setVolume(val / parseFloat(100))
+  }
+
+  this.handlePause = function () {
+    this.playerHandler.pause()
+  }
+
+  this.handlePlay = function () {
+    this.playerHandler.play()
+  }
 }
 
-CastPlayer.defaultProps = {
-  onSelectAvailable: () => {},
-  selected: {},
-  url: '',
-};
+export default new CastWrapper()
 
-CastPlayer.propTypes = {
-  onSelectAvailable: PropTypes.func,
-  selected: PropTypes.object,
-  playerAvailable: PropTypes.bool,
-  player: PropTypes.object,
-  url: PropTypes.string,
-};
-
-const mapStateToProps = createStructuredSelector({
-  playerAvailable: makeSelectPlayerAvailable(),
-  player: makeSelectPlayer(),
-  selected: makeSelectCurrentMedia(),
-  url: makeSelectSignedUrl(),
-})
-
-export function mapDispatchToProps(dispatch) {
-  return {
-    onSelectAvailable: avail => dispatch(setMediaPlayerAvailable(avail)),
-    onSelectPlayer: player => dispatch(setMediaPlayerObject(player)),
-    dispatch,
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CastPlayer);
+//module.exports = new CastWrapper()

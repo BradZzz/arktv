@@ -17,6 +17,11 @@ const makeSelectPlayerAvailable = () =>
     mediaState => mediaState.playerAvailable,
   );
 
+const makeSelectPlayer = () =>
+  createSelector(
+    selectMedia,
+    mediaState => mediaState.player,
+  );
 
 const makeSelectMedia = () =>
   createSelector(
@@ -43,4 +48,4 @@ const makeSelectLoading = () =>
   );
 
 
-export { selectMedia, makeSelectMedia, makeSelectCurrentMedia, makeSelectSignedUrl, makeSelectLoading, makeSelectPlayerAvailable };
+export { selectMedia, makeSelectMedia, makeSelectCurrentMedia, makeSelectSignedUrl, makeSelectLoading, makeSelectPlayerAvailable, makeSelectPlayer };

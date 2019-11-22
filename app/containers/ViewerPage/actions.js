@@ -4,7 +4,7 @@
  *
  */
 
-import { PLAYER_AVAILABLE, CHECK_MEDIA, UPDATE_MEDIA, SET_SELECTED_MEDIA, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL } from './constants';
+import { PLAYER_AVAILABLE, PLAYER_SET, CHECK_MEDIA, UPDATE_MEDIA, SET_SELECTED_MEDIA, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL } from './constants';
 
 export function setMediaPlayerAvailable(playerAvailable) {
   return {
@@ -13,6 +13,12 @@ export function setMediaPlayerAvailable(playerAvailable) {
   };
 }
 
+export function setMediaPlayerObject(player) {
+  return {
+    type: PLAYER_SET,
+    player
+  };
+}
 
 export function checkMedia() {
   return {
