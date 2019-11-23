@@ -153,6 +153,7 @@ var PlayerHandler = function (player) {
 
 var CastWrapper = function () {
   this.playerHandler = new PlayerHandler(this);
+  this.playerHandler.lastPosRecorded = 0
 }
 
 CastWrapper.prototype.initializeCastPlayer = function () {
@@ -215,7 +216,7 @@ CastWrapper.prototype.setPlayer = function(isCast) {
     //Start the local playback
     if (this.playerHandler.localPlayer) {
       if (this.playerHandler.localPlayer.getState().player.hasStarted) {
-        this.playerHandler.localPlayer.getState().player.currentTime = this.remotePlayer.currentTime
+        this.playerHandler.localPlayer.seek(this.playerHandler.lastPosRecorded)
         this.playerHandler.localPlayer.play()
       } else {
         this.playerHandler.localPlayer.load()
@@ -230,6 +231,9 @@ CastWrapper.prototype.setupRemotePlayer = function() {
     function (event) {
       console.log('CURRENT_TIME_CHANGED', event.value);
       console.log('duration', this.remotePlayer.duration);
+      if (event.value !== 0) {
+        this.playerHandler.lastPosRecorded = event.value
+      }
       if (this.remotePlayer.duration > 0){
         const seekPercent = parseInt((event.value / this.remotePlayer.duration) * 100)
         console.log("this.playerHandler.thisSeek != seekPercent", this.playerHandler.thisSeek, seekPercent)
