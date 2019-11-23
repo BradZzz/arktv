@@ -176,12 +176,53 @@ CastWrapper.prototype.initializeCastPlayer = function () {
   this.remotePlayerController.addEventListener(
     cast.framework.RemotePlayerEventType.IS_CONNECTED_CHANGED,
     function (e) {
-//      this.switchPlayer(e.value);
-      console.log("switchPlayer")
+      this.setPlayer(e.value)
+//      // If the player is remote
+//      console.log("this.playerHandler.localPlayer", this.playerHandler.localPlayer, this.playerHandler.localPlayer.getState())
+//      if (e.value) {
+//        this.playerHandler.currentViewerLocal = false
+//        this.loadMedia(this.playerHandler.currentMedia)
+//        if (this.playerHandler.localPlayer)
+//          this.playerHandler.localPlayer.pause()
+//      } else {
+//      //The player is local
+//        this.playerHandler.currentViewerLocal = true
+//        //Start the local playback
+//        if (this.playerHandler.localPlayer) {
+//          if (this.playerHandler.localPlayer.getState().player.hasStarted) {
+//            this.playerHandler.localPlayer.getState().player.currentTime = this.remotePlayer.currentTime
+//            this.playerHandler.localPlayer.play()
+//          } else {
+//            this.playerHandler.localPlayer.load()
+//          }
+//        }
+//      }
     }.bind(this)
   );
   this.setupRemotePlayer();
 };
+
+CastWrapper.prototype.setPlayer = function(isCast) {
+  // If the player is remote
+  if (isCast) {
+    this.playerHandler.setIsLocalPlayer(false)
+    this.loadMedia(this.playerHandler.currentMedia)
+    if (this.playerHandler.localPlayer)
+      this.playerHandler.localPlayer.pause()
+  } else {
+  //The player is local
+    this.playerHandler.setIsLocalPlayer(true)
+    //Start the local playback
+    if (this.playerHandler.localPlayer) {
+      if (this.playerHandler.localPlayer.getState().player.hasStarted) {
+        this.playerHandler.localPlayer.getState().player.currentTime = this.remotePlayer.currentTime
+        this.playerHandler.localPlayer.play()
+      } else {
+        this.playerHandler.localPlayer.load()
+      }
+    }
+  }
+}
 
 CastWrapper.prototype.setupRemotePlayer = function() {
   this.remotePlayerController.addEventListener(
@@ -196,19 +237,6 @@ CastWrapper.prototype.setupRemotePlayer = function() {
           this.playerHandler.setSeek(seekPercent)
         }
       }
-//        try {
-//          const seekPercent = parseInt((event.value / this.remotePlayer.duration) * 100)
-//          const valRef = this.seekBar.current.childNodes[2].value
-//          console.log('seekPercent, valRef', seekPercent, valRef, valRef !== seekPercent);
-//          if (valRef !== seekPercent) {
-//            this.seekBar.current.childNodes[2] = seekPercent
-//          }
-//        }
-//        catch(err) {
-//          console.log("PROBLEM WITH SEEK BAR REF!", err)
-//          return null
-//        }
-//        console.log('percent', event.value / this.remotePlayer.duration);
     }.bind(this)
   );
 
@@ -306,8 +334,11 @@ CastWrapper.prototype.setupRemotePlayer = function() {
   }.bind(this);
 
   playerTarget.load = function (meta) {
-    if (cast.framework.CastContext.getInstance().getCurrentSession() === null)
+    // The remote player isn't available. Load into the local player instead
+    if (cast.framework.CastContext.getInstance().getCurrentSession() === null) {
+      this.playerHandler.localPlayer.load()
       return
+    }
 
     let mediaInfo = new chrome.cast.media.MediaInfo(meta.url, 'video/mp4');
     mediaInfo.streamType = chrome.cast.media.StreamType.BUFFERED;
@@ -319,8 +350,9 @@ CastWrapper.prototype.setupRemotePlayer = function() {
     }];
 
     let request = new chrome.cast.media.LoadRequest(mediaInfo);
-//          request.currentTime = this.currentMediaTime;
-
+    if (this.playerHandler.localPlayer && this.playerHandler.localPlayer.getState().player.hasStarted) {
+      request.currentTime = this.playerHandler.localPlayer.getState().player.currentTime
+    }
     request.autoplay = true;
 
     cast.framework.CastContext.getInstance().getCurrentSession().loadMedia(request).then(
@@ -369,13 +401,26 @@ CastWrapper.prototype.setSeekBarRef = function (thisSeek, setSeek) {
   this.playerHandler.setSeek = setSeek;
 }
 
+CastWrapper.prototype.setIsLocalPlayerRef = function (isLocalPlayer, setIsLocalPlayer) {
+  this.playerHandler.isLocalPlayer = isLocalPlayer;
+  this.playerHandler.setIsLocalPlayer = setIsLocalPlayer;
+}
+
+CastWrapper.prototype.setLocalPlayerRef = function (localPlayer) {
+  this.playerHandler.localPlayer = localPlayer;
+}
+
+//CastWrapper.prototype.currentViewerLocal = function () {
+//  return this.playerHandler.currentViewerLocal
+//}
+
 function CastPlayer(props) {
   const { selected, url, onSelectAvailable, onSelectPlayer, player, playerAvailable } = props
 
   console.log("props", props)
   console.log("player", player)
 
-  const demo_media = {
+  const curMedia = {
                       title: selected.Title,
                       subtitle: selected.Plot,
                       thumb: selected.Poster,
@@ -383,16 +428,19 @@ function CastPlayer(props) {
                     }
 
   const [seek, setSeek] = useState(0);
-//  const [source, setSource] = useState(demo_media.url);
+  const [isLocalPlayer, setIsLocalPlayer] = useState(true);
   const [localPlayer, setLocalPlayerRef] = useState(React.createRef());
-
-  if (localPlayer && 'load' in localPlayer)
-    localPlayer.load()
 
   const classes = useStyles();
 
   if (playerAvailable) {
     player.setSeekBarRef(seek, setSeek)
+    player.setLocalPlayerRef(localPlayer)
+    player.setIsLocalPlayerRef(isLocalPlayer, setIsLocalPlayer)
+
+//    if (localPlayer && 'load' in localPlayer && player.currentViewerLocal()) {
+//      localPlayer.load()
+//    }
 
     var handleSeek = (e, val) => {
       console.log("handleSeek", val)
@@ -414,8 +462,8 @@ function CastPlayer(props) {
       player.handlePlay()
     }
 
-    if (player.currentMedia().url != demo_media.url) {
-      player.loadMedia(demo_media)
+    if (player.currentMedia().url != curMedia.url) {
+      player.loadMedia(curMedia)
     }
   } else {
     var castWrapper = new CastWrapper()
@@ -425,7 +473,7 @@ function CastPlayer(props) {
 
   return (
     <div>
-      <LocalPlayer src={url} setLocalPlayerRef={setLocalPlayerRef} isRemote={playerAvailable ? player.checkLoaded() : false}/>
+      <LocalPlayer thumb={curMedia.thumb} src={curMedia.url} setLocalPlayerRef={setLocalPlayerRef} isLocal={isLocalPlayer}/>
       <Slider
         defaultValue={0}
         aria-labelledby="discrete-slider"

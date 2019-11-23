@@ -11,12 +11,12 @@ import { PLAYER_AVAILABLE, PLAYER_SET, UPDATE_MEDIA, SET_SELECTED_MEDIA, SET_MED
 export const initialState = {
   media: [],
   currentMedia: {
-    Title: "Malcolm in the middle",
-    Plot: "Description",
-    Poster: "https://images-na.ssl-images-amazon.com/images/M/MV5BODQ0NTE3Mjg3N15BMl5BanBnXkFtZTcwNDY2MDMwNw@@._V1_SX300.jpg"
+    Title: "",
+    Plot: "",
+    Poster: ""
   },
   player: {},
-  signedURL: 'https://storage.googleapis.com/misc_meta/index.mp4',
+  signedURL: '',
   loading: false,
   playerAvailable: false,
 };
