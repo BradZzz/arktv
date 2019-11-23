@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import play from './images/play.png';
 import pause from './images/pause.png';
@@ -152,8 +152,6 @@ var PlayerHandler = function (player) {
 
 var CastWrapper = function () {
   this.playerHandler = new PlayerHandler(this);
-
-//  this.setupRemotePlayer();
 }
 
 CastWrapper.prototype.initializeCastPlayer = function () {
@@ -188,7 +186,28 @@ CastWrapper.prototype.setupRemotePlayer = function() {
   this.remotePlayerController.addEventListener(
     cast.framework.RemotePlayerEventType.CURRENT_TIME_CHANGED,
     function (event) {
-      console.log('CURRENT_TIME_CHANGED', event);
+      console.log('CURRENT_TIME_CHANGED', event.value);
+      console.log('duration', this.remotePlayer.duration);
+      if (this.remotePlayer.duration > 0){
+        const seekPercent = parseInt((event.value / this.remotePlayer.duration) * 100)
+        console.log("this.playerHandler.thisSeek != seekPercent", this.playerHandler.thisSeek, seekPercent)
+        if (this.playerHandler.thisSeek != seekPercent) {
+          this.playerHandler.setSeek(seekPercent)
+        }
+      }
+//        try {
+//          const seekPercent = parseInt((event.value / this.remotePlayer.duration) * 100)
+//          const valRef = this.seekBar.current.childNodes[2].value
+//          console.log('seekPercent, valRef', seekPercent, valRef, valRef !== seekPercent);
+//          if (valRef !== seekPercent) {
+//            this.seekBar.current.childNodes[2] = seekPercent
+//          }
+//        }
+//        catch(err) {
+//          console.log("PROBLEM WITH SEEK BAR REF!", err)
+//          return null
+//        }
+//        console.log('percent', event.value / this.remotePlayer.duration);
     }.bind(this)
   );
 
@@ -339,11 +358,32 @@ CastWrapper.prototype.currentMedia = function () {
   return this.playerHandler.currentMedia
 }
 
+CastWrapper.prototype.setSeekBarRef = function (thisSeek, setSeek) {
+  this.playerHandler.thisSeek = thisSeek;
+  this.playerHandler.setSeek = setSeek;
+}
+
+//CastWrapper.prototype.refreshSeekBarRefValue = function () {
+//  try {
+//    return this.seekBar.current.childNodes[2].value
+//  }
+//  catch(err) {
+//    console.log("PROBLEM WITH SEEK BAR REF!")
+//    return null
+//  }
+//}
+
+CastWrapper.prototype.seekBarRef = function () {
+  return this.seekBar
+}
+
 function CastPlayer(props) {
   const { selected, url, onSelectAvailable, onSelectPlayer, player, playerAvailable } = props
 
   console.log("props", props)
   console.log("player", player)
+
+  const [seek, setSeek] = useState(0);
 
   const demo_media = {
                       title: selected.Title,
@@ -355,6 +395,8 @@ function CastPlayer(props) {
   const classes = useStyles();
 
   if (playerAvailable) {
+    player.setSeekBarRef(seek, setSeek)
+
     var handleSeek = (e, val) => {
       console.log("handleSeek", val)
       player.handleSeek(val)
@@ -378,7 +420,7 @@ function CastPlayer(props) {
     if (player.currentMedia().url != demo_media.url) {
       player.loadMedia(demo_media)
     }
-  } else if (!playerAvailable){
+  } else {
     var castWrapper = new CastWrapper()
     castWrapper.initializeCastPlayer()
     onSelectPlayer(castWrapper)
@@ -393,6 +435,7 @@ function CastPlayer(props) {
         onChange={handleSeek}
         min={0}
         max={100}
+        value={seek}
       />
       <div className={classes.mediaWrap}>
         <Button id="play" className={classes.play} onClick={ handlePlay }/>
