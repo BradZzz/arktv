@@ -16,6 +16,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
+import { Player } from 'video-react';
 
 //import { CastWrapper } from '../CastWrapper';
 import { setMediaPlayerObject, setMediaPlayerAvailable } from '../../containers/ViewerPage/actions';
@@ -428,6 +429,11 @@ function CastPlayer(props) {
 
   return (
     <div>
+      <Player
+          playsInline
+          poster="/assets/poster.png"
+          src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
+        />
       <Slider
         defaultValue={0}
         aria-labelledby="discrete-slider"
