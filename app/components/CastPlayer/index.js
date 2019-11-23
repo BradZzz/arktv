@@ -18,7 +18,7 @@ import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { Player } from 'video-react';
 
-//import { CastWrapper } from '../CastWrapper';
+import LocalPlayer from '../LocalPlayer';
 import { setMediaPlayerObject, setMediaPlayerAvailable } from '../../containers/ViewerPage/actions';
 import { makeSelectPlayerAvailable, makeSelectCurrentMedia, makeSelectSignedUrl, makeSelectPlayer } from '../../containers/ViewerPage/selectors';
 
@@ -335,7 +335,12 @@ CastWrapper.prototype.setupRemotePlayer = function() {
   this.playerHandler.setTarget(playerTarget);
 }
 
+CastWrapper.prototype.checkLoaded = function () {
+  return cast.framework.CastContext.getInstance().getCurrentSession() !== null
+}
+
 CastWrapper.prototype.loadMedia = function (media) {
+  console.log("Loaded", this.checkLoaded())
   this.playerHandler.load(media);
 }
 
@@ -364,27 +369,11 @@ CastWrapper.prototype.setSeekBarRef = function (thisSeek, setSeek) {
   this.playerHandler.setSeek = setSeek;
 }
 
-//CastWrapper.prototype.refreshSeekBarRefValue = function () {
-//  try {
-//    return this.seekBar.current.childNodes[2].value
-//  }
-//  catch(err) {
-//    console.log("PROBLEM WITH SEEK BAR REF!")
-//    return null
-//  }
-//}
-
-CastWrapper.prototype.seekBarRef = function () {
-  return this.seekBar
-}
-
 function CastPlayer(props) {
   const { selected, url, onSelectAvailable, onSelectPlayer, player, playerAvailable } = props
 
   console.log("props", props)
   console.log("player", player)
-
-  const [seek, setSeek] = useState(0);
 
   const demo_media = {
                       title: selected.Title,
@@ -392,6 +381,13 @@ function CastPlayer(props) {
                       thumb: selected.Poster,
                       url: url,
                     }
+
+  const [seek, setSeek] = useState(0);
+//  const [source, setSource] = useState(demo_media.url);
+  const [localPlayer, setLocalPlayerRef] = useState(React.createRef());
+
+  if (localPlayer && 'load' in localPlayer)
+    localPlayer.load()
 
   const classes = useStyles();
 
@@ -429,11 +425,7 @@ function CastPlayer(props) {
 
   return (
     <div>
-      <Player
-          playsInline
-          poster="/assets/poster.png"
-          src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
-        />
+      <LocalPlayer src={url} setLocalPlayerRef={setLocalPlayerRef} isRemote={playerAvailable ? player.checkLoaded() : false}/>
       <Slider
         defaultValue={0}
         aria-labelledby="discrete-slider"
