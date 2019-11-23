@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => {
       margin: '.5em 1em',
     },
     mediaWrap: {
-      height: '4em',
+      height: '8em',
       background: '#000000',
       position: 'relative',
     },
@@ -478,33 +478,38 @@ function CastPlayer(props) {
   return (
     <div>
       <LocalPlayer thumb={curMedia.thumb} src={curMedia.url} setLocalPlayerRef={setLocalPlayerRef} isLocal={isLocalPlayer}/>
-      <Slider
-        defaultValue={0}
-        aria-labelledby="discrete-slider"
-        valueLabelDisplay="auto"
-        onChange={handleSeek}
-        min={0}
-        max={100}
-        value={seek}
-      />
-      <div className={classes.mediaWrap}>
-        <Button id="play" className={classes.play} onClick={ handlePlay }/>
-        <Button id="pause" className={classes.pause} onClick={ handlePause }/>
-        <div className={classes.audioWrap}>
-          <div className={classes.audioOff}></div>
+      <div className={classes.mediaWrap} style={{ border: '.5em solid red' }}>
+        <div style={{ margin: '.2em', padding: '0 .8em' }}>
           <Slider
             defaultValue={0}
             aria-labelledby="discrete-slider"
             valueLabelDisplay="auto"
-            onChange={handleVolume}
-            className={classes.audioSlider}
+            onChange={handleSeek}
             min={0}
             max={100}
+            value={seek}
+            style={{ display: (isLocalPlayer ? 'None' : 'Block') }}
           />
-          <div className={classes.audioOn}></div>
         </div>
-        <div className={classes.castWrap}>
-          <google-cast-launcher id="castbutton"></google-cast-launcher>
+        <div style={{ display: 'inline-flex' }}>
+          <Button id="play" className={classes.play} onClick={ handlePlay } style={{ display: (isLocalPlayer ? 'None' : 'Block') }}/>
+          <Button id="pause" className={classes.pause} onClick={ handlePause } style={{ display: (isLocalPlayer ? 'None' : 'Block') }}/>
+          <div className={classes.audioWrap} style={{ display: (isLocalPlayer ? 'None' : 'flex') }}>
+            <div className={classes.audioOff}></div>
+            <Slider
+              defaultValue={0}
+              aria-labelledby="discrete-slider"
+              valueLabelDisplay="auto"
+              onChange={handleVolume}
+              className={classes.audioSlider}
+              min={0}
+              max={100}
+            />
+            <div className={classes.audioOn}></div>
+          </div>
+          <div className={classes.castWrap}>
+            <google-cast-launcher id="castbutton"></google-cast-launcher>
+          </div>
         </div>
       </div>
     </div>

@@ -8,7 +8,10 @@ function LocalPlayer (props) {
 
   return (
     <div>
-      <img src={thumb} style={{ display: (isLocal ? 'None' : 'Block') }}/>
+      <div style={{ display: (isLocal ? 'None' : 'Block'), backgroundImage: `url(${thumb})`, position: 'relative', height: '25em', backgroundRepeat: 'space' }}>
+        <div style={{ position: 'absolute', top: 0,  background: 'black', opacity: .8, height: '100%', minWidth: '100%' }}></div>
+        <img src={thumb} style={{ position: 'absolute', left: '30%', paddingTop: '.3em', paddingBottom: '.3em', height: '100%' }}/>
+      </div>
       <div style={{ display: (isLocal ? 'Block' : 'None') }}>
         <Player
           ref={player => setLocalPlayerRef(player)}
