@@ -29,10 +29,22 @@ const makeSelectMedia = () =>
     mediaState => mediaState.media,
   );
 
+const makeSelectChannels = () =>
+  createSelector(
+    selectMedia,
+    mediaState => mediaState.channels,
+  );
+
 const makeSelectCurrentMedia = () =>
   createSelector(
     selectMedia,
     mediaState => mediaState.currentMedia,
+  );
+
+const makeSelectCurrentChannel = () =>
+  createSelector(
+    selectMedia,
+    mediaState => mediaState.currentChannel,
   );
 
 const makeSelectSignedUrl = () =>
@@ -48,4 +60,4 @@ const makeSelectLoading = () =>
   );
 
 
-export { selectMedia, makeSelectMedia, makeSelectCurrentMedia, makeSelectSignedUrl, makeSelectLoading, makeSelectPlayerAvailable, makeSelectPlayer };
+export { selectMedia, makeSelectMedia, makeSelectCurrentMedia, makeSelectChannels, makeSelectCurrentChannel, makeSelectSignedUrl, makeSelectLoading, makeSelectPlayerAvailable, makeSelectPlayer };

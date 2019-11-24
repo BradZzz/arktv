@@ -4,7 +4,7 @@
  *
  */
 
-import { PLAYER_AVAILABLE, PLAYER_SET, CHECK_MEDIA, UPDATE_MEDIA, SET_SELECTED_MEDIA, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL } from './constants';
+import { PLAYER_AVAILABLE, PLAYER_SET, CHECK_MEDIA, UPDATE_MEDIA, UPDATE_CHANNELS, SET_SELECTED_MEDIA, SET_SELECTED_CHANNEL, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL } from './constants';
 
 export function setMediaPlayerAvailable(playerAvailable) {
   return {
@@ -33,12 +33,27 @@ export function updateMedia(media) {
   };
 }
 
+export function updateChannels(channels) {
+  return {
+    type: UPDATE_CHANNELS,
+    channels,
+  };
+}
+
 export function setMedia(currentMedia) {
   return {
     type: SET_SELECTED_MEDIA,
     currentMedia
   };
 }
+
+export function setChannel(currentChannel) {
+  return {
+    type: SET_SELECTED_CHANNEL,
+    currentChannel
+  };
+}
+
 
 export function setMediaSignedUrl(signedURL) {
   return {

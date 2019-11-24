@@ -154,6 +154,7 @@ var PlayerHandler = function (player) {
 var CastWrapper = function () {
   this.playerHandler = new PlayerHandler(this);
   this.playerHandler.lastPosRecorded = 0
+  this.playerHandler.remoteLoading = false
 }
 
 CastWrapper.prototype.initializeCastPlayer = function () {
@@ -254,14 +255,14 @@ CastWrapper.prototype.setupRemotePlayer = function() {
   this.remotePlayerController.addEventListener(
     cast.framework.RemotePlayerEventType.IS_MEDIA_LOADED_CHANGED,
     function (event) {
-      console.log('IS_MEDIA_LOADED_CHANGED', event);
-      if (!event.value) {
+      console.log('IS_MEDIA_LOADED_CHANGED', event, this.playerHandler);
+      if (!event.value && !this.playerHandler.remoteLoading) {
         console.log('Media Has Ended!');
-//        var newMedia = this.playerHandler.channel[Math.floor(Math.random() * this.playerHandler.channel.length)];
-//        this.playerHandler.onSetMedia(newMedia);
+        this.playerHandler.remoteLoading = true
         this.setNextChannelMedia()
       } else {
         console.log('Media Has Loaded!');
+        this.playerHandler.remoteLoading = false
       }
     }.bind(this)
   )
@@ -406,7 +407,8 @@ CastWrapper.prototype.setChannel = function (channel) {
 }
 
 CastWrapper.prototype.setNextChannelMedia = function () {
-  var newMedia = this.playerHandler.channel[Math.floor(Math.random() * this.playerHandler.channel.length)];
+  console.log("this.playerHandler.channel", this.playerHandler.channel)
+  var newMedia = this.playerHandler.channel.media[Math.floor(Math.random() * this.playerHandler.channel.media.length)];
   this.playerHandler.onSetMedia(newMedia);
 }
 

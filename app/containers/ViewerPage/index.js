@@ -29,8 +29,8 @@ import Paper from '@material-ui/core/Paper';
 import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { makeSelectMedia } from './selectors';
-import { checkMedia, setMedia } from './actions';
+import { makeSelectMedia, makeSelectChannels, makeSelectCurrentChannel } from './selectors';
+import { checkMedia, setMedia, setChannel } from './actions';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -66,9 +66,9 @@ const useStyles = makeStyles(theme => {
 export function ViewerPage(props) {
   const classes = useStyles();
 
-  console.log("props", props)
+  console.log("props ViewerPage", props)
 
-  const { media, onCheckMedia, onSetMedia } = props
+  const { media, channels, selectedChannel, onCheckMedia, onSetMedia, onSetChannel } = props
 
   onCheckMedia()
 
@@ -81,7 +81,21 @@ export function ViewerPage(props) {
 //    }
 //  };
 //
-  const testChannel = [media[0], media[1], media[2], media[3], media[4]]
+//  const testChannel = [media[0], media[1], media[2], media[3], media[4]]
+
+//  const channels = ["Action", "Comedy", "Adventure"]
+
+  let mediaView = (<></>)
+  if ('media' in selectedChannel) {
+    mediaView = selectedChannel.media.map(med => (
+      <ListItem key={ med.imdbID } onClick={() => onSetMedia(med)} style={{ height: '5em', width: '95%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
+        <img src={med.Poster} style={{ height: '100%', maxWidth: '4em' }}/>
+        <span>
+          { med.Title }
+        </span>
+      </ListItem>
+    ))
+  }
 
   return (
     <div>
@@ -96,17 +110,21 @@ export function ViewerPage(props) {
         <FormattedMessage {...messages.header} />
       </H1>
       <div style={{ display: 'flex' }}>
-        <CastPlayer channel={testChannel} onSetMedia={onSetMedia} />
-        <Paper style={{maxHeight: '65vh', overflow: 'auto'}}>
+        <Paper style={{maxHeight: '65vh', overflow: 'auto', width: '25%' }}>
           <List>
-          { media.map(med => (
-            <ListItem key={ med.imdbID } onClick={() => onSetMedia(med)} style={{ height: '5em', width: '95%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
-              <img src={med.Poster} style={{ height: '100%', maxWidth: '4em' }}/>
+          { channels.map(chan => (
+            <ListItem key={ chan.name } onClick={() => onSetChannel(chan)} style={{ height: '5em', width: '95%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
               <span>
-                { med.Title }
+                { chan.name }
               </span>
             </ListItem>
           )) }
+          </List>
+        </Paper>
+        <CastPlayer channel={selectedChannel} onSetMedia={onSetMedia} />
+        <Paper style={{maxHeight: '65vh', overflow: 'auto'}}>
+          <List>
+          { mediaView }
           </List>
         </Paper>
       </div>
@@ -116,18 +134,24 @@ export function ViewerPage(props) {
 
 ViewerPage.propTypes = {
   media: PropTypes.array,
+  channels: PropTypes.array,
+  selectedChannel: PropTypes.object,
   onCheckMedia: PropTypes.func,
   onSetMedia: PropTypes.func,
+  onSetChannel: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
   media: makeSelectMedia(),
+  selectedChannel: makeSelectCurrentChannel(),
+  channels: makeSelectChannels(),
 })
 
 export function mapDispatchToProps(dispatch) {
   return {
     onCheckMedia: () => dispatch(checkMedia()),
     onSetMedia: (media) => dispatch(setMedia(media)),
+    onSetChannel: (channel) => dispatch(setChannel(channel)),
     dispatch,
   };
 }
