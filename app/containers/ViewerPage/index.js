@@ -23,6 +23,10 @@ import playHover from './images/play-hover.png';
 import playPress from './images/play-press.png';
 
 import Button from '@material-ui/core/Button';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import Paper from '@material-ui/core/Paper';
+import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { makeSelectMedia } from './selectors';
@@ -76,6 +80,48 @@ export function ViewerPage(props) {
     }
   };
 
+  const [state, setState] = React.useState({
+    top: false,
+    left: false,
+    bottom: false,
+    right: false,
+  });
+
+  const toggleDrawer = (side, open) => event => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+
+    setState({ ...state, [side]: open });
+  }
+
+  const sideList = side => (
+    <div
+      className={classes.list}
+      role="presentation"
+      onClick={toggleDrawer(side, false)}
+      onKeyDown={toggleDrawer(side, false)}
+    >
+      <List>
+        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
+
   return (
     <div>
       <Helmet>
@@ -88,15 +134,21 @@ export function ViewerPage(props) {
       <H1>
         <FormattedMessage {...messages.header} />
       </H1>
-      <CastPlayer/>
-      { media.map(med => (
-        <div key={ med.imdbID } onClick={() => onSetMedia(med)} style={{ height: '5em', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
-          <img src={med.Poster} style={{ height: '100%', maxWidth: '4em' }}/>
-          <span>
-            { med.Title }
-          </span>
-        </div>
-      )) }
+      <div style={{ display: 'flex' }}>
+        <CastPlayer/>
+        <Paper style={{maxHeight: '65vh', overflow: 'auto'}}>
+          <List>
+          { media.map(med => (
+            <ListItem key={ med.imdbID } onClick={() => onSetMedia(med)} style={{ height: '5em', width: '95%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
+              <img src={med.Poster} style={{ height: '100%', maxWidth: '4em' }}/>
+              <span>
+                { med.Title }
+              </span>
+            </ListItem>
+          )) }
+          </List>
+        </Paper>
+      </div>
     </div>
   )
 }

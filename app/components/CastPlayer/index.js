@@ -178,26 +178,6 @@ CastWrapper.prototype.initializeCastPlayer = function () {
     cast.framework.RemotePlayerEventType.IS_CONNECTED_CHANGED,
     function (e) {
       this.setPlayer(e.value)
-//      // If the player is remote
-//      console.log("this.playerHandler.localPlayer", this.playerHandler.localPlayer, this.playerHandler.localPlayer.getState())
-//      if (e.value) {
-//        this.playerHandler.currentViewerLocal = false
-//        this.loadMedia(this.playerHandler.currentMedia)
-//        if (this.playerHandler.localPlayer)
-//          this.playerHandler.localPlayer.pause()
-//      } else {
-//      //The player is local
-//        this.playerHandler.currentViewerLocal = true
-//        //Start the local playback
-//        if (this.playerHandler.localPlayer) {
-//          if (this.playerHandler.localPlayer.getState().player.hasStarted) {
-//            this.playerHandler.localPlayer.getState().player.currentTime = this.remotePlayer.currentTime
-//            this.playerHandler.localPlayer.play()
-//          } else {
-//            this.playerHandler.localPlayer.load()
-//          }
-//        }
-//      }
     }.bind(this)
   );
   this.setupRemotePlayer();
@@ -476,7 +456,7 @@ function CastPlayer(props) {
   }
 
   return (
-    <div>
+    <div style={{ width: '50%' }}>
       <LocalPlayer thumb={curMedia.thumb} src={curMedia.url} setLocalPlayerRef={setLocalPlayerRef} isLocal={isLocalPlayer}/>
       <div className={classes.mediaWrap} style={{ border: '.5em solid red' }}>
         <div style={{ margin: '.2em', padding: '0 .8em' }}>
