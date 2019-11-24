@@ -257,6 +257,9 @@ CastWrapper.prototype.setupRemotePlayer = function() {
       console.log('IS_MEDIA_LOADED_CHANGED', event);
       if (!event.value) {
         console.log('Media Has Ended!');
+//        var newMedia = this.playerHandler.channel[Math.floor(Math.random() * this.playerHandler.channel.length)];
+//        this.playerHandler.onSetMedia(newMedia);
+        this.setNextChannelMedia()
       } else {
         console.log('Media Has Loaded!');
       }
@@ -394,15 +397,24 @@ CastWrapper.prototype.setLocalPlayerRef = function (localPlayer) {
   this.playerHandler.localPlayer = localPlayer;
 }
 
-//CastWrapper.prototype.currentViewerLocal = function () {
-//  return this.playerHandler.currentViewerLocal
-//}
+CastWrapper.prototype.setMediaController = function (onSetMedia) {
+  return this.playerHandler.onSetMedia = onSetMedia
+}
+
+CastWrapper.prototype.setChannel = function (channel) {
+  return this.playerHandler.channel = channel
+}
+
+CastWrapper.prototype.setNextChannelMedia = function () {
+  var newMedia = this.playerHandler.channel[Math.floor(Math.random() * this.playerHandler.channel.length)];
+  this.playerHandler.onSetMedia(newMedia);
+}
+
 
 function CastPlayer(props) {
-  const { selected, url, onSelectAvailable, onSelectPlayer, player, playerAvailable } = props
+  const { selected, url, onSelectAvailable, onSelectPlayer, player, playerAvailable, channel, onSetMedia } = props
 
-  console.log("props", props)
-  console.log("player", player)
+  console.log("props CastPlayer", props)
 
   const curMedia = {
                       title: selected.Title,
@@ -414,6 +426,8 @@ function CastPlayer(props) {
   const [seek, setSeek] = useState(0);
   const [isLocalPlayer, setIsLocalPlayer] = useState(true);
   const [localPlayer, setLocalPlayerRef] = useState(React.createRef());
+  let localLoading = false
+  let hasPlayedLocal = false
 
   const classes = useStyles();
 
@@ -421,10 +435,8 @@ function CastPlayer(props) {
     player.setSeekBarRef(seek, setSeek)
     player.setLocalPlayerRef(localPlayer)
     player.setIsLocalPlayerRef(isLocalPlayer, setIsLocalPlayer)
-
-//    if (localPlayer && 'load' in localPlayer && player.currentViewerLocal()) {
-//      localPlayer.load()
-//    }
+    player.setMediaController(onSetMedia)
+    player.setChannel(channel)
 
     var handleSeek = (e, val) => {
       console.log("handleSeek", val)
@@ -449,6 +461,21 @@ function CastPlayer(props) {
     if (player.currentMedia().url != curMedia.url) {
       player.loadMedia(curMedia)
     }
+
+    const handleLocalPlayerStateChange = function(state, prevState) {
+      if (state.duration !== state.currentTime && state.currentTime > 0 && state.duration > 0) {
+        hasPlayedLocal = true
+      }
+      if (!localLoading && !player.checkLoaded() && state.ended && hasPlayedLocal && state.currentSrc === curMedia.url) {
+        console.log("handleLocalPlayerStateChange", state, prevState)
+        localLoading = true
+        player.setNextChannelMedia()
+      }
+    }
+
+    if ('subscribeToStateChange' in localPlayer) {
+      localPlayer.subscribeToStateChange(handleLocalPlayerStateChange);
+    }
   } else {
     var castWrapper = new CastWrapper()
     castWrapper.initializeCastPlayer()
@@ -457,7 +484,7 @@ function CastPlayer(props) {
 
   return (
     <div style={{ width: '50%' }}>
-      <LocalPlayer thumb={curMedia.thumb} src={curMedia.url} setLocalPlayerRef={setLocalPlayerRef} isLocal={isLocalPlayer}/>
+      <LocalPlayer channel={channel} onSetMedia={onSetMedia} thumb={curMedia.thumb} src={curMedia.url} setLocalPlayerRef={setLocalPlayerRef} isLocal={isLocalPlayer}/>
       <div className={classes.mediaWrap} style={{ border: '.5em solid red' }}>
         <div style={{ margin: '.2em', padding: '0 .8em' }}>
           <Slider
