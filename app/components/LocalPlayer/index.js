@@ -18,7 +18,7 @@ function LocalPlayer (props) {
           videoId="video-1"
           preload="auto"
           fluid={false}
-          height={600}
+          height={520}
           width={800}
           autoPlay={true}
         >

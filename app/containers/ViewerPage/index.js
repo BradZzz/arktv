@@ -28,12 +28,17 @@ import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
+import Fab from '@material-ui/core/Fab';
+import CollectionsIcon from '@material-ui/icons/Collections';
 
 import { makeSelectMedia, makeSelectChannels, makeSelectCurrentChannel } from './selectors';
 import { checkMedia, setMedia, setChannel } from './actions';
 
 const useStyles = makeStyles(theme => {
   return {
+    fab: {
+      margin: theme.spacing(1),
+    },
     mediaWrap: {
       height: '4em',
       background: '#000000',
@@ -123,6 +128,9 @@ export function ViewerPage(props) {
         </Paper>
         <CastPlayer channel={selectedChannel} onSetMedia={onSetMedia} />
         <Paper style={{maxHeight: '42em', overflow: 'auto'}}>
+          <Fab color="primary" aria-label="Add" className={classes.fab} style={{ position: 'absolute', zIndex: 1, right: '2%', top: '10%' }}>
+            <CollectionsIcon />
+          </Fab>
           <List>
           { mediaView }
           </List>
