@@ -53,11 +53,17 @@ const makeSelectSignedUrl = () =>
     mediaState => mediaState.signedURL,
   );
 
-const makeSelectLoading = () =>
+const makeSelectLoadingSigned = () =>
   createSelector(
     selectMedia,
-    mediaState => mediaState.loading,
+    mediaState => mediaState.loadingSigned,
+  );
+
+const makeSelectLoadingMedia = () =>
+  createSelector(
+    selectMedia,
+    mediaState => mediaState.loadingMedia,
   );
 
 
-export { selectMedia, makeSelectMedia, makeSelectCurrentMedia, makeSelectChannels, makeSelectCurrentChannel, makeSelectSignedUrl, makeSelectLoading, makeSelectPlayerAvailable, makeSelectPlayer };
+export { selectMedia, makeSelectMedia, makeSelectCurrentMedia, makeSelectChannels, makeSelectCurrentChannel, makeSelectSignedUrl, makeSelectLoadingSigned, makeSelectLoadingMedia, makeSelectPlayerAvailable, makeSelectPlayer };

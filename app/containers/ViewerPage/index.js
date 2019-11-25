@@ -88,7 +88,7 @@ export function ViewerPage(props) {
   let mediaView = (<></>)
   if ('media' in selectedChannel) {
     mediaView = selectedChannel.media.map(med => (
-      <ListItem key={ med.imdbID } onClick={() => onSetMedia(med)} style={{ height: '5em', width: '95%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
+      <ListItem key={ med.imdbID } onClick={() => { onSetMedia(med);}} style={{ height: '5em', width: '95%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
         <img src={med.Poster} style={{ height: '100%', maxWidth: '4em' }}/>
         <span>
           { med.Title }
@@ -110,7 +110,7 @@ export function ViewerPage(props) {
         <FormattedMessage {...messages.header} />
       </H1>
       <div style={{ display: 'flex' }}>
-        <Paper style={{maxHeight: '65vh', overflow: 'auto', width: '25%' }}>
+        <Paper style={{maxHeight: '42em', overflow: 'auto', width: '25%' }}>
           <List>
           { channels.map(chan => (
             <ListItem key={ chan.name } onClick={() => onSetChannel(chan)} style={{ height: '5em', width: '95%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
@@ -122,7 +122,7 @@ export function ViewerPage(props) {
           </List>
         </Paper>
         <CastPlayer channel={selectedChannel} onSetMedia={onSetMedia} />
-        <Paper style={{maxHeight: '65vh', overflow: 'auto'}}>
+        <Paper style={{maxHeight: '42em', overflow: 'auto'}}>
           <List>
           { mediaView }
           </List>
@@ -139,6 +139,7 @@ ViewerPage.propTypes = {
   onCheckMedia: PropTypes.func,
   onSetMedia: PropTypes.func,
   onSetChannel: PropTypes.func,
+  onSelectLoadingMedia: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({

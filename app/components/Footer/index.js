@@ -5,24 +5,14 @@ import A from 'components/A';
 import LocaleToggle from 'containers/LocaleToggle';
 import Wrapper from './Wrapper';
 import messages from './messages';
+import Header from 'components/Header';
 
 function Footer() {
   return (
     <Wrapper>
-      <section>
-        <FormattedMessage {...messages.licenseMessage} />
-      </section>
-      <section>
-        <LocaleToggle />
-      </section>
-      <section>
-        <FormattedMessage
-          {...messages.authorMessage}
-          values={{
-            author: <A href="https://twitter.com/mxstbr">Max Stoiber</A>,
-          }}
-        />
-      </section>
+      <div style={{ width: '100%' }}>
+        <Header/>
+      </div>
     </Wrapper>
   );
 }

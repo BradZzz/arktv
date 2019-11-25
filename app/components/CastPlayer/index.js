@@ -19,8 +19,8 @@ import { connect } from 'react-redux';
 import { Player } from 'video-react';
 
 import LocalPlayer from '../LocalPlayer';
-import { setMediaPlayerObject, setMediaPlayerAvailable } from '../../containers/ViewerPage/actions';
-import { makeSelectPlayerAvailable, makeSelectCurrentMedia, makeSelectSignedUrl, makeSelectPlayer } from '../../containers/ViewerPage/selectors';
+import { setMediaPlayerObject, setMediaPlayerAvailable, setLoadingMedia } from '../../containers/ViewerPage/actions';
+import { makeSelectPlayerAvailable, makeSelectCurrentMedia, makeSelectSignedUrl, makeSelectPlayer, makeSelectLoadingMedia } from '../../containers/ViewerPage/selectors';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -154,7 +154,6 @@ var PlayerHandler = function (player) {
 var CastWrapper = function () {
   this.playerHandler = new PlayerHandler(this);
   this.playerHandler.lastPosRecorded = 0
-  this.playerHandler.remoteLoading = false
 }
 
 CastWrapper.prototype.initializeCastPlayer = function () {
@@ -256,13 +255,12 @@ CastWrapper.prototype.setupRemotePlayer = function() {
     cast.framework.RemotePlayerEventType.IS_MEDIA_LOADED_CHANGED,
     function (event) {
       console.log('IS_MEDIA_LOADED_CHANGED', event, this.playerHandler);
-      if (!event.value && !this.playerHandler.remoteLoading) {
+      if (!event.value && !this.playerHandler.loadingMedia) {
         console.log('Media Has Ended!');
-        this.playerHandler.remoteLoading = true
         this.setNextChannelMedia()
       } else {
         console.log('Media Has Loaded!');
-        this.playerHandler.remoteLoading = false
+        this.playerHandler.onSelectLoadingMedia(false)
       }
     }.bind(this)
   )
@@ -399,11 +397,16 @@ CastWrapper.prototype.setLocalPlayerRef = function (localPlayer) {
 }
 
 CastWrapper.prototype.setMediaController = function (onSetMedia) {
-  return this.playerHandler.onSetMedia = onSetMedia
+  this.playerHandler.onSetMedia = onSetMedia
 }
 
 CastWrapper.prototype.setChannel = function (channel) {
-  return this.playerHandler.channel = channel
+  this.playerHandler.channel = channel
+}
+
+CastWrapper.prototype.setMediaLoadingFlags = function (loadingMedia, onSelectLoadingMedia) {
+  this.playerHandler.loadingMedia = loadingMedia
+  this.playerHandler.onSelectLoadingMedia = onSelectLoadingMedia
 }
 
 CastWrapper.prototype.setNextChannelMedia = function () {
@@ -414,7 +417,7 @@ CastWrapper.prototype.setNextChannelMedia = function () {
 
 
 function CastPlayer(props) {
-  const { selected, url, onSelectAvailable, onSelectPlayer, player, playerAvailable, channel, onSetMedia } = props
+  const { selected, url, onSelectAvailable, onSelectPlayer, player, playerAvailable, channel, onSetMedia, loadingMedia, onSelectLoadingMedia } = props
 
   console.log("props CastPlayer", props)
 
@@ -434,11 +437,18 @@ function CastPlayer(props) {
   const classes = useStyles();
 
   if (playerAvailable) {
+    // For the chromecast to access the seekbar locally and movie it with media
     player.setSeekBarRef(seek, setSeek)
+    // A reference to the localplayer, so that chromecast can move it's seek and play when chromecast is stopped
     player.setLocalPlayerRef(localPlayer)
+    // Shows chromecast when the local player is active and when it isn't
     player.setIsLocalPlayerRef(isLocalPlayer, setIsLocalPlayer)
+    // Allows the chromecast to pick the next show
     player.setMediaController(onSetMedia)
+    // Allows the chromecast to change channels
     player.setChannel(channel)
+    // Prevents the chromecast from loading another media until the next media loads correctly
+    player.setMediaLoadingFlags(loadingMedia, onSelectLoadingMedia)
 
     var handleSeek = (e, val) => {
       console.log("handleSeek", val)
@@ -467,6 +477,7 @@ function CastPlayer(props) {
     const handleLocalPlayerStateChange = function(state, prevState) {
       if (state.duration !== state.currentTime && state.currentTime > 0 && state.duration > 0) {
         hasPlayedLocal = true
+        onSelectLoadingMedia(false)
       }
       if (!localLoading && !player.checkLoaded() && state.ended && hasPlayedLocal && state.currentSrc === curMedia.url) {
         console.log("handleLocalPlayerStateChange", state, prevState)
@@ -533,10 +544,12 @@ CastPlayer.defaultProps = {
 
 CastPlayer.propTypes = {
   onSelectAvailable: PropTypes.func,
+  onSelectLoadingMedia: PropTypes.func,
   selected: PropTypes.object,
   playerAvailable: PropTypes.bool,
   player: PropTypes.object,
   url: PropTypes.string,
+  loadingMedia: PropTypes.bool,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -544,12 +557,14 @@ const mapStateToProps = createStructuredSelector({
   player: makeSelectPlayer(),
   selected: makeSelectCurrentMedia(),
   url: makeSelectSignedUrl(),
+  loadingMedia: makeSelectLoadingMedia(),
 })
 
 export function mapDispatchToProps(dispatch) {
   return {
     onSelectAvailable: avail => dispatch(setMediaPlayerAvailable(avail)),
     onSelectPlayer: player => dispatch(setMediaPlayerObject(player)),
+    onSelectLoadingMedia: loading => dispatch(setLoadingMedia(loading)),
     dispatch,
   };
 }

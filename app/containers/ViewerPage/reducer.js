@@ -6,7 +6,7 @@
 
 import produce from 'immer';
 
-import { PLAYER_AVAILABLE, PLAYER_SET, UPDATE_MEDIA, UPDATE_CHANNELS, SET_SELECTED_MEDIA, SET_SELECTED_CHANNEL, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL } from './constants';
+import { PLAYER_AVAILABLE, PLAYER_SET, UPDATE_MEDIA, UPDATE_CHANNELS, SET_SELECTED_MEDIA, SET_SELECTED_CHANNEL, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL, LOADING_MEDIA } from './constants';
 
 export const initialState = {
   media: [],
@@ -19,8 +19,8 @@ export const initialState = {
   currentChannel:{},
   player: {},
   signedURL: '',
-  loading: false,
-  playerAvailable: false,
+  loadingSigned: false,
+  loadingMedia: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -42,6 +42,7 @@ const MediaReducer = (state = initialState, action) =>
         break;
       case SET_SELECTED_MEDIA:
         draft.currentMedia = action.currentMedia;
+        draft.loadingMedia = true
         break;
       case SET_SELECTED_CHANNEL:
         draft.currentChannel = action.currentChannel;
@@ -50,10 +51,10 @@ const MediaReducer = (state = initialState, action) =>
         draft.signedURL = action.signedURL;
         break;
       case LOADING_SIGNED_URL:
-        draft.loading = action.loading;
+        draft.loadingSigned = action.loadingSigned;
         break;
-      case LOADING_SIGNED_URL:
-        draft.loading = action.loading;
+      case LOADING_MEDIA:
+        draft.loadingMedia = action.loadingMedia;
         break;
     }
   });
