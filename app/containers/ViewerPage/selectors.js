@@ -71,4 +71,23 @@ const makeSelectEpisode = () =>
     mediaState => mediaState.episode,
   );
 
-export { makeSelectEpisode, selectMedia, makeSelectMedia, makeSelectCurrentMedia, makeSelectChannels, makeSelectCurrentChannel, makeSelectSignedUrl, makeSelectLoadingSigned, makeSelectLoadingMedia, makeSelectPlayerAvailable, makeSelectPlayer };
+const makeSelectOptionsPin = () =>
+  createSelector(
+    selectMedia,
+    mediaState => mediaState.options.pin,
+  );
+
+
+const makeSelectOptionsStar = () =>
+  createSelector(
+    selectMedia,
+    mediaState => mediaState.options.star,
+  );
+
+const makeSelectOptionsOrder = () =>
+  createSelector(
+    selectMedia,
+    mediaState => mediaState.options.order,
+  );
+
+export { makeSelectOptionsPin, makeSelectOptionsStar, makeSelectOptionsOrder, makeSelectEpisode, selectMedia, makeSelectMedia, makeSelectCurrentMedia, makeSelectChannels, makeSelectCurrentChannel, makeSelectSignedUrl, makeSelectLoadingSigned, makeSelectLoadingMedia, makeSelectPlayerAvailable, makeSelectPlayer };

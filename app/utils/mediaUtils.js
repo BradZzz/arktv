@@ -13,7 +13,7 @@ export default function createChannels(medias) {
     { name : "Movie", filter: (media) => media.episodes.length === 1, media: [] },
     { name : "TV", filter: (media) => media.episodes.length > 1, media: [] },
     { name : "Drulz", filter: (media) => drulz.includes(media.imdbID), media: [] },
-    { name : "Fard", filter: (media) => fard.includes(media.imdbID), media: [] }
+    { name : "Riar", filter: (media) => fard.includes(media.imdbID), media: [] }
   ]
 
 //  const genres = []

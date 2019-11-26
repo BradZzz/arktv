@@ -33,7 +33,7 @@ import CollectionsIcon from '@material-ui/icons/Collections';
 import Grid from '@material-ui/core/Grid';
 
 import { makeSelectCurrentMedia, makeSelectMedia, makeSelectChannels, makeSelectCurrentChannel, makeSelectEpisode } from './selectors';
-import { checkMedia, setMedia, setChannel } from './actions';
+import { checkMedia, checkNextMedia, setChannel, setShow } from './actions';
 import { initialState } from './reducer';
 
 const useStyles = makeStyles(theme => {
@@ -75,7 +75,7 @@ export function ViewerPage(props) {
 
   console.log("props ViewerPage", props)
 
-  const { media, channels, selectedChannel, onCheckMedia, onSetMedia, onSetChannel, selected, episode } = props
+  const { media, channels, selectedChannel, onCheckMedia, onSetMedia, onSetChannel, onSetShow, selected, episode } = props
 
   const [showMediaInfo, setMediaInfoView] = useState(false);
 
@@ -84,7 +84,7 @@ export function ViewerPage(props) {
   let mediaView = (<></>)
   if ('media' in selectedChannel) {
     mediaView = selectedChannel.media.map(med => (
-      <ListItem key={ med.imdbID } onClick={() => { onSetMedia(med);}} style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
+      <ListItem key={ med.imdbID } onClick={() => onSetShow(med) } style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
         <img src={med.Poster} style={{ height: '100%', maxWidth: '4em' }}/>
         <span>
           { med.Title }
@@ -96,7 +96,7 @@ export function ViewerPage(props) {
   let mediaInfoView = initialState.currentMedia === selected ? (<div>'No Media Loaded'</div>) :
     (<Grid container spacing={3} style={{ width: '100%' }}>
       <Grid container style={{ width: '100%', padding: '1em 2em' }}>
-        <h2 item style={{ margin: '.5em auto' }}>{selected.Title}</h2>
+        <h2 style={{ margin: '.5em auto' }}>{selected.Title}</h2>
         <a href={'https://www.imdb.com/title/' + selected.imdbID + '/'} target="_blank" style={{ margin: '0 auto .5em auto' }}><img src={selected.Poster}/></a>
         <Grid container>
           <Grid item style={{ margin: '1em 0', fontStyle: 'italic' }}>{selected.Plot}</Grid>
@@ -193,6 +193,7 @@ ViewerPage.propTypes = {
   onSetMedia: PropTypes.func,
   onSetChannel: PropTypes.func,
   onSelectLoadingMedia: PropTypes.func,
+  onSetShow: PropTypes.func,
   episode: PropTypes.string,
 };
 
@@ -207,7 +208,8 @@ const mapStateToProps = createStructuredSelector({
 export function mapDispatchToProps(dispatch) {
   return {
     onCheckMedia: () => dispatch(checkMedia()),
-    onSetMedia: (media) => dispatch(setMedia(media)),
+    onSetMedia: () => dispatch(checkNextMedia()),
+    onSetShow: (media) => dispatch(setShow(media)),
     onSetChannel: (channel) => dispatch(setChannel(channel)),
     dispatch,
   };

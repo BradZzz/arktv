@@ -410,9 +410,9 @@ CastWrapper.prototype.setMediaLoadingFlags = function (loadingMedia, onSelectLoa
 }
 
 CastWrapper.prototype.setNextChannelMedia = function () {
-  console.log("this.playerHandler.channel", this.playerHandler.channel)
-  var newMedia = this.playerHandler.channel.media[Math.floor(Math.random() * this.playerHandler.channel.media.length)];
-  this.playerHandler.onSetMedia(newMedia);
+//  console.log("this.playerHandler.channel", this.playerHandler.channel)
+//  var newMedia = this.playerHandler.channel.media[Math.floor(Math.random() * this.playerHandler.channel.media.length)];
+  this.playerHandler.onSetMedia();
 }
 
 

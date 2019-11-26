@@ -4,7 +4,7 @@
  *
  */
 
-import { PLAYER_AVAILABLE, PLAYER_SET, CHECK_MEDIA, UPDATE_MEDIA, UPDATE_CHANNELS, SET_SELECTED_MEDIA, SET_SELECTED_CHANNEL, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL, LOADING_MEDIA, SET_CURRENT_EPISODE } from './constants';
+import { SET_SHOW, SET_SKIP_REWIND, SET_SKIP_FORWARD, CHECK_NEXT_MEDIA, SET_MEDIA_PIN, SET_MEDIA_STAR, SET_MEDIA_ORDER, PLAYER_AVAILABLE, PLAYER_SET, CHECK_MEDIA, UPDATE_MEDIA, UPDATE_CHANNELS, SET_SELECTED_MEDIA, SET_SELECTED_CHANNEL, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL, LOADING_MEDIA, SET_CURRENT_EPISODE } from './constants';
 
 export function setMediaPlayerAvailable(playerAvailable) {
   return {
@@ -37,6 +37,12 @@ export function updateChannels(channels) {
   return {
     type: UPDATE_CHANNELS,
     channels,
+  };
+}
+
+export function checkNextMedia() {
+  return {
+    type: CHECK_NEXT_MEDIA
   };
 }
 
@@ -75,10 +81,52 @@ export function setLoadingMedia(loadingMedia) {
     loadingMedia
   };
 }
+
 export function setCurrentEpisode(episode) {
   return {
     type: SET_CURRENT_EPISODE,
     episode
   };
 }
+
+export function setMediaPin(pin) {
+  return {
+    type: SET_MEDIA_PIN,
+    pin
+  };
+}
+
+export function setMediaStar(star) {
+  return {
+    type: SET_MEDIA_STAR,
+    star
+  };
+}
+
+export function setMediaOrder(order) {
+  return {
+    type: SET_MEDIA_ORDER,
+    order
+  };
+}
+
+export function setSkipRewind() {
+  return {
+    type: SET_SKIP_REWIND
+  };
+}
+
+export function setSkipForward() {
+  return {
+    type: SET_SKIP_FORWARD
+  };
+}
+
+export function setShow(media) {
+  return {
+    type: SET_SHOW,
+    media
+  };
+}
+
 

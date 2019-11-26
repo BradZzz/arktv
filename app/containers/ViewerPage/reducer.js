@@ -6,7 +6,7 @@
 
 import produce from 'immer';
 
-import { PLAYER_AVAILABLE, PLAYER_SET, UPDATE_MEDIA, UPDATE_CHANNELS, SET_SELECTED_MEDIA, SET_SELECTED_CHANNEL, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL, LOADING_MEDIA, SET_CURRENT_EPISODE } from './constants';
+import { SET_MEDIA_PIN, SET_MEDIA_STAR, SET_MEDIA_ORDER, PLAYER_AVAILABLE, PLAYER_SET, UPDATE_MEDIA, UPDATE_CHANNELS, SET_SELECTED_MEDIA, SET_SELECTED_CHANNEL, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL, LOADING_MEDIA, SET_CURRENT_EPISODE } from './constants';
 
 export const initialState = {
   media: [],
@@ -18,6 +18,11 @@ export const initialState = {
   },
   currentChannel:{},
   player: {},
+  options: {
+    star: false,
+    pin: false,
+    order: false,
+  },
   signedURL: '',
   currentEpisode: '',
   loadingSigned: false,
@@ -59,6 +64,15 @@ const MediaReducer = (state = initialState, action) =>
         break;
       case SET_CURRENT_EPISODE:
         draft.episode = action.episode;
+        break;
+      case SET_MEDIA_PIN:
+        draft.options.pin = action.pin;
+        break;
+      case SET_MEDIA_STAR:
+        draft.options.star = action.star;
+        break;
+      case SET_MEDIA_ORDER:
+        draft.options.order = action.order;
         break;
     }
   });
