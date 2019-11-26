@@ -14,3 +14,4 @@ export const SET_SELECTED_CHANNEL = 'app/MediaViewer/SET_SELECTED_CHANNEL';
 export const SET_MEDIA_SIGNED_URL = 'app/MediaViewer/SET_MEDIA_SIGNED_URL';
 export const LOADING_SIGNED_URL = 'app/MediaViewer/LOADING_SIGNED_URL';
 export const LOADING_MEDIA = 'app/MediaViewer/LOADING_MEDIA';
+export const SET_CURRENT_EPISODE = 'app/MediaViewer/SET_CURRENT_EPISODE';

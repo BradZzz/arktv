@@ -555,7 +555,6 @@ CastPlayer.propTypes = {
 const mapStateToProps = createStructuredSelector({
   playerAvailable: makeSelectPlayerAvailable(),
   player: makeSelectPlayer(),
-  selected: makeSelectCurrentMedia(),
   url: makeSelectSignedUrl(),
   loadingMedia: makeSelectLoadingMedia(),
 })

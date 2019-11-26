@@ -1,6 +1,6 @@
 import { push } from 'connected-react-router';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { updateMedia, setMediaSignedUrl, updateChannels, setChannel } from '../containers/ViewerPage/actions';
+import { updateMedia, setMediaSignedUrl, updateChannels, setChannel, setCurrentEpisode } from '../containers/ViewerPage/actions';
 import { CHECK_MEDIA, SET_SELECTED_MEDIA } from '../containers/ViewerPage/constants';
 import { makeSelectMedia, makeSelectCurrentMedia, makeSelectChannels } from '../containers/ViewerPage/selectors';
 
@@ -36,6 +36,7 @@ export function* requestSignedURl() {
     console.log("currentMedia:", currentMedia)
 
     const episode = currentMedia.episodes[Math.floor(Math.random() * currentMedia.episodes.length)];
+    yield put(setCurrentEpisode(episode));
 
     const reqSuf = `signed_url?path=${episode}`
 

@@ -4,7 +4,7 @@
  *
  */
 
-import { PLAYER_AVAILABLE, PLAYER_SET, CHECK_MEDIA, UPDATE_MEDIA, UPDATE_CHANNELS, SET_SELECTED_MEDIA, SET_SELECTED_CHANNEL, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL, LOADING_MEDIA } from './constants';
+import { PLAYER_AVAILABLE, PLAYER_SET, CHECK_MEDIA, UPDATE_MEDIA, UPDATE_CHANNELS, SET_SELECTED_MEDIA, SET_SELECTED_CHANNEL, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL, LOADING_MEDIA, SET_CURRENT_EPISODE } from './constants';
 
 export function setMediaPlayerAvailable(playerAvailable) {
   return {
@@ -73,6 +73,12 @@ export function setLoadingMedia(loadingMedia) {
   return {
     type: LOADING_MEDIA,
     loadingMedia
+  };
+}
+export function setCurrentEpisode(episode) {
+  return {
+    type: SET_CURRENT_EPISODE,
+    episode
   };
 }
 

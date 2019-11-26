@@ -65,5 +65,10 @@ const makeSelectLoadingMedia = () =>
     mediaState => mediaState.loadingMedia,
   );
 
+const makeSelectEpisode = () =>
+  createSelector(
+    selectMedia,
+    mediaState => mediaState.episode,
+  );
 
-export { selectMedia, makeSelectMedia, makeSelectCurrentMedia, makeSelectChannels, makeSelectCurrentChannel, makeSelectSignedUrl, makeSelectLoadingSigned, makeSelectLoadingMedia, makeSelectPlayerAvailable, makeSelectPlayer };
+export { makeSelectEpisode, selectMedia, makeSelectMedia, makeSelectCurrentMedia, makeSelectChannels, makeSelectCurrentChannel, makeSelectSignedUrl, makeSelectLoadingSigned, makeSelectLoadingMedia, makeSelectPlayerAvailable, makeSelectPlayer };
