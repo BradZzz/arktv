@@ -85,15 +85,15 @@ export function ViewerPage(props) {
   if ('media' in selectedChannel) {
     mediaView = selectedChannel.media.map(med => (
       <ListItem key={ med.imdbID } onClick={() => onSetShow(med) } style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
-        <img src={med.Poster} style={{ height: '100%', maxWidth: '4em' }}/>
-        <span>
+        <img src={med.Poster} style={{ height: '100%', maxWidth: '4em', borderRadius: '1em', margin: '.4em', border: '1px solid' }}/>
+        <span style={{ marginLeft: '1em' }}>
           { med.Title }
         </span>
       </ListItem>
     ))
   }
 
-  let mediaInfoView = initialState.currentMedia === selected ? (<div>'No Media Loaded'</div>) :
+  let mediaInfoView = initialState.currentMedia === selected ? (<div style={{ margin: '1em auto', textAlign: 'center', fontWeight: 'bold' }}>No Media Loaded</div>) :
     (<Grid container spacing={3} style={{ width: '100%' }}>
       <Grid container style={{ width: '100%', padding: '1em 2em' }}>
         <h2 style={{ margin: '.5em auto' }}>{selected.Title}</h2>
@@ -152,7 +152,7 @@ export function ViewerPage(props) {
   return (
     <div>
       <Helmet>
-        <title>Viewer Page</title>
+        <title>ArkTv2</title>
         <meta
           name="description"
           content="Feature page of React.js Boilerplate application"
@@ -162,11 +162,11 @@ export function ViewerPage(props) {
         <FormattedMessage {...messages.header} />
       </H1>
       <div style={{ display: 'flex' }}>
-        <Paper style={{maxHeight: '42em', overflow: 'auto', width: '25%' }}>
+        <Paper style={{maxHeight: '42em', minHeight: '42em', overflow: 'auto', width: '25%', border: '1px solid' }}>
           <List>
           { channels.map(chan => (
             <ListItem key={ chan.name } onClick={() => onSetChannel(chan)} style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
-              <span>
+              <span style={{ marginLeft: '1em' }}>
                 { chan.name }
               </span>
             </ListItem>
@@ -174,8 +174,8 @@ export function ViewerPage(props) {
           </List>
         </Paper>
         <CastPlayer selected={selected} channel={selectedChannel} onSetMedia={onSetMedia} />
-        <Paper style={{ maxHeight: '42em', overflow: 'auto', width: '25em' }}>
-          <Fab onClick={() => setMediaInfoView(!showMediaInfo) }color="primary" aria-label="Add" className={classes.fab} style={{ position: 'absolute', zIndex: 1, right: '2%', top: '8%' }}>
+        <Paper style={{ maxHeight: '42em', minHeight: '42em', overflow: 'auto', width: '25em', border: '1px solid' }}>
+          <Fab onClick={() => setMediaInfoView(!showMediaInfo) }color="primary" aria-label="Add" className={classes.fab} style={{ position: 'absolute', zIndex: 1, right: '2%', top: '4%' }}>
             <CollectionsIcon />
           </Fab>
           { mediaToggleFloggle }

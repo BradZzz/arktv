@@ -51,17 +51,17 @@ const responseGoogle = (response) => {
   console.log(response);
 }
 
-ReactDOM.render(
-  <GoogleLogin
-    clientId="1095795417803-8qaafo9b88j3kt61csjsi9mnkrjf037o.apps.googleusercontent.com"
-    buttonText="Login"
-    onSuccess={responseGoogle}
-    onFailure={responseGoogle}
-    cookiePolicy={'single_host_origin'}
-    scope="profile email https://www.googleapis.com/auth/cloud-platform"
-  />,
-  document.getElementById('googleButton')
-);
+//ReactDOM.render(
+//  <GoogleLogin
+//    clientId="1095795417803-8qaafo9b88j3kt61csjsi9mnkrjf037o.apps.googleusercontent.com"
+//    buttonText="Login"
+//    onSuccess={responseGoogle}
+//    onFailure={responseGoogle}
+//    cookiePolicy={'single_host_origin'}
+//    scope="profile email https://www.googleapis.com/auth/cloud-platform"
+//  />,
+//  document.getElementById('googleButton')
+//);
 
 const render = messages => {
   ReactDOM.render(
