@@ -23,6 +23,7 @@ import playHover from './images/play-hover.png';
 import playPress from './images/play-press.png';
 
 import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
@@ -31,6 +32,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import CollectionsIcon from '@material-ui/icons/Collections';
 import Grid from '@material-ui/core/Grid';
+
+
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import TvIcon from '@material-ui/icons/Tv';
+import LocalMoviesIcon from '@material-ui/icons/LocalMovies';
+import ArtTrackIcon from '@material-ui/icons/ArtTrack';
+
 
 import { makeSelectCurrentMedia, makeSelectMedia, makeSelectChannels, makeSelectCurrentChannel, makeSelectEpisode } from './selectors';
 import { checkMedia, checkNextMedia, setChannel, setShow } from './actions';
@@ -77,7 +86,46 @@ export function ViewerPage(props) {
 
   const { media, channels, selectedChannel, onCheckMedia, onSetMedia, onSetChannel, onSetShow, selected, episode } = props
 
+  const [showChannelChanger, setChannelChangerView] = useState(true);
+  const [showChannelInfo, setChannelView] = useState(true);
+  const [showMediaList, setMediaListView] = useState(false);
   const [showMediaInfo, setMediaInfoView] = useState(false);
+
+
+  const buttonMeta = {
+    back: {
+      icon: (<NavigateBeforeIcon/>),
+      onClick: () => {
+        setChannelView(false)
+        setMediaListView(false);
+        setMediaInfoView(false);
+      }
+    },
+    channels: {
+      icon: (<TvIcon/>),
+      onClick: () => {
+        setChannelView(true)
+        setMediaListView(false);
+        setMediaInfoView(false);
+      }
+    },
+    media: {
+      icon: (<LocalMoviesIcon/>),
+      onClick: () => {
+        setChannelView(false)
+        setMediaListView(true);
+        setMediaInfoView(false);
+      }
+    },
+    media_info: {
+      icon: (<ArtTrackIcon/>),
+      onClick: () => {
+        setChannelView(false)
+        setMediaListView(false);
+        setMediaInfoView(true);
+      }
+    },
+  }
 
   onCheckMedia()
 
@@ -91,7 +139,20 @@ export function ViewerPage(props) {
         </span>
       </ListItem>
     ))
+    mediaView = (<List>{mediaView}</List>)
   }
+
+  let channelView = (
+    <List>
+      { channels.map(chan => (
+        <ListItem key={ chan.name } onClick={() => onSetChannel(chan)} style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
+          <span style={{ marginLeft: '1em' }}>
+            { chan.name }
+          </span>
+        </ListItem>
+      )) }
+    </List>
+  )
 
   let mediaInfoView = initialState.currentMedia === selected ? (<div style={{ margin: '1em auto', textAlign: 'center', fontWeight: 'bold' }}>No Media Loaded</div>) :
     (<Grid container spacing={3} style={{ width: '100%' }}>
@@ -137,17 +198,23 @@ export function ViewerPage(props) {
       </Grid>
     </Grid>)
 
-  let mediaToggleFloggle = showMediaInfo ?
-    (
-      <div style={{ width: '100%' }}>
-        { mediaInfoView }
-      </div>
-    )
-  : (
-      <List>
-        { mediaView }
-      </List>
-    )
+  let mediaToggleFloggle = (<></>)
+  if (showChannelInfo) {
+    mediaToggleFloggle = channelView
+  } else if (showMediaList) {
+    mediaToggleFloggle = mediaView
+  } else if (showMediaInfo) {
+    mediaToggleFloggle = mediaInfoView
+  }
+
+  let buttonNav = (<Grid item>
+                     <ButtonGroup size="small" aria-label="small outlined button group" style={{ display: 'flex', height: '3em' }}>
+                       <Button style={{ flex: 1 }} onClick={buttonMeta.back.onClick}>{ buttonMeta.back.icon }</Button>
+                       <Button style={{ flex: 1 }} onClick={buttonMeta.channels.onClick}>{ buttonMeta.channels.icon }</Button>
+                       <Button style={{ flex: 1 }} onClick={buttonMeta.media.onClick}>{ buttonMeta.media.icon }</Button>
+                       <Button style={{ flex: 1 }} onClick={buttonMeta.media_info.onClick}>{ buttonMeta.media_info.icon }</Button>
+                     </ButtonGroup>
+                   </Grid>)
 
   return (
     <div>
@@ -163,23 +230,10 @@ export function ViewerPage(props) {
       </H1>
       <div style={{ display: 'flex' }}>
         <Paper style={{maxHeight: '42em', minHeight: '42em', overflow: 'auto', width: '25%', border: '1px solid' }}>
-          <List>
-          { channels.map(chan => (
-            <ListItem key={ chan.name } onClick={() => onSetChannel(chan)} style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
-              <span style={{ marginLeft: '1em' }}>
-                { chan.name }
-              </span>
-            </ListItem>
-          )) }
-          </List>
-        </Paper>
-        <CastPlayer selected={selected} channel={selectedChannel} onSetMedia={onSetMedia} />
-        <Paper style={{ maxHeight: '42em', minHeight: '42em', overflow: 'auto', width: '25em', border: '1px solid' }}>
-          <Fab onClick={() => setMediaInfoView(!showMediaInfo) }color="primary" aria-label="Add" className={classes.fab} style={{ position: 'absolute', zIndex: 1, right: '2%', top: '4%' }}>
-            <CollectionsIcon />
-          </Fab>
+          { buttonNav }
           { mediaToggleFloggle }
         </Paper>
+        <CastPlayer selected={selected} channel={selectedChannel} onSetMedia={onSetMedia} />
       </div>
     </div>
   )

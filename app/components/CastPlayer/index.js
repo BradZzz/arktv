@@ -496,9 +496,9 @@ function CastPlayer(props) {
   }
 
   return (
-    <div style={{ width: '50%' }}>
+    <div style={{ width: '75%' }}>
       <LocalPlayer channel={channel} onSetMedia={onSetMedia} thumb={curMedia.thumb} src={curMedia.url} setLocalPlayerRef={setLocalPlayerRef} isLocal={isLocalPlayer}/>
-      <div className={classes.mediaWrap} style={{ border: '.5em solid red' }}>
+      <div className={classes.mediaWrap} style={{ border: '.5em solid red', width: '100%' }}>
         <div style={{ margin: '.2em', padding: '0 .8em' }}>
           <Slider
             defaultValue={0}
