@@ -16,17 +16,19 @@ import PinDropIcon from '@material-ui/icons/PinDrop';
 import FastForwardIcon from '@material-ui/icons/FastForward';
 import FastRewindIcon from '@material-ui/icons/FastRewind';
 
+import { makeSelectLocation } from '../../containers/App/selectors';
 import { makeSelectOptionsPin, makeSelectOptionsStar, makeSelectOptionsOrder } from '../../containers/ViewerPage/selectors';
 import { setMediaPin, setMediaStar, setMediaOrder, setSkipRewind, setSkipForward } from '../../containers/ViewerPage/actions';
 
 function Footer(props) {
-  const { pin, star, order, onSetPin, onSetStar, onSetOrder, onSkipRewind, onSkipForward } = props
+  const { pin, star, order, onSetPin, onSetStar, onSetOrder, onSkipRewind, onSkipForward, location } = props
+  console.log('Footer makeSelectLocation', location)
   return (
     <Wrapper style={{ padding: '1em 0' }}>
       <div style={{ width: '50%' }}>
         <Header/>
       </div>
-      <div style={{ width: '50%' }}>
+      <div style={{ width: '50%', display: location.pathname === '/viewer' ? 'block' : 'none' }}>
         <div style={{ margin: '0 auto', width: '35em' }}>
           <Fab onClick={() => onSkipRewind()} style={{ margin: '0 2em' }} color="primary">
             <FastRewindIcon />
@@ -53,6 +55,7 @@ const mapStateToProps = createStructuredSelector({
   pin: makeSelectOptionsPin(),
   star: makeSelectOptionsStar(),
   order: makeSelectOptionsOrder(),
+  location: makeSelectLocation(),
 })
 
 export function mapDispatchToProps(dispatch) {

@@ -10,6 +10,6 @@ export const scope = 'boilerplate.containers.ViewerPage';
 export default defineMessages({
   header: {
     id: `${scope}.header`,
-    defaultMessage: 'ArkTv2',
+    defaultMessage: 'ILoveMyWifeSoMuchBecauseOfHowBeautifulSheIs',
   },
 });

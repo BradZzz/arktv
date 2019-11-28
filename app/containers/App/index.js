@@ -28,7 +28,12 @@ const AppWrapper = styled.div`
   flex-direction: column;
 `;
 
-export default function App() {
+export default function App(props) {
+
+  const {location} = props
+
+  console.log('App', props)
+
   return (
     <AppWrapper>
       <Helmet
@@ -43,7 +48,7 @@ export default function App() {
         <Route path="/features" component={FeaturePage} />
         <Route path="" component={NotFoundPage} />
       </Switch>
-      <Footer />
+      <Footer/>
       <GlobalStyle />
     </AppWrapper>
   );
