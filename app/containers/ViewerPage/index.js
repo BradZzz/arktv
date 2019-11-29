@@ -132,7 +132,7 @@ export function ViewerPage(props) {
   let mediaView = (<></>)
   if ('media' in selectedChannel) {
     mediaView = selectedChannel.media.map(med => (
-      <ListItem key={ med.imdbID } onClick={() => onSetShow(med) } style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
+      <ListItem key={ med.imdbID } onClick={() => { onSetShow(med); buttonMeta.media_info.onClick(); }} style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
         <img src={med.Poster} style={{ height: '100%', maxWidth: '4em', borderRadius: '1em', margin: '.4em', border: '1px solid' }}/>
         <span style={{ marginLeft: '1em' }}>
           { med.Title }
@@ -145,7 +145,7 @@ export function ViewerPage(props) {
   let channelView = (
     <List>
       { channels.map(chan => (
-        <ListItem key={ chan.name } onClick={() => onSetChannel(chan)} style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
+        <ListItem key={ chan.name } onClick={() => { onSetChannel(chan); buttonMeta.media.onClick(); }} style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
           <span style={{ marginLeft: '1em' }}>
             { chan.name }
           </span>

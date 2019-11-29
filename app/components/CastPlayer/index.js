@@ -213,6 +213,7 @@ CastWrapper.prototype.setupRemotePlayer = function() {
       console.log('duration', this.remotePlayer.duration);
       if (event.value !== 0) {
         this.playerHandler.lastPosRecorded = event.value
+        this.playerHandler.onSelectLoadingMedia(false)
       }
       if (this.remotePlayer.duration > 0){
         const seekPercent = parseInt((event.value / this.remotePlayer.duration) * 100)
@@ -257,10 +258,11 @@ CastWrapper.prototype.setupRemotePlayer = function() {
       console.log('IS_MEDIA_LOADED_CHANGED', event, this.playerHandler);
       if (!event.value && !this.playerHandler.loadingMedia) {
         console.log('Media Has Ended!');
+        this.playerHandler.lastPosRecorded = 0
         this.setNextChannelMedia()
       } else {
         console.log('Media Has Loaded!');
-        this.playerHandler.onSelectLoadingMedia(false)
+//        this.playerHandler.onSelectLoadingMedia(false)
       }
     }.bind(this)
   )
