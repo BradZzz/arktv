@@ -9,6 +9,7 @@ import history from 'utils/history';
 import globalReducer from 'containers/App/reducer';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
 import mediaReducer from 'containers/ViewerPage/reducer';
+import loginReducer from 'containers/LoginPage/reducer';
 
 /**
  * Merges the main reducer with the router state and dynamically injected reducers
@@ -19,6 +20,7 @@ export default function createReducer(injectedReducers = {}) {
     language: languageProviderReducer,
     media: mediaReducer,
     router: connectRouter(history),
+    login: loginReducer,
     ...injectedReducers,
   });
 

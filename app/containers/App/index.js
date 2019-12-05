@@ -6,19 +6,25 @@
  * contain code that should be seen on all pages. (e.g. navigation bar)
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 
 import HomePage from 'containers/HomePage/Loadable';
 import ViewerPage from 'containers/ViewerPage/Loadable';
 import FeaturePage from 'containers/FeaturePage/Loadable';
+import LoginPage from 'containers/LoginPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 
 import GlobalStyle from '../../global-styles';
+import { makeSelectLoginInfo } from '../LoginPage/selectors';
 
 const AppWrapper = styled.div`
   margin: 0 auto;
@@ -28,11 +34,21 @@ const AppWrapper = styled.div`
   flex-direction: column;
 `;
 
-export default function App(props) {
+function App(props) {
 
-  const {location} = props
+  const {location, login} = props
 
   console.log('App', props)
+
+  const PrivateRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={(props) => (
+      (Object.entries(login).length === 0 && login.constructor === Object)
+        ? <Redirect to={{
+                      pathname: '/login',
+                      state: { from: props.location }
+                    }} /> : <Component {...props} />
+    )} />
+  )
 
   return (
     <AppWrapper>
@@ -43,13 +59,39 @@ export default function App(props) {
         <meta name="description" content="A React.js Boilerplate application" />
       </Helmet>
       <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route path="/viewer" component={ViewerPage} />
-        <Route path="/features" component={FeaturePage} />
+        <PrivateRoute exact path="/" component={HomePage} />
+        <PrivateRoute path="/viewer" component={ViewerPage} />
+        <PrivateRoute path="/features" component={FeaturePage} />
+        <Route path="/login" component={LoginPage} />
         <Route path="" component={NotFoundPage} />
       </Switch>
-      <Footer/>
+      { (Object.entries(login).length === 0 && login.constructor === Object) ? <></> : <Footer/> }
       <GlobalStyle />
     </AppWrapper>
   );
 }
+
+App.propTypes = {
+  login: PropTypes.object,
+};
+
+const mapStateToProps = createStructuredSelector({
+  login: makeSelectLoginInfo(),
+});
+
+export function mapDispatchToProps(dispatch) {
+  return {
+
+  };
+}
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(
+  withConnect,
+  memo,
+)(App);
+

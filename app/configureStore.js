@@ -7,6 +7,9 @@ import { routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
 import sagas from './sagas/'
 import createReducer from './reducers';
+import throttle from 'lodash.throttle';
+
+import { saveState } from './store/localStorage';
 
 export default function configureStore(initialState = {}, history) {
   let composeEnhancers = compose;
@@ -43,6 +46,12 @@ export default function configureStore(initialState = {}, history) {
     createReducer(),
     initialState,
     composeEnhancers(...enhancers),
+  );
+
+  store.subscribe(
+    throttle(() => {
+      saveState(store.getState());
+    }, 1000)
   );
 
   // Extensions

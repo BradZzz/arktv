@@ -48,7 +48,6 @@ const MediaReducer = (state = initialState, action) =>
         break;
       case SET_SELECTED_MEDIA:
         draft.currentMedia = action.currentMedia;
-        draft.loadingMedia = true
         break;
       case SET_SELECTED_CHANNEL:
         draft.currentChannel = action.currentChannel;

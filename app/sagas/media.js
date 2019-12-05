@@ -1,8 +1,9 @@
 import { push } from 'connected-react-router';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { setMedia, updateMedia, setMediaSignedUrl, updateChannels, setChannel, setCurrentEpisode } from '../containers/ViewerPage/actions';
+import { setMedia, updateMedia, setMediaSignedUrl, updateChannels, setChannel, setCurrentEpisode, setLoadingMedia } from '../containers/ViewerPage/actions';
 import { CHECK_MEDIA, CHECK_NEXT_MEDIA, SET_SKIP_FORWARD, SET_SKIP_REWIND, SET_SHOW } from '../containers/ViewerPage/constants';
-import { makeSelectMedia, makeSelectCurrentMedia, makeSelectChannels, makeSelectEpisode, makeSelectOptionsOrder, makeSelectOptionsStar, makeSelectOptionsPin, makeSelectCurrentChannel } from '../containers/ViewerPage/selectors';
+import { makeSelectMedia, makeSelectCurrentMedia, makeSelectChannels, makeSelectEpisode, makeSelectOptionsOrder,
+  makeSelectOptionsStar, makeSelectOptionsPin, makeSelectCurrentChannel, makeSelectLoadingMedia } from '../containers/ViewerPage/selectors';
 
 import createChannels from '../utils/mediaUtils';
 
@@ -41,6 +42,12 @@ export function* requestSignedURl(nxtEpisode) {
 }
 
 export function* processMediaRequest(fastForward, currentMedia) {
+  const loadingMedia = yield select(makeSelectLoadingMedia())
+
+  if (loadingMedia)
+    return
+
+  yield put(setLoadingMedia(true));
   const order = yield select(makeSelectOptionsOrder());
   const star = yield select(makeSelectOptionsStar());
 
@@ -96,10 +103,14 @@ export function* rollMedia() {
 }
 
 export function* rewindMedia() {
+  // Refresh the loading flag
+  yield put(setLoadingMedia(false));
   yield processMediaRequest(false, yield rollMedia())
 }
 
 export function* findNextMedia() {
+  // Refresh the loading flag
+  yield put(setLoadingMedia(false));
   yield processMediaRequest(true, yield rollMedia())
 }
 

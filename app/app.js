@@ -11,7 +11,7 @@ import '@babel/polyfill';
 // Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';
-import GoogleLogin from 'react-google-login';
+//import GoogleLogin from 'react-google-login';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import FontFaceObserver from 'fontfaceobserver';
@@ -29,6 +29,7 @@ import '!file-loader?name=[name].[ext]!./images/favicon.ico';
 import 'file-loader?name=.htaccess!./.htaccess'; // eslint-disable-line import/extensions
 
 import configureStore from './configureStore';
+import { loadState } from './store/localStorage';
 
 // Import i18n messages
 import { translationMessages } from './i18n';
@@ -43,13 +44,18 @@ openSansObserver.load().then(() => {
 });
 
 // Create redux store with history
-const initialState = {};
+const initialState = loadState();
 const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('app');
 
-const responseGoogle = (response) => {
-  console.log(response);
-}
+//const responseGoogle = (response) => {
+//  try {
+//    console.log(response);
+//    localStorage.setItem('login', JSON.stringify(response.profileObj));
+//  } catch (err) {
+//    console.log(err)
+//  }
+//}
 
 //ReactDOM.render(
 //  <GoogleLogin
