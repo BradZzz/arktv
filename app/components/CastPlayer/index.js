@@ -340,6 +340,7 @@ CastWrapper.prototype.setupRemotePlayer = function() {
     let request = new chrome.cast.media.LoadRequest(mediaInfo);
     if (this.playerHandler.localPlayer && this.playerHandler.localPlayer.getState().player.hasStarted) {
       request.currentTime = this.playerHandler.localPlayer.getState().player.currentTime
+      this.playerHandler.localPlayer.seek(0)
     }
     request.autoplay = true;
 
