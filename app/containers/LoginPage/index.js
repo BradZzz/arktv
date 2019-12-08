@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import GoogleLogin from 'react-google-login';
+import { push } from 'connected-react-router'
 
 import messages from './messages';
 import reducer from './reducer';
@@ -21,7 +22,11 @@ const key = 'login';
 
 export function LoginPage(props) {
 
-  const { onUpdateLogin } = props
+  const { onUpdateLogin, redirectLogin, login } = props
+
+  if (!(Object.entries(login).length === 0 && login.constructor === Object)) {
+    redirectLogin('/')
+  }
 
   const responseGoogle = (response) => {
     console.log('responseGoogle',response)
@@ -49,6 +54,7 @@ export function LoginPage(props) {
 
 LoginPage.propTypes = {
   onUpdateLogin: PropTypes.func,
+  redirectLogin: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -58,6 +64,7 @@ const mapStateToProps = createStructuredSelector({
 export function mapDispatchToProps(dispatch) {
   return {
     onUpdateLogin: (creds) => dispatch(updateLogin(creds)),
+    redirectLogin: (path) => dispatch(push(path)),
   };
 }
 

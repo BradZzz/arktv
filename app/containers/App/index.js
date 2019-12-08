@@ -30,7 +30,6 @@ const AppWrapper = styled.div`
   margin: 0 auto;
   display: flex;
   min-height: 100%;
-  padding: 0 16px;
   flex-direction: column;
 `;
 
@@ -58,13 +57,15 @@ function App(props) {
       >
         <meta name="description" content="A React.js Boilerplate application" />
       </Helmet>
-      <Switch>
-        <PrivateRoute exact path="/" component={HomePage} />
-        <PrivateRoute path="/viewer" component={ViewerPage} />
-        <PrivateRoute path="/features" component={FeaturePage} />
-        <Route path="/login" component={LoginPage} />
-        <Route path="" component={NotFoundPage} />
-      </Switch>
+      <div style={{ padding: '2em' }}>
+        <Switch>
+          <PrivateRoute exact path="/" component={HomePage} />
+          <PrivateRoute path="/viewer" component={ViewerPage} />
+          <PrivateRoute path="/features" component={FeaturePage} />
+          <Route path="/login" component={() => <LoginPage login={login} />}/>
+          <Route path="" component={NotFoundPage} />
+        </Switch>
+      </div>
       { (Object.entries(login).length === 0 && login.constructor === Object) ? <></> : <Footer/> }
       <GlobalStyle />
     </AppWrapper>

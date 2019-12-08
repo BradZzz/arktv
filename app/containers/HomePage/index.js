@@ -61,7 +61,7 @@ export function HomePage(props) {
         <FormattedMessage {...messages.header} />
       </H1>
       <Grid container direction="row">
-        <Grid container style={{ width: '40%', overflow: 'auto', maxHeight: '48em', margin: '0 5%'  }}>
+        <Grid container style={{ width: '40%', overflow: 'auto', maxHeight: '80vh', margin: '0 5%'  }}>
           { tv.slice(0,10).map(med => (
             <Grid container direction="row" key={med.imdbID} style={{ height: "20em", border: '1px solid gray', margin: '.5em' }}>
               <Grid item style={{ width: '40%', height: '100%', padding: '2em' }}>
@@ -88,7 +88,7 @@ export function HomePage(props) {
             </Grid>
           )) }
         </Grid>
-        <Grid container style={{ width: '40%', overflow: 'auto', maxHeight: '48em', margin: '0 5%'  }}>
+        <Grid container style={{ width: '40%', overflow: 'auto', maxHeight: '80vh', margin: '0 5%'  }}>
           { movies.slice(0,10).map(med => (
             <Grid container direction="row" key={med.imdbID} style={{ height: "20em", border: '1px solid gray', margin: '.5em' }}>
               <Grid item style={{ width: '40%', height: '100%', padding: '2em' }}>

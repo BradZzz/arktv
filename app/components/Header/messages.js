@@ -10,7 +10,7 @@ export const scope = 'boilerplate.components.Header';
 export default defineMessages({
   home: {
     id: `${scope}.home`,
-    defaultMessage: 'Home',
+    defaultMessage: 'Updates',
   },
   viewer: {
     id: `${scope}.viewer`,
@@ -18,6 +18,6 @@ export default defineMessages({
   },
   features: {
     id: `${scope}.features`,
-    defaultMessage: 'Features',
+    defaultMessage: 'Settings',
   },
 });

@@ -13,10 +13,24 @@ export default function createChannels(medias) {
     { name : "Movie", filter: (media) => media.episodes.length === 1, media: [] },
     { name : "TV", filter: (media) => media.episodes.length > 1, media: [] },
     { name : "Drulz", filter: (media) => drulz.includes(media.imdbID), media: [] },
-    { name : "Riar", filter: (media) => fard.includes(media.imdbID), media: [] }
+    { name : "Riar", filter: (media) => fard.includes(media.imdbID), media: [] },
+    { name : "Awesome Sauce", filter: (media) => parseFloat(media.imdbRating) > 7.2, media: [] },
+    { name : "Bottom of the Barrel", filter: (media) => parseFloat(media.imdbRating) <= 4.8, media: [] },
   ]
 
-//  const genres = []
+  const genres = []
+  for (var media of medias) {
+    for (var genre of media.Genre.split(', ')) {
+      if (!(genres.indexOf(genre) > -1)) {
+        genres.push(genre)
+      }
+    }
+  }
+
+  for (var genre of genres) {
+    channels.push({ name : "Genre: " + genre, filter: (media) => media.Genre.includes(genre), media: [] })
+  }
+
   for (var media of medias) {
     for (var channel of channels) {
       if (channel.filter(media)) {

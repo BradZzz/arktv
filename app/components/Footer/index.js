@@ -186,8 +186,8 @@ function Footer(props) {
   }
 
   return (
-    <div style={{ padding: '1em 0', padding: '1em 0px', position: 'fixed', width: '100%', bottom: 0, height: showChannelChanger ? '60vh' : '5em', background: 'white' }}>
-      <div style={{ width: '100%', paddingRight: '2em' }}>
+    <div style={{ padding: '1em 0', position: 'fixed', width: '100%', bottom: 0, height: showChannelChanger ? '60vh' : '5em', background: 'white' }}>
+      <div style={{ width: '100%', padding: '0 1em' }}>
         <Header showingNav={ showChannelChanger } onCloseClick={() => { setChannelChangerView(false) }} onOpenClick={() => { setChannelChangerView(true) }}/>
         { showChannelChanger && location.pathname === '/viewer' ? (<Grid item>
                                   { showMediaButtons ? buttonNavMedia : buttonNavInfo }
