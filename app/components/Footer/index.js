@@ -39,7 +39,19 @@ import TvIcon from '@material-ui/icons/Tv';
 import LocalMoviesIcon from '@material-ui/icons/LocalMovies';
 import ArtTrackIcon from '@material-ui/icons/ArtTrack';
 
+const useStyles = makeStyles(theme => {
+  return {
+    list: {
+      opacity: .75,
+      '&:hover': {
+        opacity: 1,
+      },
+    },
+  };
+});
+
 function Footer(props) {
+  const classes = useStyles();
   const { pin, star, order, onSetPin, onSetStar, onSetOrder, onSkipRewind, onSkipForward, location,
     media, channels, selectedChannel, onCheckMedia, onSetMedia, onSetChannel, onSetShow, selected, episode } = props
 
@@ -107,7 +119,7 @@ function Footer(props) {
   let mediaView = (<></>)
   if ('media' in selectedChannel) {
     mediaView = selectedChannel.media.map(med => (
-      <ListItem key={ med.imdbID } onClick={() => { onSetShow(med); buttonMeta.media_info.onClick(); }} style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
+      <ListItem className={classes.list} key={ med.imdbID } onClick={() => { onSetShow(med); buttonMeta.media_info.onClick(); }} style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
         <img src={med.Poster} style={{ height: '100%', maxWidth: '4em', borderRadius: '1em', margin: '.4em', border: '1px solid' }}/>
         <span style={{ marginLeft: '1em' }}>
           { med.Title }
@@ -120,7 +132,7 @@ function Footer(props) {
   let channelView = (
     <List style={{ maxHeight: '50vh', overflow: 'auto', padding: '1em' }}>
       { channels.map(chan => (
-        <ListItem key={ chan.name } onClick={() => { onSetChannel(chan); buttonMeta.media.onClick(); }} style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
+        <ListItem className={classes.list} key={ chan.name } onClick={() => { onSetChannel(chan); buttonMeta.media.onClick(); }} style={{ height: '5em', width: '92%', display: 'flex', background: 'antiquewhite', border: '.2em solid black', margin: '1em', padding: '.2em', cursor: 'pointer' }}>
           <span style={{ marginLeft: '1em' }}>
             { chan.name }
           </span>

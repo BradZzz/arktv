@@ -28,7 +28,6 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 import ListItem from '@material-ui/core/ListItem';
-import { makeStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import CollectionsIcon from '@material-ui/icons/Collections';
 import Grid from '@material-ui/core/Grid';
@@ -45,42 +44,42 @@ import { makeSelectCurrentMedia, makeSelectMedia, makeSelectChannels, makeSelect
 import { checkMedia, checkNextMedia, setChannel, setShow } from './actions';
 import { initialState } from './reducer';
 
-const useStyles = makeStyles(theme => {
-  return {
-    fab: {
-      margin: theme.spacing(1),
-    },
-    mediaWrap: {
-      height: '4em',
-      background: '#000000',
-    },
-    play: {
-      height: '3em',
-      margin: '1em',
-      backgroundImage: 'url("' + play + '")',
-      '&:hover': {
-        backgroundImage: 'url("' + playHover + '")',
-      },
-      '&:press': {
-        backgroundImage: 'url("' + playPress + '")',
-      },
-    },
-    pause: {
-      height: '3em',
-      margin: '1em',
-      backgroundImage: 'url("' + pause + '")',
-      '&:hover': {
-        backgroundImage: 'url("' + pauseHover + '")',
-      },
-      '&:press': {
-        backgroundImage: 'url("' + pausePress + '")',
-      },
-    },
-  };
-});
+//const useStyles = makeStyles(theme => {
+//  return {
+//    fab: {
+//      margin: theme.spacing(1),
+//    },
+//    mediaWrap: {
+//      height: '4em',
+//      background: '#000000',
+//    },
+//    play: {
+//      height: '3em',
+//      margin: '1em',
+//      backgroundImage: 'url("' + play + '")',
+//      '&:hover': {
+//        backgroundImage: 'url("' + playHover + '")',
+//      },
+//      '&:press': {
+//        backgroundImage: 'url("' + playPress + '")',
+//      },
+//    },
+//    pause: {
+//      height: '3em',
+//      margin: '1em',
+//      backgroundImage: 'url("' + pause + '")',
+//      '&:hover': {
+//        backgroundImage: 'url("' + pauseHover + '")',
+//      },
+//      '&:press': {
+//        backgroundImage: 'url("' + pausePress + '")',
+//      },
+//    },
+//  };
+//});
 
 export function ViewerPage(props) {
-  const classes = useStyles();
+//  const classes = useStyles();
 
   console.log("props ViewerPage", props)
 

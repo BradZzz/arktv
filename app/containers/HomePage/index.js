@@ -28,12 +28,25 @@ import ListItem from '@material-ui/core/ListItem';
 import StarIcon from '@material-ui/icons/Star';
 
 import { makeSelectMedia } from '../ViewerPage/selectors';
+import { makeStyles } from '@material-ui/core/styles';
 import { checkMedia, setShow, setMediaPin, setMediaStar, setLoadingMedia } from '../ViewerPage/actions';
 import Grid from '@material-ui/core/Grid';
 
 const key = 'home';
 
+const useStyles = makeStyles(theme => {
+  return {
+    img: {
+      opacity: .85,
+      '&:hover': {
+        opacity: 1,
+      },
+    },
+  };
+});
+
 export function HomePage(props) {
+  const classes = useStyles();
   const { media, onCheckMedia, onSetShow, onSetPin, onSetStar, onSetLoadingMedia } = props
 
   onCheckMedia()
@@ -65,7 +78,7 @@ export function HomePage(props) {
           { tv.slice(0,10).map(med => (
             <Grid container direction="row" key={med.imdbID} style={{ height: "20em", border: '1px solid gray', margin: '.5em' }}>
               <Grid item style={{ width: '40%', height: '100%', padding: '2em' }}>
-                <img src={med.Poster} style={{ height: '100%', maxWidth: '11em', cursor: 'pointer' }} onClick={() => { onSetPin(true); onSetStar(true); onSetLoadingMedia(false); onSetShow(med); }}/>
+                <img className={classes.img} src={med.Poster} style={{ height: '100%', maxWidth: '11em', cursor: 'pointer' }} onClick={() => { onSetPin(true); onSetStar(true); onSetLoadingMedia(false); onSetShow(med); }}/>
               </Grid>
               <Grid item style={{ width: '55%', padding: '2em 0' }}>
                 <Grid container direction="row">
@@ -92,7 +105,7 @@ export function HomePage(props) {
           { movies.slice(0,10).map(med => (
             <Grid container direction="row" key={med.imdbID} style={{ height: "20em", border: '1px solid gray', margin: '.5em' }}>
               <Grid item style={{ width: '40%', height: '100%', padding: '2em' }}>
-                <img src={med.Poster} style={{ height: '100%', maxWidth: '11em', cursor: 'pointer' }} onClick={() => { onSetLoadingMedia(false); onSetShow(med); }}/>
+                <img className={classes.img} src={med.Poster} style={{ height: '100%', maxWidth: '11em', cursor: 'pointer' }} onClick={() => { onSetLoadingMedia(false); onSetShow(med); }}/>
               </Grid>
               <Grid item style={{ width: '55%', padding: '2em 0' }}>
                 <Grid container direction="row">
