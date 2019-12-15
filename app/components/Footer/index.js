@@ -43,9 +43,6 @@ function Footer(props) {
   const { pin, star, order, onSetPin, onSetStar, onSetOrder, onSkipRewind, onSkipForward, location,
     media, channels, selectedChannel, onCheckMedia, onSetMedia, onSetChannel, onSetShow, selected, episode } = props
 
-  console.log('Footer makeSelectLocation', location)
-  console.log('Footer props', props)
-
   const [showChannelChanger, setChannelChangerView] = useState(true);
   const [showMediaButtons, setMediaButtonView] = useState(false);
   const [showChannelInfo, setChannelView] = useState(true);

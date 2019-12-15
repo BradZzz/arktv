@@ -35,17 +35,29 @@ export function* requestSignedURl(nxtEpisode) {
     yield put(setCurrentEpisode(nxtEpisode));
     const reqSuf = `signed_url?path=${nxtEpisode}`
     const resp = yield call(mediaApi.get, reqSuf);
+    console.log('resp.data', resp.data)
     yield put(setMediaSignedUrl(resp.data));
+
+    if (!window.location.href.includes('/viewer')) {
+      setTimeout(() => {window.location.href = '/viewer';}, 1500);
+    }
   } catch (err) {
     console.log('err', err);
   }
 }
 
 export function* processMediaRequest(fastForward, currentMedia) {
+
+  console.log('processMediaRequest', currentMedia)
+
   const loadingMedia = yield select(makeSelectLoadingMedia())
+
+  console.log('loadingMedia', loadingMedia)
 
   if (loadingMedia)
     return
+
+  console.log('processMediaRequest 2')
 
   yield put(setLoadingMedia(true));
   const order = yield select(makeSelectOptionsOrder());
@@ -75,6 +87,8 @@ export function* processMediaRequest(fastForward, currentMedia) {
       nxtEpisode = currentMedia.episodes[idx]
     }
   }
+
+  console.log("processMediaRequest nxtEpisode", nxtEpisode)
 
   yield requestSignedURl(nxtEpisode)
 }

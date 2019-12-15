@@ -15,7 +15,7 @@ export default function createChannels(medias) {
     { name : "Drulz", filter: (media) => drulz.includes(media.imdbID), media: [] },
     { name : "Riar", filter: (media) => fard.includes(media.imdbID), media: [] },
     { name : "Awesome Sauce", filter: (media) => parseFloat(media.imdbRating) > 7.2, media: [] },
-    { name : "Bottom of the Barrel", filter: (media) => parseFloat(media.imdbRating) <= 4.8, media: [] },
+    { name : "Bottom of the Barrel", filter: (media) => parseFloat(media.imdbRating) <= 5.6, media: [] },
   ]
 
   const genres = []
@@ -28,13 +28,19 @@ export default function createChannels(medias) {
   }
 
   for (var genre of genres) {
-    channels.push({ name : "Genre: " + genre, filter: (media) => media.Genre.includes(genre), media: [] })
+    channels.push({ name : "Genre: " + genre, filter: (media, gnr) => media.Genre.includes(gnr), media: [] })
   }
 
   for (var media of medias) {
     for (var channel of channels) {
-      if (channel.filter(media)) {
-        channel.media.push(media)
+      if (channel.name.includes('Genre')) {
+        if (channel.filter(media, channel.name.split(': ')[1])) {
+          channel.media.push(media)
+        }
+      } else {
+        if (channel.filter(media)) {
+          channel.media.push(media)
+        }
       }
     }
   }
