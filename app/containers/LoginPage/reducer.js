@@ -22,11 +22,11 @@ const loginReducer = (state = initialState, action) =>
     switch (action.type) {
       case UPDATE_LOGIN:
         // Delete prefixed '@' from the github username
-        draft.loginInfo = action.loginInfo
+        draft.loginInfo = action.loginInfo;
         break;
       case LOADING:
         // Delete prefixed '@' from the github username
-        draft.loading = action.loading
+        draft.loading = action.loading;
         break;
     }
   });

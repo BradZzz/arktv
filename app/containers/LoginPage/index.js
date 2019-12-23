@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import GoogleLogin from 'react-google-login';
-import { push } from 'connected-react-router'
+import { push } from 'connected-react-router';
 
 import messages from './messages';
 import reducer from './reducer';
@@ -21,33 +21,32 @@ import { updateLogin } from './actions';
 const key = 'login';
 
 export function LoginPage(props) {
-
-  const { onUpdateLogin, redirectLogin, login } = props
+  const { onUpdateLogin, redirectLogin, login } = props;
 
   if (!(Object.entries(login).length === 0 && login.constructor === Object)) {
-    redirectLogin('/')
+    redirectLogin('/');
   }
 
-  const responseGoogle = (response) => {
-    console.log('responseGoogle',response)
+  const responseGoogle = response => {
+    console.log('responseGoogle', response);
     try {
-      console.log('responseGoogle.profileObj',response.profileObj)
-      onUpdateLogin(response.profileObj)
+      console.log('responseGoogle.profileObj', response.profileObj);
+      onUpdateLogin(response.profileObj);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   return (
     <div>
       <GoogleLogin
-          clientId="1095795417803-8qaafo9b88j3kt61csjsi9mnkrjf037o.apps.googleusercontent.com"
-          buttonText="Login"
-          onSuccess={responseGoogle}
-          onFailure={responseGoogle}
-          cookiePolicy={'single_host_origin'}
-          scope="profile email https://www.googleapis.com/auth/cloud-platform"
-        />
+        clientId="1095795417803-8qaafo9b88j3kt61csjsi9mnkrjf037o.apps.googleusercontent.com"
+        buttonText="Login"
+        onSuccess={responseGoogle}
+        onFailure={responseGoogle}
+        cookiePolicy="single_host_origin"
+        scope="profile email https://www.googleapis.com/auth/cloud-platform"
+      />
     </div>
   );
 }
@@ -57,14 +56,12 @@ LoginPage.propTypes = {
   redirectLogin: PropTypes.func,
 };
 
-const mapStateToProps = createStructuredSelector({
-
-});
+const mapStateToProps = createStructuredSelector({});
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onUpdateLogin: (creds) => dispatch(updateLogin(creds)),
-    redirectLogin: (path) => dispatch(push(path)),
+    onUpdateLogin: creds => dispatch(updateLogin(creds)),
+    redirectLogin: path => dispatch(push(path)),
   };
 }
 

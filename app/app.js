@@ -11,7 +11,7 @@ import '@babel/polyfill';
 // Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';
-//import GoogleLogin from 'react-google-login';
+// import GoogleLogin from 'react-google-login';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import FontFaceObserver from 'fontfaceobserver';
@@ -48,16 +48,16 @@ const initialState = loadState();
 const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('app');
 
-//const responseGoogle = (response) => {
+// const responseGoogle = (response) => {
 //  try {
 //    console.log(response);
 //    localStorage.setItem('login', JSON.stringify(response.profileObj));
 //  } catch (err) {
 //    console.log(err)
 //  }
-//}
+// }
 
-//ReactDOM.render(
+// ReactDOM.render(
 //  <GoogleLogin
 //    clientId="1095795417803-8qaafo9b88j3kt61csjsi9mnkrjf037o.apps.googleusercontent.com"
 //    buttonText="Login"
@@ -67,7 +67,7 @@ const MOUNT_NODE = document.getElementById('app');
 //    scope="profile email https://www.googleapis.com/auth/cloud-platform"
 //  />,
 //  document.getElementById('googleButton')
-//);
+// );
 
 const render = messages => {
   ReactDOM.render(

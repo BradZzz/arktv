@@ -15,6 +15,11 @@ import H1 from 'components/H1';
 
 import H2 from 'components/H2';
 import ReposList from 'components/ReposList';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import StarIcon from '@material-ui/icons/Star';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 import AtPrefix from './AtPrefix';
 import CenteredSection from './CenteredSection';
 import Form from './Form';
@@ -23,43 +28,49 @@ import Section from './Section';
 import messages from './messages';
 import reducer from './reducer';
 import saga from './saga';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import StarIcon from '@material-ui/icons/Star';
 
 import { makeSelectMedia } from '../ViewerPage/selectors';
-import { makeStyles } from '@material-ui/core/styles';
-import { checkMedia, setShow, setMediaPin, setMediaStar, setLoadingMedia } from '../ViewerPage/actions';
-import Grid from '@material-ui/core/Grid';
+import {
+  checkMedia,
+  setShow,
+  setMediaPin,
+  setMediaStar,
+  setLoadingMedia,
+} from '../ViewerPage/actions';
 
 const key = 'home';
 
-const useStyles = makeStyles(theme => {
-  return {
-    img: {
-      opacity: .85,
-      '&:hover': {
-        opacity: 1,
-      },
+const useStyles = makeStyles(theme => ({
+  img: {
+    opacity: 0.85,
+    '&:hover': {
+      opacity: 1,
     },
-  };
-});
+  },
+}));
 
 export function HomePage(props) {
   const classes = useStyles();
-  const { media, onCheckMedia, onSetShow, onSetPin, onSetStar, onSetLoadingMedia } = props
+  const {
+    media,
+    onCheckMedia,
+    onSetShow,
+    onSetPin,
+    onSetStar,
+    onSetLoadingMedia,
+  } = props;
 
-  onCheckMedia()
+  onCheckMedia();
 
-  const tv = media.filter(med => med.episodes.length > 1)
+  const tv = media.filter(med => med.episodes.length > 1);
   tv.sort(function(a, b) {
-      return b.created - a.created;
-  })
+    return b.created - a.created;
+  });
 
-  const movies = media.filter(med => med.episodes.length === 1)
+  const movies = media.filter(med => med.episodes.length === 1);
   movies.sort(function(a, b) {
-      return b.created - a.created;
-  })
+    return b.created - a.created;
+  });
 
   return (
     <article>
@@ -74,11 +85,45 @@ export function HomePage(props) {
         <FormattedMessage {...messages.header} />
       </H1>
       <Grid container direction="row">
-        <Grid container style={{ width: '40%', overflow: 'auto', maxHeight: '80vh', margin: '0 5%'  }}>
-          { tv.slice(0,10).map(med => (
-            <Grid container direction="row" key={med.imdbID} style={{ height: "20em", border: '1px solid gray', margin: '.5em' }}>
-              <Grid item style={{ width: '40%', height: '100%', padding: '2em' }}>
-                <img className={classes.img} src={med.Poster} style={{ height: '100%', maxWidth: '11em', cursor: 'pointer' }} onClick={() => { onSetPin(true); onSetStar(true); onSetLoadingMedia(false); onSetShow(med); }}/>
+        <Grid
+          container
+          style={{
+            width: '40%',
+            overflow: 'auto',
+            maxHeight: '80vh',
+            margin: '0 5%',
+          }}
+        >
+          {tv.slice(0, 10).map(med => (
+            <Grid
+              container
+              direction="row"
+              key={med.imdbID}
+              style={{
+                height: '20em',
+                border: '1px solid gray',
+                margin: '.5em',
+              }}
+            >
+              <Grid
+                item
+                style={{ width: '40%', height: '100%', padding: '2em' }}
+              >
+                <img
+                  className={classes.img}
+                  src={med.Poster}
+                  style={{
+                    height: '100%',
+                    maxWidth: '11em',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => {
+                    onSetPin(true);
+                    onSetStar(true);
+                    onSetLoadingMedia(false);
+                    onSetShow(med);
+                  }}
+                />
               </Grid>
               <Grid item style={{ width: '55%', padding: '2em 0' }}>
                 <Grid container direction="row">
@@ -90,22 +135,62 @@ export function HomePage(props) {
                     {med.imdbRating}
                   </Grid>
                 </Grid>
-                <Grid container direction="row" style={{ margin: '.6em 0'}}>
-                  <Grid item style={{ marginRight: '.5em' }}><b>Season:</b> {med.episodes[med.episodes.length - 1].split('/')[2].substring(0,2)}</Grid>
-                  <Grid item><b>Episode:</b> {med.episodes[med.episodes.length - 1].split('/')[2].substring(2,4)}</Grid>
+                <Grid container direction="row" style={{ margin: '.6em 0' }}>
+                  <Grid item style={{ marginRight: '.5em' }}>
+                    <b>Season:</b>{' '}
+                    {med.episodes[med.episodes.length - 1]
+                      .split('/')[2]
+                      .substring(0, 2)}
+                  </Grid>
+                  <Grid item>
+                    <b>Episode:</b>{' '}
+                    {med.episodes[med.episodes.length - 1]
+                      .split('/')[2]
+                      .substring(2, 4)}
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  {med.Plot}
-                </Grid>
+                <Grid item>{med.Plot}</Grid>
               </Grid>
             </Grid>
-          )) }
+          ))}
         </Grid>
-        <Grid container style={{ width: '40%', overflow: 'auto', maxHeight: '80vh', margin: '0 5%'  }}>
-          { movies.slice(0,10).map(med => (
-            <Grid container direction="row" key={med.imdbID} style={{ height: "20em", border: '1px solid gray', margin: '.5em' }}>
-              <Grid item style={{ width: '40%', height: '100%', padding: '2em' }}>
-                <img className={classes.img} src={med.Poster} style={{ height: '100%', maxWidth: '11em', cursor: 'pointer' }} onClick={() => { onSetLoadingMedia(false); onSetShow(med); }}/>
+        <Grid
+          container
+          style={{
+            width: '40%',
+            overflow: 'auto',
+            maxHeight: '80vh',
+            margin: '0 5%',
+          }}
+        >
+          {movies.slice(0, 10).map(med => (
+            <Grid
+              container
+              direction="row"
+              key={med.imdbID}
+              style={{
+                height: '20em',
+                border: '1px solid gray',
+                margin: '.5em',
+              }}
+            >
+              <Grid
+                item
+                style={{ width: '40%', height: '100%', padding: '2em' }}
+              >
+                <img
+                  className={classes.img}
+                  src={med.Poster}
+                  style={{
+                    height: '100%',
+                    maxWidth: '11em',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => {
+                    onSetLoadingMedia(false);
+                    onSetShow(med);
+                  }}
+                />
               </Grid>
               <Grid item style={{ width: '55%', padding: '2em 0' }}>
                 <Grid container direction="row">
@@ -117,16 +202,13 @@ export function HomePage(props) {
                     {med.imdbRating}
                   </Grid>
                 </Grid>
-                <Grid item>
-                  {med.Plot}
-                </Grid>
+                <Grid item>{med.Plot}</Grid>
               </Grid>
             </Grid>
-          )) }
+          ))}
         </Grid>
       </Grid>
-      <div>
-      </div>
+      <div />
     </article>
   );
 }
@@ -142,10 +224,10 @@ const mapStateToProps = createStructuredSelector({
 export function mapDispatchToProps(dispatch) {
   return {
     onCheckMedia: () => dispatch(checkMedia()),
-    onSetShow: (media) => dispatch(setShow(media)),
-    onSetPin: (set) => dispatch(setMediaPin(set)),
-    onSetStar: (set) => dispatch(setMediaStar(set)),
-    onSetLoadingMedia: (set) => dispatch(setLoadingMedia(set))
+    onSetShow: media => dispatch(setShow(media)),
+    onSetPin: set => dispatch(setMediaPin(set)),
+    onSetStar: set => dispatch(setMediaStar(set)),
+    onSetLoadingMedia: set => dispatch(setLoadingMedia(set)),
   };
 }
 

@@ -9,18 +9,10 @@ import { FormattedMessage } from 'react-intl';
 
 import H1 from 'components/H1';
 import CastPlayer from 'components/CastPlayer';
-import messages from './messages';
 import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-//import CastPlayer from './Cast';
-
-import play from './images/play.png';
-import pause from './images/pause.png';
-import pauseHover from './images/pause-hover.png';
-import pausePress from './images/pause-press.png';
-import playHover from './images/play-hover.png';
-import playPress from './images/play-press.png';
+// import CastPlayer from './Cast';
 
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
@@ -32,19 +24,30 @@ import Fab from '@material-ui/core/Fab';
 import CollectionsIcon from '@material-ui/icons/Collections';
 import Grid from '@material-ui/core/Grid';
 
-
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import TvIcon from '@material-ui/icons/Tv';
 import LocalMoviesIcon from '@material-ui/icons/LocalMovies';
 import ArtTrackIcon from '@material-ui/icons/ArtTrack';
+import playPress from './images/play-press.png';
+import playHover from './images/play-hover.png';
+import pausePress from './images/pause-press.png';
+import pauseHover from './images/pause-hover.png';
+import pause from './images/pause.png';
+import play from './images/play.png';
+import messages from './messages';
 
-
-import { makeSelectCurrentMedia, makeSelectMedia, makeSelectChannels, makeSelectCurrentChannel, makeSelectEpisode } from './selectors';
+import {
+  makeSelectCurrentMedia,
+  makeSelectMedia,
+  makeSelectChannels,
+  makeSelectCurrentChannel,
+  makeSelectEpisode,
+} from './selectors';
 import { checkMedia, checkNextMedia, setChannel, setShow } from './actions';
 import { initialState } from './reducer';
 
-//const useStyles = makeStyles(theme => {
+// const useStyles = makeStyles(theme => {
 //  return {
 //    fab: {
 //      margin: theme.spacing(1),
@@ -76,16 +79,26 @@ import { initialState } from './reducer';
 //      },
 //    },
 //  };
-//});
+// });
 
 export function ViewerPage(props) {
-//  const classes = useStyles();
+  //  const classes = useStyles();
 
-  console.log("props ViewerPage", props)
+  console.log('props ViewerPage', props);
 
-  const { media, channels, selectedChannel, onCheckMedia, onSetMedia, onSetChannel, onSetShow, selected, episode } = props
+  const {
+    media,
+    channels,
+    selectedChannel,
+    onCheckMedia,
+    onSetMedia,
+    onSetChannel,
+    onSetShow,
+    selected,
+    episode,
+  } = props;
 
-  onCheckMedia()
+  onCheckMedia();
 
   return (
     <div>
@@ -100,10 +113,14 @@ export function ViewerPage(props) {
         <FormattedMessage {...messages.header} />
       </H1>
       <div style={{ display: 'flex' }}>
-        <CastPlayer selected={selected} channel={selectedChannel} onSetMedia={onSetMedia} />
+        <CastPlayer
+          selected={selected}
+          channel={selectedChannel}
+          onSetMedia={onSetMedia}
+        />
       </div>
     </div>
-  )
+  );
 }
 
 ViewerPage.propTypes = {
@@ -124,16 +141,19 @@ const mapStateToProps = createStructuredSelector({
   channels: makeSelectChannels(),
   selected: makeSelectCurrentMedia(),
   episode: makeSelectEpisode(),
-})
+});
 
 export function mapDispatchToProps(dispatch) {
   return {
     onCheckMedia: () => dispatch(checkMedia()),
     onSetMedia: () => dispatch(checkNextMedia()),
-    onSetShow: (media) => dispatch(setShow(media)),
-    onSetChannel: (channel) => dispatch(setChannel(channel)),
+    onSetShow: media => dispatch(setShow(media)),
+    onSetChannel: channel => dispatch(setChannel(channel)),
     dispatch,
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ViewerPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ViewerPage);

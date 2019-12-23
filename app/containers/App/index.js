@@ -34,20 +34,33 @@ const AppWrapper = styled.div`
 `;
 
 function App(props) {
+  const { location, login } = props;
 
-  const {location, login} = props
+  console.log('App', props);
 
-  console.log('App', props)
+  const PrivateRoute = ({ component: Component, ...rest }) => {
+    const no = (
+      <Redirect
+        to={{
+          pathname: '/login',
+          state: { from: props.location },
+        }}
+      />
+    );
 
-  const PrivateRoute = ({ component: Component, ...rest }) => (
-    <Route {...rest} render={(props) => (
-      (Object.entries(login).length === 0 && login.constructor === Object)
-        ? <Redirect to={{
-                      pathname: '/login',
-                      state: { from: props.location }
-                    }} /> : <Component {...props} />
-    )} />
-  )
+    const yes = <Component {...props} />;
+
+    return (
+      <Route
+        {...rest}
+        render={props =>
+          Object.entries(login).length === 0 && login.constructor === Object
+            ? { no }
+            : { yes }
+        }
+      />
+    );
+  };
 
   return (
     <AppWrapper>
@@ -62,11 +75,15 @@ function App(props) {
           <PrivateRoute exact path="/" component={HomePage} />
           <PrivateRoute path="/viewer" component={ViewerPage} />
           <PrivateRoute path="/features" component={FeaturePage} />
-          <Route path="/login" component={() => <LoginPage login={login} />}/>
+          <Route path="/login" component={() => <LoginPage login={login} />} />
           <Route path="" component={NotFoundPage} />
         </Switch>
       </div>
-      { (Object.entries(login).length === 0 && login.constructor === Object) ? <></> : <Footer/> }
+      {Object.entries(login).length === 0 && login.constructor === Object ? (
+        <></>
+      ) : (
+        <Footer />
+      )}
       <GlobalStyle />
     </AppWrapper>
   );
@@ -81,9 +98,7 @@ const mapStateToProps = createStructuredSelector({
 });
 
 export function mapDispatchToProps(dispatch) {
-  return {
-
-  };
+  return {};
 }
 
 const withConnect = connect(
@@ -95,4 +110,3 @@ export default compose(
   withConnect,
   memo,
 )(App);
-

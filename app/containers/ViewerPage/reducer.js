@@ -6,17 +6,31 @@
 
 import produce from 'immer';
 
-import { SET_MEDIA_PIN, SET_MEDIA_STAR, SET_MEDIA_ORDER, PLAYER_AVAILABLE, PLAYER_SET, UPDATE_MEDIA, UPDATE_CHANNELS, SET_SELECTED_MEDIA, SET_SELECTED_CHANNEL, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL, LOADING_MEDIA, SET_CURRENT_EPISODE } from './constants';
+import {
+  SET_MEDIA_PIN,
+  SET_MEDIA_STAR,
+  SET_MEDIA_ORDER,
+  PLAYER_AVAILABLE,
+  PLAYER_SET,
+  UPDATE_MEDIA,
+  UPDATE_CHANNELS,
+  SET_SELECTED_MEDIA,
+  SET_SELECTED_CHANNEL,
+  SET_MEDIA_SIGNED_URL,
+  LOADING_SIGNED_URL,
+  LOADING_MEDIA,
+  SET_CURRENT_EPISODE,
+} from './constants';
 
 export const initialState = {
   media: [],
-  channels:[],
+  channels: [],
   currentMedia: {
-    Title: "",
-    Plot: "",
-    Poster: ""
+    Title: '',
+    Plot: '',
+    Poster: '',
   },
-  currentChannel:{},
+  currentChannel: {},
   player: {},
   options: {
     star: false,

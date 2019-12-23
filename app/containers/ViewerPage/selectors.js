@@ -77,7 +77,6 @@ const makeSelectOptionsPin = () =>
     mediaState => mediaState.options.pin,
   );
 
-
 const makeSelectOptionsStar = () =>
   createSelector(
     selectMedia,
@@ -90,4 +89,19 @@ const makeSelectOptionsOrder = () =>
     mediaState => mediaState.options.order,
   );
 
-export { makeSelectOptionsPin, makeSelectOptionsStar, makeSelectOptionsOrder, makeSelectEpisode, selectMedia, makeSelectMedia, makeSelectCurrentMedia, makeSelectChannels, makeSelectCurrentChannel, makeSelectSignedUrl, makeSelectLoadingSigned, makeSelectLoadingMedia, makeSelectPlayerAvailable, makeSelectPlayer };
+export {
+  makeSelectOptionsPin,
+  makeSelectOptionsStar,
+  makeSelectOptionsOrder,
+  makeSelectEpisode,
+  selectMedia,
+  makeSelectMedia,
+  makeSelectCurrentMedia,
+  makeSelectChannels,
+  makeSelectCurrentChannel,
+  makeSelectSignedUrl,
+  makeSelectLoadingSigned,
+  makeSelectLoadingMedia,
+  makeSelectPlayerAvailable,
+  makeSelectPlayer,
+};

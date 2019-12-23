@@ -4,19 +4,38 @@
  *
  */
 
-import { SET_SHOW, SET_SKIP_REWIND, SET_SKIP_FORWARD, CHECK_NEXT_MEDIA, SET_MEDIA_PIN, SET_MEDIA_STAR, SET_MEDIA_ORDER, PLAYER_AVAILABLE, PLAYER_SET, CHECK_MEDIA, UPDATE_MEDIA, UPDATE_CHANNELS, SET_SELECTED_MEDIA, SET_SELECTED_CHANNEL, SET_MEDIA_SIGNED_URL, LOADING_SIGNED_URL, LOADING_MEDIA, SET_CURRENT_EPISODE } from './constants';
+import {
+  SET_SHOW,
+  SET_SKIP_REWIND,
+  SET_SKIP_FORWARD,
+  CHECK_NEXT_MEDIA,
+  SET_MEDIA_PIN,
+  SET_MEDIA_STAR,
+  SET_MEDIA_ORDER,
+  PLAYER_AVAILABLE,
+  PLAYER_SET,
+  CHECK_MEDIA,
+  UPDATE_MEDIA,
+  UPDATE_CHANNELS,
+  SET_SELECTED_MEDIA,
+  SET_SELECTED_CHANNEL,
+  SET_MEDIA_SIGNED_URL,
+  LOADING_SIGNED_URL,
+  LOADING_MEDIA,
+  SET_CURRENT_EPISODE,
+} from './constants';
 
 export function setMediaPlayerAvailable(playerAvailable) {
   return {
     type: PLAYER_AVAILABLE,
-    playerAvailable
+    playerAvailable,
   };
 }
 
 export function setMediaPlayerObject(player) {
   return {
     type: PLAYER_SET,
-    player
+    player,
   };
 }
 
@@ -42,91 +61,88 @@ export function updateChannels(channels) {
 
 export function checkNextMedia() {
   return {
-    type: CHECK_NEXT_MEDIA
+    type: CHECK_NEXT_MEDIA,
   };
 }
 
 export function setMedia(currentMedia) {
   return {
     type: SET_SELECTED_MEDIA,
-    currentMedia
+    currentMedia,
   };
 }
 
 export function setChannel(currentChannel) {
   return {
     type: SET_SELECTED_CHANNEL,
-    currentChannel
+    currentChannel,
   };
 }
-
 
 export function setMediaSignedUrl(signedURL) {
   return {
     type: SET_MEDIA_SIGNED_URL,
-    signedURL
+    signedURL,
   };
 }
 
 export function setLoadSignedUrl(loadingSigned) {
   return {
     type: LOADING_SIGNED_URL,
-    loadingSigned
+    loadingSigned,
   };
 }
 
 export function setLoadingMedia(loadingMedia) {
   return {
     type: LOADING_MEDIA,
-    loadingMedia
+    loadingMedia,
   };
 }
 
 export function setCurrentEpisode(episode) {
   return {
     type: SET_CURRENT_EPISODE,
-    episode
+    episode,
   };
 }
 
 export function setMediaPin(pin) {
   return {
     type: SET_MEDIA_PIN,
-    pin
+    pin,
   };
 }
 
 export function setMediaStar(star) {
   return {
     type: SET_MEDIA_STAR,
-    star
+    star,
   };
 }
 
 export function setMediaOrder(order) {
   return {
     type: SET_MEDIA_ORDER,
-    order
+    order,
   };
 }
 
 export function setSkipRewind() {
   return {
-    type: SET_SKIP_REWIND
+    type: SET_SKIP_REWIND,
   };
 }
 
 export function setSkipForward() {
   return {
-    type: SET_SKIP_FORWARD
+    type: SET_SKIP_FORWARD,
   };
 }
 
 export function setShow(media) {
   return {
     type: SET_SHOW,
-    media
+    media,
   };
 }
-
-

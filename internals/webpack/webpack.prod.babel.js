@@ -9,6 +9,20 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = require('./webpack.base.babel')({
+  rules: [
+    {
+      enforce: 'pre',
+      test: /\.js$/,
+      exclude: /node_modules/,
+      loader: 'eslint-loader',
+    },
+    {
+      test: /\.js$/,
+      exclude: /node_modules/,
+      loader: 'babel-loader',
+    },
+  ],
+
   mode: 'production',
 
   // In production, we skip all hot-reloading stuff

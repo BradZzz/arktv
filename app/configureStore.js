@@ -5,9 +5,9 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
-import sagas from './sagas/'
-import createReducer from './reducers';
 import throttle from 'lodash.throttle';
+import sagas from './sagas';
+import createReducer from './reducers';
 
 import { saveState } from './store/localStorage';
 
@@ -31,7 +31,7 @@ export default function configureStore(initialState = {}, history) {
     /* eslint-enable */
   }
 
-//  const sagaMiddleware = createSagaMiddleware(reduxSagaMonitorOptions);
+  //  const sagaMiddleware = createSagaMiddleware(reduxSagaMonitorOptions);
 
   const sagaMiddleware = createSagaMiddleware();
 
@@ -51,7 +51,7 @@ export default function configureStore(initialState = {}, history) {
   store.subscribe(
     throttle(() => {
       saveState(store.getState());
-    }, 1000)
+    }, 1000),
   );
 
   // Extensions
