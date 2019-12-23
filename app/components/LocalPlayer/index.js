@@ -1,3 +1,5 @@
+//@import "~video-react/styles/scss/video-react"; // or import scss
+
 import React, { Component, useState } from 'react';
 import { Player } from 'video-react';
 
