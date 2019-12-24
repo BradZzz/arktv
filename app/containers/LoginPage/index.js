@@ -1,24 +1,14 @@
-/*
- * HomePage
- *
- * This is the first thing users see of our App, at the '/' route
- */
+/* eslint no-console: ["error", { allow: ["error"] }] */
 
-import React, { useEffect, memo } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import GoogleLogin from 'react-google-login';
 import { push } from 'connected-react-router';
 
-import messages from './messages';
-import reducer from './reducer';
 import { updateLogin } from './actions';
-
-const key = 'login';
 
 export function LoginPage(props) {
   const { onUpdateLogin, redirectLogin, login } = props;
@@ -28,12 +18,10 @@ export function LoginPage(props) {
   }
 
   const responseGoogle = response => {
-    console.log('responseGoogle', response);
     try {
-      console.log('responseGoogle.profileObj', response.profileObj);
       onUpdateLogin(response.profileObj);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -52,6 +40,7 @@ export function LoginPage(props) {
 }
 
 LoginPage.propTypes = {
+  login: PropTypes.object,
   onUpdateLogin: PropTypes.func,
   redirectLogin: PropTypes.func,
 };

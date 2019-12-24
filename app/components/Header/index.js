@@ -1,17 +1,12 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import A from './A';
-import Img from './Img';
-import NavBar from './NavBar';
-import HeaderLink from './HeaderLink';
-import Banner from './banner.jpg';
+import PropTypes from 'prop-types';
 import messages from './messages';
 
 function Header(props) {
@@ -53,5 +48,11 @@ function Header(props) {
 
   return <Grid item>{bView}</Grid>;
 }
+
+Header.propTypes = {
+  showingNav: PropTypes.bool,
+  onOpenClick: PropTypes.func,
+  onCloseClick: PropTypes.func,
+};
 
 export default Header;

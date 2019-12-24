@@ -127,7 +127,7 @@ export default function createChannels(medias) {
   }
 
   for (const channel of channels) {
-    channel.media = channel.media.sort(function(a, b) {
+    channel.media = channel.media.sort((a, b) => {
       if (a.Title.toLowerCase() < b.Title.toLowerCase()) return -1;
       if (a.Title.toLowerCase() > b.Title.toLowerCase()) return 1;
       return 0;

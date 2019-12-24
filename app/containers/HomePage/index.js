@@ -4,7 +4,7 @@
  * This is the first thing users see of our App, at the '/' route
  */
 
-import React, { useEffect, memo } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
@@ -13,21 +13,10 @@ import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import H1 from 'components/H1';
 
-import H2 from 'components/H2';
-import ReposList from 'components/ReposList';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import StarIcon from '@material-ui/icons/Star';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import AtPrefix from './AtPrefix';
-import CenteredSection from './CenteredSection';
-import Form from './Form';
-import Input from './Input';
-import Section from './Section';
 import messages from './messages';
-import reducer from './reducer';
-import saga from './saga';
 
 import { makeSelectMedia } from '../ViewerPage/selectors';
 import {
@@ -38,9 +27,7 @@ import {
   setLoadingMedia,
 } from '../ViewerPage/actions';
 
-const key = 'home';
-
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   img: {
     opacity: 0.85,
     '&:hover': {
@@ -63,14 +50,10 @@ export function HomePage(props) {
   onCheckMedia();
 
   const tv = media.filter(med => med.episodes.length > 1);
-  tv.sort(function(a, b) {
-    return b.created - a.created;
-  });
+  tv.sort((a, b) => b.created - a.created);
 
   const movies = media.filter(med => med.episodes.length === 1);
-  movies.sort(function(a, b) {
-    return b.created - a.created;
-  });
+  movies.sort((a, b) => b.created - a.created);
 
   return (
     <article>
@@ -109,7 +92,9 @@ export function HomePage(props) {
                 item
                 style={{ width: '40%', height: '100%', padding: '2em' }}
               >
+                {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */}
                 <img
+                  alt="television poster"
                   className={classes.img}
                   src={med.Poster}
                   style={{
@@ -178,7 +163,9 @@ export function HomePage(props) {
                 item
                 style={{ width: '40%', height: '100%', padding: '2em' }}
               >
+                {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */}
                 <img
+                  alt="movie poster"
                   className={classes.img}
                   src={med.Poster}
                   style={{
@@ -215,6 +202,11 @@ export function HomePage(props) {
 
 HomePage.propTypes = {
   media: PropTypes.array,
+  onCheckMedia: PropTypes.func,
+  onSetShow: PropTypes.func,
+  onSetPin: PropTypes.func,
+  onSetStar: PropTypes.func,
+  onSetLoadingMedia: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({

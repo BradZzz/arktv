@@ -20,7 +20,6 @@ import ViewerPage from 'containers/ViewerPage/Loadable';
 import FeaturePage from 'containers/FeaturePage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import Header from 'components/Header';
 import Footer from 'components/Footer';
 
 import GlobalStyle from '../../global-styles';
@@ -36,14 +35,13 @@ const AppWrapper = styled.div`
 function App(props) {
   const { location, login } = props;
 
-  console.log('App', props);
-
+  /* eslint-disable-next-line react/prop-types */
   const PrivateRoute = ({ component: Component, ...rest }) => {
     const no = (
       <Redirect
         to={{
           pathname: '/login',
-          state: { from: props.location },
+          state: { from: location },
         }}
       />
     );
@@ -53,7 +51,7 @@ function App(props) {
     return (
       <Route
         {...rest}
-        render={props =>
+        render={() =>
           Object.entries(login).length === 0 && login.constructor === Object
             ? { no }
             : { yes }
@@ -90,6 +88,7 @@ function App(props) {
 }
 
 App.propTypes = {
+  location: PropTypes.string,
   login: PropTypes.object,
 };
 
@@ -97,7 +96,7 @@ const mapStateToProps = createStructuredSelector({
   login: makeSelectLoginInfo(),
 });
 
-export function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps() {
   return {};
 }
 

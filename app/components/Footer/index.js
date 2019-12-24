@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 
-import A from 'components/A';
-import LocaleToggle from 'containers/LocaleToggle';
 import Header from 'components/Header';
-import Fab from '@material-ui/core/Fab';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -18,11 +14,8 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import Paper from '@material-ui/core/Paper';
 import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from '@material-ui/core/styles';
-import CollectionsIcon from '@material-ui/icons/Collections';
 
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
@@ -36,14 +29,11 @@ import {
   setMediaOrder,
   setSkipRewind,
   setSkipForward,
-  checkMedia,
-  checkNextMedia,
   setChannel,
   setShow,
 } from '../../containers/ViewerPage/actions';
 import {
   makeSelectCurrentMedia,
-  makeSelectMedia,
   makeSelectChannels,
   makeSelectCurrentChannel,
   makeSelectEpisode,
@@ -52,10 +42,8 @@ import {
   makeSelectOptionsOrder,
 } from '../../containers/ViewerPage/selectors';
 import { makeSelectLocation } from '../../containers/App/selectors';
-import messages from './messages';
-import Wrapper from './Wrapper';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   list: {
     opacity: 0.75,
     '&:hover': {
@@ -76,11 +64,8 @@ function Footer(props) {
     onSkipRewind,
     onSkipForward,
     location,
-    media,
     channels,
     selectedChannel,
-    onCheckMedia,
-    onSetMedia,
     onSetChannel,
     onSetShow,
     selected,
@@ -211,6 +196,7 @@ function Footer(props) {
         }}
       >
         <img
+          alt="media"
           src={med.Poster}
           style={{
             height: '100%',
@@ -297,7 +283,7 @@ function Footer(props) {
               target="_blank"
               style={{ margin: '0 auto .5em auto' }}
             >
-              <img src={selected.Poster} />
+              <img alt="media" src={selected.Poster} />
             </a>
           </Grid>
           <Grid container>
@@ -401,6 +387,8 @@ function Footer(props) {
     mediaToggleFloggle = mediaInfoView;
   }
 
+  const mView = showMediaButtons ? buttonNavMedia : buttonNavInfo;
+
   return (
     <div
       style={{
@@ -422,15 +410,7 @@ function Footer(props) {
             setChannelChangerView(true);
           }}
         />
-        {showChannelChanger && location.pathname === '/viewer' ? (
-          showMediaButtons ? (
-            buttonNavMedia
-          ) : (
-            buttonNavInfo
-          )
-        ) : (
-          <></>
-        )}
+        {showChannelChanger && location.pathname === '/viewer' ? mView : <></>}
       </div>
       <div style={{ width: '100%' }}>
         <div
@@ -450,13 +430,16 @@ function Footer(props) {
 }
 
 Footer.propTypes = {
-  onCheckMedia: PropTypes.func,
-  onSetMedia: PropTypes.func,
   onSetChannel: PropTypes.func,
-  onSelectLoadingMedia: PropTypes.func,
   onSetShow: PropTypes.func,
 
-  media: PropTypes.array,
+  onSetPin: PropTypes.func,
+  onSetStar: PropTypes.func,
+  onSetOrder: PropTypes.func,
+
+  onSkipRewind: PropTypes.func,
+  onSkipForward: PropTypes.func,
+
   channels: PropTypes.array,
   selectedChannel: PropTypes.object,
   selected: PropTypes.object,
@@ -469,7 +452,6 @@ Footer.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  media: makeSelectMedia(),
   selectedChannel: makeSelectCurrentChannel(),
   channels: makeSelectChannels(),
   selected: makeSelectCurrentMedia(),
@@ -483,8 +465,6 @@ const mapStateToProps = createStructuredSelector({
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onCheckMedia: () => dispatch(checkMedia()),
-    onSetMedia: () => dispatch(checkNextMedia()),
     onSetShow: media => dispatch(setShow(media)),
     onSetChannel: channel => dispatch(setChannel(channel)),
 

@@ -1,3 +1,6 @@
+/* eslint no-console: ["error", { allow: ["info", "warn", "error"] }] */
+/* eslint no-undef: 0, func-names: 0 */
+
 import React, { useState } from 'react';
 
 import Button from '@material-ui/core/Button';
@@ -6,7 +9,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { Player } from 'video-react';
 import play from './images/play.png';
 import pause from './images/pause.png';
 import pauseHover from './images/pause-hover.png';
@@ -24,13 +26,11 @@ import {
 } from '../../containers/ViewerPage/actions';
 import {
   makeSelectPlayerAvailable,
-  makeSelectCurrentMedia,
-  makeSelectSignedUrl,
   makeSelectPlayer,
   makeSelectLoadingMedia,
 } from '../../containers/ViewerPage/selectors';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   castWrap: {
     width: '3em',
     height: '3em',
@@ -107,62 +107,52 @@ const PLAYER_STATE = {
   PAUSED: 'PAUSED',
 };
 
-let playerState = PLAYER_STATE.IDLE;
+const PlayerHandler = () => {
+  let currentTarget = {};
 
-const PlayerHandler = function(player) {
-  let current_target = {};
+  this.playerState = PLAYER_STATE.IDLE;
   this.currentMedia = {};
 
-  this.setTarget = function(target) {
-    current_target = target;
+  this.setTarget = target => {
+    currentTarget = target;
   };
 
-  this.play = function() {
-    console.log('this.target play', current_target);
-    current_target.play();
-    playerState = PLAYER_STATE.PLAYING;
+  this.play = () => {
+    currentTarget.play();
+    this.playerState = PLAYER_STATE.PLAYING;
   };
 
-  this.pause = function() {
-    console.log('this.target pause', current_target);
-    current_target.pause();
-    playerState = PLAYER_STATE.PAUSED;
+  this.pause = () => {
+    currentTarget.pause();
+    this.playerState = PLAYER_STATE.PAUSED;
   };
 
-  this.load = function(media) {
-    console.log('loading...', media, current_target);
+  this.load = media => {
     this.currentMedia = media;
-    if (current_target != null && 'load' in current_target) {
-      current_target.load(media);
-      console.log('this.target load', current_target);
+    if (currentTarget != null && 'load' in currentTarget) {
+      currentTarget.load(media);
     }
   };
 
-  this.getCurrentMediaTime = function() {
-    console.log('current_target.getCurrentMediaTime()', current_target);
-    return current_target.getCurrentMediaTime();
+  this.getCurrentMediaTime = () => currentTarget.getCurrentMediaTime();
+
+  this.getMediaDuration = () => currentTarget.getMediaDuration();
+
+  this.seekTo = time => {
+    currentTarget.seekTo(time);
   };
 
-  this.getMediaDuration = function() {
-    console.log('current_target.getMediaDuration()', current_target);
-    return current_target.getMediaDuration();
-  };
-
-  this.seekTo = function(time) {
-    current_target.seekTo(time);
-  };
-
-  this.setVolume = function(pos) {
-    current_target.setVolume(pos);
+  this.setVolume = pos => {
+    currentTarget.setVolume(pos);
   };
 };
 
-const CastWrapper = function() {
+const CastWrapper = () => {
   this.playerHandler = new PlayerHandler(this);
   this.playerHandler.lastPosRecorded = 0;
 };
 
-CastWrapper.prototype.initializeCastPlayer = function() {
+CastWrapper.prototype.initializeCastPlayer = () => {
   const options = {};
 
   // Set the receiver application ID to your own (created in the
@@ -191,7 +181,7 @@ CastWrapper.prototype.initializeCastPlayer = function() {
   this.setupRemotePlayer();
 };
 
-CastWrapper.prototype.setPlayer = function(isCast) {
+CastWrapper.prototype.setPlayer = isCast => {
   // If the player is remote
   if (isCast) {
     this.playerHandler.setIsLocalPlayer(false);
@@ -212,12 +202,12 @@ CastWrapper.prototype.setPlayer = function(isCast) {
   }
 };
 
-CastWrapper.prototype.setupRemotePlayer = function() {
+CastWrapper.prototype.setupRemotePlayer = () => {
   this.remotePlayerController.addEventListener(
     cast.framework.RemotePlayerEventType.CURRENT_TIME_CHANGED,
     function(event) {
-      console.log('CURRENT_TIME_CHANGED', event.value);
-      console.log('duration', this.remotePlayer.duration);
+      //      console.log('CURRENT_TIME_CHANGED', event.value);
+      //      console.log('duration', this.remotePlayer.duration);
       if (event.value !== 0) {
         this.playerHandler.lastPosRecorded = event.value;
         this.playerHandler.onSelectLoadingMedia(false);
@@ -225,13 +215,14 @@ CastWrapper.prototype.setupRemotePlayer = function() {
       if (this.remotePlayer.duration > 0) {
         const seekPercent = parseInt(
           (event.value / this.remotePlayer.duration) * 100,
+          10,
         );
-        console.log(
-          'this.playerHandler.thisSeek != seekPercent',
-          this.playerHandler.thisSeek,
-          seekPercent,
-        );
-        if (this.playerHandler.thisSeek != seekPercent) {
+        //        console.log(
+        //          'this.playerHandler.thisSeek != seekPercent',
+        //          this.playerHandler.thisSeek,
+        //          seekPercent,
+        //        );
+        if (this.playerHandler.thisSeek !== seekPercent) {
           this.playerHandler.setSeek(seekPercent);
         }
       }
@@ -240,7 +231,7 @@ CastWrapper.prototype.setupRemotePlayer = function() {
 
   this.remotePlayerController.addEventListener(
     cast.framework.RemotePlayerEventType.MEDIA_INFO_CHANGED,
-    function(event) {
+    function() {
       const session = cast.framework.CastContext.getInstance().getCurrentSession();
       if (!session) {
         this.mediaInfo = null;
@@ -249,7 +240,7 @@ CastWrapper.prototype.setupRemotePlayer = function() {
       }
 
       const media = session.getMediaSession();
-      console.log('media', media);
+      //      console.log('media', media);
       if (!media) {
         this.mediaInfo = null;
         this.isLiveContent = false;
@@ -260,21 +251,20 @@ CastWrapper.prototype.setupRemotePlayer = function() {
   this.remotePlayerController.addEventListener(
     cast.framework.RemotePlayerEventType.VIDEO_INFO_CHANGED,
     function(event) {
-      console.log('VIDEO_INFO_CHANGED', event);
+      console.info('VIDEO_INFO_CHANGED', event);
     },
   );
 
   this.remotePlayerController.addEventListener(
     cast.framework.RemotePlayerEventType.IS_MEDIA_LOADED_CHANGED,
     function(event) {
-      console.log('IS_MEDIA_LOADED_CHANGED', event, this.playerHandler);
+      console.info('IS_MEDIA_LOADED_CHANGED', event);
       if (!event.value && !this.playerHandler.loadingMedia) {
-        console.log('Media Has Ended!');
+        console.info('Media Has Ended!');
         this.playerHandler.lastPosRecorded = 0;
         this.setNextChannelMedia();
       } else {
-        console.log('Media Has Loaded!');
-        //        this.playerHandler.onSelectLoadingMedia(false)
+        console.info('Media Has Loaded!');
       }
     }.bind(this),
   );
@@ -282,7 +272,7 @@ CastWrapper.prototype.setupRemotePlayer = function() {
   this.remotePlayerController.addEventListener(
     cast.framework.RemotePlayerEventType.DURATION_CHANGED,
     function(event) {
-      console.log('DURATION_CHANGED', event);
+      console.info('DURATION_CHANGED', event);
     },
   );
 
@@ -304,30 +294,27 @@ CastWrapper.prototype.setupRemotePlayer = function() {
   }.bind(this);
 
   playerTarget.seekTo = function(percent) {
-    console.log('playerTarget.seekTo', percent);
-    console.log('playerHandler.getMediaDuration()', this.remotePlayer.duration);
-    console.log('remotePlayer', this.remotePlayer);
     const seek = (this.remotePlayer.duration / parseFloat(100)) * percent;
-    console.log('playerTarget.seekTo', seek);
+    console.info('playerTarget.seekTo', seek);
     this.remotePlayer.currentTime = seek;
     this.remotePlayerController.seek();
   }.bind(this);
 
   playerTarget.setVolume = function(pos) {
-    console.log('playerTarget.setVolume', pos);
+    console.info('playerTarget.setVolume', pos);
     this.remotePlayer.volumeLevel = pos;
     this.remotePlayerController.setVolumeLevel();
   }.bind(this);
 
   playerTarget.play = function() {
-    console.log('playerTarget.play');
+    console.info('playerTarget.play');
     if (this.remotePlayer.isPaused) {
       this.remotePlayerController.playOrPause();
     }
   }.bind(this);
 
   playerTarget.pause = function() {
-    console.log('playerTarget.pause');
+    console.info('playerTarget.pause');
     if (!this.remotePlayer.isPaused) {
       this.remotePlayerController.playOrPause();
     }
@@ -366,10 +353,11 @@ CastWrapper.prototype.setupRemotePlayer = function() {
       .loadMedia(request)
       .then(
         function() {
-          console.log('Remote media loaded', request);
+          console.info('Remote media loaded', request);
         },
         function(errorCode) {
-          playerState = PLAYER_STATE.IDLE;
+          console.error('Cast Error:', errorCode);
+          this.playerHandler.playerState = PLAYER_STATE.IDLE;
         },
       );
   }.bind(this);
@@ -377,69 +365,65 @@ CastWrapper.prototype.setupRemotePlayer = function() {
   this.playerHandler.setTarget(playerTarget);
 };
 
-CastWrapper.prototype.checkLoaded = function() {
-  return cast.framework.CastContext.getInstance().getCurrentSession() !== null;
-};
+CastWrapper.prototype.checkLoaded = () =>
+  cast.framework.CastContext.getInstance().getCurrentSession() !== null;
 
-CastWrapper.prototype.loadMedia = function(media) {
-  console.log('Loaded', this.checkLoaded());
+CastWrapper.prototype.loadMedia = media => {
   this.playerHandler.load(media);
 };
 
-CastWrapper.prototype.handleSeek = function(val) {
+CastWrapper.prototype.handleSeek = val => {
   this.playerHandler.seekTo(val);
 };
 
-CastWrapper.prototype.handleVolume = function(val) {
+CastWrapper.prototype.handleVolume = val => {
   this.playerHandler.setVolume(val / parseFloat(100));
 };
 
-CastWrapper.prototype.handlePause = function() {
+CastWrapper.prototype.handlePause = () => {
   this.playerHandler.pause();
 };
 
-CastWrapper.prototype.handlePlay = function() {
+CastWrapper.prototype.handlePlay = () => {
   this.playerHandler.play();
 };
 
-CastWrapper.prototype.currentMedia = function() {
-  return this.playerHandler.currentMedia;
-};
+CastWrapper.prototype.currentMedia = () => this.playerHandler.currentMedia;
 
-CastWrapper.prototype.setSeekBarRef = function(thisSeek, setSeek) {
+CastWrapper.prototype.setSeekBarRef = (thisSeek, setSeek) => {
   this.playerHandler.thisSeek = thisSeek;
   this.playerHandler.setSeek = setSeek;
 };
 
-CastWrapper.prototype.setIsLocalPlayerRef = function(
+CastWrapper.prototype.setIsLocalPlayerRef = (
   isLocalPlayer,
   setIsLocalPlayer,
-) {
+) => {
   this.playerHandler.isLocalPlayer = isLocalPlayer;
   this.playerHandler.setIsLocalPlayer = setIsLocalPlayer;
 };
 
-CastWrapper.prototype.setLocalPlayerRef = function(localPlayer) {
+CastWrapper.prototype.setLocalPlayerRef = localPlayer => {
   this.playerHandler.localPlayer = localPlayer;
 };
 
-CastWrapper.prototype.setMediaController = function(onSetMedia) {
+CastWrapper.prototype.setMediaController = onSetMedia => {
   this.playerHandler.onSetMedia = onSetMedia;
 };
 
-CastWrapper.prototype.setChannel = function(channel) {
+CastWrapper.prototype.setChannel = channel => {
   this.playerHandler.channel = channel;
 };
 
-CastWrapper.prototype.setMediaLoadingFlags = function(
+CastWrapper.prototype.setMediaLoadingFlags = (
   loadingMedia,
   onSelectLoadingMedia,
-) {
+) => {
   this.playerHandler.loadingMedia = loadingMedia;
   this.playerHandler.onSelectLoadingMedia = onSelectLoadingMedia;
 };
 
-CastWrapper.prototype.setNextChannelMedia = function() {
+CastWrapper.prototype.setNextChannelMedia = () => {
   //  console.log("this.playerHandler.channel", this.playerHandler.channel)
   //  var newMedia = this.playerHandler.channel.media[Math.floor(Math.random() * this.playerHandler.channel.media.length)];
   this.playerHandler.onSetMedia();
@@ -449,8 +433,6 @@ function CastPlayer(props) {
   const {
     selected,
     url,
-    onSelectAvailable,
-    onSelectPlayer,
     player,
     playerAvailable,
     channel,
@@ -459,7 +441,7 @@ function CastPlayer(props) {
     onSelectLoadingMedia,
   } = props;
 
-  console.log('props CastPlayer', props);
+  //  console.log('props CastPlayer', props);
 
   const curMedia = {
     title: selected.Title,
@@ -490,31 +472,31 @@ function CastPlayer(props) {
     // Prevents the chromecast from loading another media until the next media loads correctly
     player.setMediaLoadingFlags(loadingMedia, onSelectLoadingMedia);
 
-    var handleSeek = (e, val) => {
-      console.log('handleSeek', val);
+    /* eslint-disable-next-line no-unused-vars */
+    const handleSeek = (e, val) => {
       player.handleSeek(val);
     };
 
-    var handleVolume = (e, val) => {
-      console.log('handleVolume', val);
+    /* eslint-disable-next-line no-unused-vars */
+    const handleVolume = (e, val) => {
       player.handleVolume(val);
     };
 
-    var handlePause = (e, val) => {
-      console.log('handlePause');
+    /* eslint-disable-next-line no-unused-vars */
+    const handlePause = (e, val) => {
       player.handlePause();
     };
 
-    var handlePlay = (e, val) => {
-      console.log('handlePlay');
+    /* eslint-disable-next-line no-unused-vars */
+    const handlePlay = (e, val) => {
       player.handlePlay();
     };
 
-    if (player.currentMedia().url != curMedia.url) {
+    if (player.currentMedia().url !== curMedia.url) {
       player.loadMedia(curMedia);
     }
 
-    const handleLocalPlayerStateChange = function(state, prevState) {
+    const handleLocalPlayerStateChange = state => {
       if (
         state.duration !== state.currentTime &&
         state.currentTime > 0 &&
@@ -530,7 +512,6 @@ function CastPlayer(props) {
         hasPlayedLocal &&
         state.currentSrc === curMedia.url
       ) {
-        console.log('handleLocalPlayerStateChange', state, prevState);
         localLoading = true;
         player.setNextChannelMedia();
       }
@@ -610,19 +591,19 @@ function CastPlayer(props) {
 }
 
 CastPlayer.defaultProps = {
-  onSelectAvailable: () => {},
   selected: {},
   url: '',
 };
 
 CastPlayer.propTypes = {
-  onSelectAvailable: PropTypes.func,
   onSelectLoadingMedia: PropTypes.func,
   selected: PropTypes.object,
   playerAvailable: PropTypes.bool,
   player: PropTypes.object,
   url: PropTypes.string,
   loadingMedia: PropTypes.bool,
+  channel: PropTypes.object,
+  onSetMedia: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({

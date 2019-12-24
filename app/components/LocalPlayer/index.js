@@ -1,15 +1,11 @@
 // @import "~video-react/styles/scss/video-react"; // or import scss
 
-import React, { Component, useState } from 'react';
+import React from 'react';
 import { Player } from 'video-react';
+import PropTypes from 'prop-types';
 
 function LocalPlayer(props) {
-  console.log('props', props);
-
   const { src, thumb, isLocal, setLocalPlayerRef } = props;
-
-  const width = 1600;
-  const height = 600;
 
   return (
     <div style={{ width: '100%', margin: '0 auto' }}>
@@ -33,6 +29,7 @@ function LocalPlayer(props) {
           }}
         />
         <img
+          alt="now casting"
           src={thumb}
           style={{
             position: 'absolute',
@@ -71,5 +68,12 @@ function LocalPlayer(props) {
     </div>
   );
 }
+
+LocalPlayer.propTypes = {
+  src: PropTypes.string,
+  thumb: PropTypes.string,
+  isLocal: PropTypes.bool,
+  setLocalPlayerRef: PropTypes.func,
+};
 
 export default LocalPlayer;
