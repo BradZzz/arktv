@@ -28,6 +28,7 @@ import {
   makeSelectPlayerAvailable,
   makeSelectPlayer,
   makeSelectLoadingMedia,
+  makeSelectSignedUrl,
 } from '../../containers/ViewerPage/selectors';
 
 const useStyles = makeStyles(() => ({
@@ -107,52 +108,61 @@ const PLAYER_STATE = {
   PAUSED: 'PAUSED',
 };
 
-const PlayerHandler = () => {
+const PlayerHandler = function() {
   let currentTarget = {};
 
   this.playerState = PLAYER_STATE.IDLE;
   this.currentMedia = {};
 
-  this.setTarget = target => {
+  this.setPlayerState = function(state) {
+    this.playerState = state;
+    console.info('State', state);
+  };
+
+  this.setTarget = function(target) {
     currentTarget = target;
   };
 
-  this.play = () => {
+  this.play = function() {
     currentTarget.play();
-    this.playerState = PLAYER_STATE.PLAYING;
+    this.setPlayerState(PLAYER_STATE.PLAYING);
   };
 
-  this.pause = () => {
+  this.pause = function() {
     currentTarget.pause();
-    this.playerState = PLAYER_STATE.PAUSED;
+    this.setPlayerState(PLAYER_STATE.PAUSED);
   };
 
-  this.load = media => {
+  this.load = function(media) {
     this.currentMedia = media;
     if (currentTarget != null && 'load' in currentTarget) {
       currentTarget.load(media);
     }
   };
 
-  this.getCurrentMediaTime = () => currentTarget.getCurrentMediaTime();
+  this.getCurrentMediaTime = function() {
+    return currentTarget.getCurrentMediaTime();
+  };
 
-  this.getMediaDuration = () => currentTarget.getMediaDuration();
+  this.getMediaDuration = function() {
+    return currentTarget.getMediaDuration();
+  };
 
-  this.seekTo = time => {
+  this.seekTo = function(time) {
     currentTarget.seekTo(time);
   };
 
-  this.setVolume = pos => {
+  this.setVolume = function(pos) {
     currentTarget.setVolume(pos);
   };
 };
 
-const CastWrapper = () => {
+const CastWrapper = function() {
   this.playerHandler = new PlayerHandler(this);
   this.playerHandler.lastPosRecorded = 0;
 };
 
-CastWrapper.prototype.initializeCastPlayer = () => {
+CastWrapper.prototype.initializeCastPlayer = function() {
   const options = {};
 
   // Set the receiver application ID to your own (created in the
@@ -181,7 +191,7 @@ CastWrapper.prototype.initializeCastPlayer = () => {
   this.setupRemotePlayer();
 };
 
-CastWrapper.prototype.setPlayer = isCast => {
+CastWrapper.prototype.setPlayer = function(isCast) {
   // If the player is remote
   if (isCast) {
     this.playerHandler.setIsLocalPlayer(false);
@@ -202,7 +212,7 @@ CastWrapper.prototype.setPlayer = isCast => {
   }
 };
 
-CastWrapper.prototype.setupRemotePlayer = () => {
+CastWrapper.prototype.setupRemotePlayer = function() {
   this.remotePlayerController.addEventListener(
     cast.framework.RemotePlayerEventType.CURRENT_TIME_CHANGED,
     function(event) {
@@ -357,7 +367,7 @@ CastWrapper.prototype.setupRemotePlayer = () => {
         },
         function(errorCode) {
           console.error('Cast Error:', errorCode);
-          this.playerHandler.playerState = PLAYER_STATE.IDLE;
+          this.playerHandler.setPlayerState(PLAYER_STATE.IDLE);
         },
       );
   }.bind(this);
@@ -368,62 +378,64 @@ CastWrapper.prototype.setupRemotePlayer = () => {
 CastWrapper.prototype.checkLoaded = () =>
   cast.framework.CastContext.getInstance().getCurrentSession() !== null;
 
-CastWrapper.prototype.loadMedia = media => {
+CastWrapper.prototype.loadMedia = function(media) {
   this.playerHandler.load(media);
 };
 
-CastWrapper.prototype.handleSeek = val => {
+CastWrapper.prototype.handleSeek = function(val) {
   this.playerHandler.seekTo(val);
 };
 
-CastWrapper.prototype.handleVolume = val => {
+CastWrapper.prototype.handleVolume = function(val) {
   this.playerHandler.setVolume(val / parseFloat(100));
 };
 
-CastWrapper.prototype.handlePause = () => {
+CastWrapper.prototype.handlePause = function() {
   this.playerHandler.pause();
 };
 
-CastWrapper.prototype.handlePlay = () => {
+CastWrapper.prototype.handlePlay = function() {
   this.playerHandler.play();
 };
 
-CastWrapper.prototype.currentMedia = () => this.playerHandler.currentMedia;
+CastWrapper.prototype.currentMedia = function() {
+  return this.playerHandler.currentMedia;
+};
 
-CastWrapper.prototype.setSeekBarRef = (thisSeek, setSeek) => {
+CastWrapper.prototype.setSeekBarRef = function(thisSeek, setSeek) {
   this.playerHandler.thisSeek = thisSeek;
   this.playerHandler.setSeek = setSeek;
 };
 
-CastWrapper.prototype.setIsLocalPlayerRef = (
+CastWrapper.prototype.setIsLocalPlayerRef = function(
   isLocalPlayer,
   setIsLocalPlayer,
-) => {
+) {
   this.playerHandler.isLocalPlayer = isLocalPlayer;
   this.playerHandler.setIsLocalPlayer = setIsLocalPlayer;
 };
 
-CastWrapper.prototype.setLocalPlayerRef = localPlayer => {
+CastWrapper.prototype.setLocalPlayerRef = function(localPlayer) {
   this.playerHandler.localPlayer = localPlayer;
 };
 
-CastWrapper.prototype.setMediaController = onSetMedia => {
+CastWrapper.prototype.setMediaController = function(onSetMedia) {
   this.playerHandler.onSetMedia = onSetMedia;
 };
 
-CastWrapper.prototype.setChannel = channel => {
+CastWrapper.prototype.setChannel = function(channel) {
   this.playerHandler.channel = channel;
 };
 
-CastWrapper.prototype.setMediaLoadingFlags = (
+CastWrapper.prototype.setMediaLoadingFlags = function(
   loadingMedia,
   onSelectLoadingMedia,
-) => {
+) {
   this.playerHandler.loadingMedia = loadingMedia;
   this.playerHandler.onSelectLoadingMedia = onSelectLoadingMedia;
 };
 
-CastWrapper.prototype.setNextChannelMedia = () => {
+CastWrapper.prototype.setNextChannelMedia = function() {
   //  console.log("this.playerHandler.channel", this.playerHandler.channel)
   //  var newMedia = this.playerHandler.channel.media[Math.floor(Math.random() * this.playerHandler.channel.media.length)];
   this.playerHandler.onSetMedia();
@@ -439,6 +451,7 @@ function CastPlayer(props) {
     onSetMedia,
     loadingMedia,
     onSelectLoadingMedia,
+    onSelectPlayer,
   } = props;
 
   //  console.log('props CastPlayer', props);
@@ -458,6 +471,26 @@ function CastPlayer(props) {
 
   const classes = useStyles();
 
+  /* eslint-disable-next-line no-unused-vars */
+  const handleSeek = (e, val) => {
+    player.handleSeek(val);
+  };
+
+  /* eslint-disable-next-line no-unused-vars */
+  const handleVolume = (e, val) => {
+    player.handleVolume(val);
+  };
+
+  /* eslint-disable-next-line no-unused-vars */
+  const handlePause = (e, val) => {
+    player.handlePause();
+  };
+
+  /* eslint-disable-next-line no-unused-vars */
+  const handlePlay = (e, val) => {
+    player.handlePlay();
+  };
+
   if (playerAvailable) {
     // For the chromecast to access the seekbar locally and movie it with media
     player.setSeekBarRef(seek, setSeek);
@@ -472,31 +505,11 @@ function CastPlayer(props) {
     // Prevents the chromecast from loading another media until the next media loads correctly
     player.setMediaLoadingFlags(loadingMedia, onSelectLoadingMedia);
 
-    /* eslint-disable-next-line no-unused-vars */
-    const handleSeek = (e, val) => {
-      player.handleSeek(val);
-    };
-
-    /* eslint-disable-next-line no-unused-vars */
-    const handleVolume = (e, val) => {
-      player.handleVolume(val);
-    };
-
-    /* eslint-disable-next-line no-unused-vars */
-    const handlePause = (e, val) => {
-      player.handlePause();
-    };
-
-    /* eslint-disable-next-line no-unused-vars */
-    const handlePlay = (e, val) => {
-      player.handlePlay();
-    };
-
     if (player.currentMedia().url !== curMedia.url) {
       player.loadMedia(curMedia);
     }
 
-    const handleLocalPlayerStateChange = state => {
+    const handleLocalPlayerStateChange = function(state) {
       if (
         state.duration !== state.currentTime &&
         state.currentTime > 0 &&
@@ -604,6 +617,7 @@ CastPlayer.propTypes = {
   loadingMedia: PropTypes.bool,
   channel: PropTypes.object,
   onSetMedia: PropTypes.func,
+  onSelectPlayer: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({

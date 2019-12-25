@@ -13,7 +13,7 @@ import { updateLogin } from './actions';
 export function LoginPage(props) {
   const { onUpdateLogin, redirectLogin, login } = props;
 
-  if (!(Object.entries(login).length === 0 && login.constructor === Object)) {
+  if (!(login === undefined || (Object.entries(login).length === 0 && login.constructor === Object))) {
     redirectLogin('/');
   }
 

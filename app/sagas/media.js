@@ -16,7 +16,7 @@ import {
   SET_SKIP_FORWARD,
   SET_SKIP_REWIND,
   SET_SHOW,
-  SET_SELECTED_CHANNEL,
+  //  SET_SELECTED_CHANNEL,
 } from '../containers/ViewerPage/constants';
 import {
   makeSelectMedia,
@@ -168,5 +168,5 @@ export default function* mediaSagas() {
   yield takeLatest(SET_SKIP_REWIND, rewindMedia);
   yield takeLatest(SET_SKIP_FORWARD, findNextMedia);
   yield takeLatest(SET_SHOW, setNextShow);
-  yield takeLatest(SET_SELECTED_CHANNEL, findNextMedia);
+  //  yield takeLatest(SET_SELECTED_CHANNEL, findNextMedia);
 }

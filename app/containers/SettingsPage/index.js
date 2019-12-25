@@ -11,13 +11,14 @@ import { GoogleLogout } from 'react-google-login';
 
 import H1 from 'components/H1';
 import messages from './messages';
-import unloadState from '../../store/localStorage';
+import { unloadState } from '../../store/localStorage';
 
 export default function SettingsPage() {
   const logout = response => {
     try {
       console.info(response);
       unloadState();
+      window.location.reload(true);
     } catch (err) {
       console.error(err);
     }

@@ -246,10 +246,10 @@ function Footer(props) {
   const showEps = (
     <Grid container>
       <Grid item style={{ marginRight: '.5em' }}>
-        <b>Season:</b> {episode.split('/')[2].substring(0, 2)}
+        <b>Season:</b> {episode && episode.split('/')[2].substring(0, 2)}
       </Grid>
       <Grid item>
-        <b>Episode:</b> {episode.split('/')[2].substring(2, 4)}
+        <b>Episode:</b> {episode && episode.split('/')[2].substring(2, 4)}
       </Grid>
     </Grid>
   );
