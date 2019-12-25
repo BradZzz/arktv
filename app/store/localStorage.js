@@ -14,6 +14,10 @@ export const loadState = () => {
   }
 };
 
+export const unloadState = () => {
+  localStorage.removeItem(storageKey);
+};
+
 export const saveState = state => {
   try {
     const serializedState = JSON.stringify(state);

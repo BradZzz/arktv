@@ -17,7 +17,7 @@ import { compose } from 'redux';
 
 import HomePage from 'containers/HomePage/Loadable';
 import ViewerPage from 'containers/ViewerPage/Loadable';
-import FeaturePage from 'containers/FeaturePage/Loadable';
+import SettingsPage from 'containers/SettingsPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Footer from 'components/Footer';
@@ -72,7 +72,7 @@ function App(props) {
         <Switch>
           <PrivateRoute exact path="/" component={HomePage} />
           <PrivateRoute path="/viewer" component={ViewerPage} />
-          <PrivateRoute path="/features" component={FeaturePage} />
+          <PrivateRoute path="/settings" component={SettingsPage} />
           <Route path="/login" component={() => <LoginPage login={login} />} />
           <Route path="" component={NotFoundPage} />
         </Switch>

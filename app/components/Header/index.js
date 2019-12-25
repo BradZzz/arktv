@@ -39,7 +39,7 @@ function Header(props) {
         <Button href="/viewer" style={{ flex: 1 }}>
           <FormattedMessage {...messages.viewer} />
         </Button>
-        <Button href="/features" style={{ flex: 1 }}>
+        <Button href="/settings" style={{ flex: 1 }}>
           <FormattedMessage {...messages.features} />
         </Button>
       </ButtonGroup>

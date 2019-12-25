@@ -164,7 +164,7 @@ CastWrapper.prototype.initializeCastPlayer = () => {
   // ORIGIN_SCOPED - Auto connect from same appId and page origin
   // TAB_AND_ORIGIN_SCOPED - Auto connect from same appId, page origin, and tab
   // PAGE_SCOPED - No auto connect
-  options.autoJoinPolicy = chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED;
+  options.autoJoinPolicy = chrome.cast.AutoJoinPolicy.TAB_AND_ORIGIN_SCOPED;
 
   cast.framework.CastContext.getInstance().setOptions(options);
 
