@@ -16,7 +16,7 @@ import {
   SET_SKIP_FORWARD,
   SET_SKIP_REWIND,
   SET_SHOW,
-  //  SET_SELECTED_CHANNEL,
+  SET_SELECTED_CHANNEL,
 } from '../containers/ViewerPage/constants';
 import {
   makeSelectMedia,
@@ -47,7 +47,7 @@ export function* requestMedia() {
       //      console.log('createdChannels', channels);
       yield put(updateChannels(channels));
       //      console.log('setChannel', channels[0]);
-      yield put(setChannel(channels[0]));
+//      yield put(setChannel(channels[0]));
     }
   } catch (err) {
     console.error('err', err);
@@ -129,7 +129,7 @@ export function* rollMedia() {
   let currentMedia = yield select(makeSelectCurrentMedia());
   const pin = yield select(makeSelectOptionsPin());
 
-  //  console.log('rollMedia', pin, currentMedia);
+    console.log('rollMedia', pin, currentMedia);
 
   const channel = yield select(makeSelectCurrentChannel());
 
@@ -168,5 +168,5 @@ export default function* mediaSagas() {
   yield takeLatest(SET_SKIP_REWIND, rewindMedia);
   yield takeLatest(SET_SKIP_FORWARD, findNextMedia);
   yield takeLatest(SET_SHOW, setNextShow);
-  //  yield takeLatest(SET_SELECTED_CHANNEL, findNextMedia);
+  yield takeLatest(SET_SELECTED_CHANNEL, findNextMedia);
 }
