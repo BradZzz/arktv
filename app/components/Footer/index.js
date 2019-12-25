@@ -246,6 +246,8 @@ function Footer(props) {
   const seasonTxt = episode && episode.split('/')[2].substring(0, 2);
   const episodeTxt = episode && episode.split('/')[2].substring(2, 4);
 
+  console.log('seasonTxt', seasonTxt, episodeTxt)
+
   const showEps = (
     <Grid container>
       <Grid item style={{ marginRight: '.5em' }}>
@@ -257,6 +259,8 @@ function Footer(props) {
     </Grid>
   );
   const noShowEps = <></>;
+
+  const episodeInfo = 'episodes' in selected && selected.episodes.length > 1 ? showEps : noShowEps
 
   const mediaInfoView =
     initialState.currentMedia === selected ? (
@@ -290,9 +294,7 @@ function Footer(props) {
             </a>
           </Grid>
           <Grid container>
-            {'episodes' in selected && selected.episodes.length > 1
-              ? { showEps }
-              : { noShowEps }}
+            { episodeInfo }
             <Grid container>
               <Grid item style={{ margin: '1em 0', fontStyle: 'italic' }}>
                 {selected.Plot}

@@ -14,22 +14,22 @@ module.exports = options => ({
       path: path.resolve(process.cwd(), 'build'),
       publicPath: '/',
     },
-    options.output,
+    options.output
   ), // Merge with env dependent settings
   optimization: options.optimization,
   module: {
     rules: [
-      {
-        enforce: 'pre',
-        test: /\.jsx?$/, // Transform all .js and .jsx files required somewhere with Babel
-        exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            fix: true,
-          }
-        },
-      },
+//      {
+//        enforce: 'pre',
+//        test: /\.jsx?$/, // Transform all .js and .jsx files required somewhere with Babel
+//        exclude: /node_modules/,
+//        use: {
+//          loader: 'eslint-loader',
+//          options: {
+//            fix: true,
+//          }
+//        },
+//      },
       {
         test: /\.jsx?$/, // Transform all .js and .jsx files required somewhere with Babel
         exclude: /node_modules/,
