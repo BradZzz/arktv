@@ -35,7 +35,7 @@ const AppWrapper = styled.div`
 function App(props) {
   const { location, login } = props;
 
-  console.log('login', login)
+  console.log('login', login);
 
   /* eslint-disable-next-line react/prop-types */
   const PrivateRoute = ({ component: Component, ...rest }) => {
@@ -51,12 +51,18 @@ function App(props) {
     const yes = <Component {...props} />;
 
     const view =
-      login === undefined || (Object.entries(login).length === 0 && login.constructor === Object)
+      login === undefined ||
+      (Object.entries(login).length === 0 && login.constructor === Object)
         ? no
         : yes;
 
     return <Route {...rest} render={() => view} />;
   };
+
+  const showFooter =
+    login === undefined ||
+    (Object.entries(login).length === 0 && login.constructor === Object);
+  const footerView = showFooter ? <></> : <Footer />;
 
   return (
     <AppWrapper>
@@ -75,11 +81,7 @@ function App(props) {
           <Route path="" component={NotFoundPage} />
         </Switch>
       </div>
-      {login === undefined || (Object.entries(login).length === 0 && login.constructor === Object) ? (
-        <></>
-      ) : (
-        <Footer />
-      )}
+      {footerView}
       <GlobalStyle />
     </AppWrapper>
   );

@@ -242,9 +242,9 @@ function Footer(props) {
       ))}
     </List>
   );
-  
-  const seasonTxt = episode && episode.split('/')[2].substring(0, 2)
-  const episodeTxt = episode && episode.split('/')[2].substring(2, 4)
+
+  const seasonTxt = episode && episode.split('/')[2].substring(0, 2);
+  const episodeTxt = episode && episode.split('/')[2].substring(2, 4);
 
   const showEps = (
     <Grid container>

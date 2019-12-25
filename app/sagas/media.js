@@ -6,7 +6,7 @@ import {
   updateMedia,
   setMediaSignedUrl,
   updateChannels,
-  setChannel,
+  //  setChannel,
   setCurrentEpisode,
   setLoadingMedia,
 } from '../containers/ViewerPage/actions';
@@ -47,7 +47,7 @@ export function* requestMedia() {
       //      console.log('createdChannels', channels);
       yield put(updateChannels(channels));
       //      console.log('setChannel', channels[0]);
-//      yield put(setChannel(channels[0]));
+      //      yield put(setChannel(channels[0]));
     }
   } catch (err) {
     console.error('err', err);
@@ -128,8 +128,8 @@ export function* setNextShow(action) {
 export function* rollMedia() {
   let currentMedia = yield select(makeSelectCurrentMedia());
   const pin = yield select(makeSelectOptionsPin());
-
-    console.log('rollMedia', pin, currentMedia);
+  //
+  //  console.log('rollMedia', pin, currentMedia);
 
   const channel = yield select(makeSelectCurrentChannel());
 
