@@ -98,9 +98,7 @@
     "reselect": "4.0.0",
     "sanitize.css": "8.0.0",
     "styled-components": "4.2.0",
-    "video-react": "^0.14.1"
-  },
-  "devDependencies": {
+    "video-react": "^0.14.1",
     "@babel/cli": "7.4.3",
     "@babel/core": "7.4.3",
     "@babel/plugin-proposal-class-properties": "7.4.0",
