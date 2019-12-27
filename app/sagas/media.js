@@ -1,5 +1,6 @@
-/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* eslint no-console: ["error", { allow: ["info","warn", "error"] }] */
 
+import axios from 'axios';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import {
   setMedia,
@@ -9,6 +10,8 @@ import {
   //  setChannel,
   setCurrentEpisode,
   setLoadingMedia,
+  checkMedia,
+  flushMedia,
 } from '../containers/ViewerPage/actions';
 import {
   CHECK_MEDIA,
@@ -17,6 +20,7 @@ import {
   SET_SKIP_REWIND,
   SET_SHOW,
   SET_SELECTED_CHANNEL,
+  SYNC_UPDATE,
 } from '../containers/ViewerPage/constants';
 import {
   makeSelectMedia,
@@ -28,27 +32,50 @@ import {
   makeSelectCurrentChannel,
   makeSelectLoadingMedia,
 } from '../containers/ViewerPage/selectors';
+import {
+  makeSelectTokenInfo,
+} from '../containers/LoginPage/selectors';
 
 import createChannels from '../utils/mediaUtils';
 
 import mediaApi from '../utils/mediaApi';
 
+// Utils
+function* createHeader() {
+  const idToken = yield select(makeSelectTokenInfo());
+  const options = {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': '*',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`,
+    }
+  };
+  return options;
+}
+
 export function* requestMedia() {
   try {
-    //    console.log('requestMedia');
+    const options = yield call(createHeader);
     const reqSuf = `get_media`;
-
-    const resp = yield call(mediaApi.get, reqSuf);
-    //    console.log('resp', resp);
+    const resp = yield call(mediaApi.get, reqSuf, options);
     const currentMedia = yield select(makeSelectMedia());
     if (currentMedia.length === 0) {
       yield put(updateMedia(resp.data));
       const channels = createChannels(resp.data);
-      //      console.log('createdChannels', channels);
       yield put(updateChannels(channels));
-      //      console.log('setChannel', channels[0]);
-      //      yield put(setChannel(channels[0]));
     }
+  } catch (err) {
+    console.error('err', err);
+  }
+}
+
+export function* requestUpdate() {
+  try {
+    const options = yield call(createHeader);
+    const reqSuf = `update_all`;
+    const resp = yield call(mediaApi.get, reqSuf, options);
+    console.info('update resp', resp.data);
   } catch (err) {
     console.error('err', err);
   }
@@ -56,12 +83,11 @@ export function* requestMedia() {
 
 export function* requestSignedURl(nxtEpisode) {
   try {
+    const options = yield call(createHeader);
     yield put(setCurrentEpisode(nxtEpisode));
     const reqSuf = `signed_url?path=${nxtEpisode}`;
-    const resp = yield call(mediaApi.get, reqSuf);
-    //    console.log('resp.data', resp.data);
+    const resp = yield call(mediaApi.get, reqSuf, options);
     yield put(setMediaSignedUrl(resp.data));
-
     if (!window.location.href.includes('/viewer')) {
       setTimeout(() => {
         window.location.href = '/viewer';
@@ -73,23 +99,14 @@ export function* requestSignedURl(nxtEpisode) {
 }
 
 export function* processMediaRequest(fastForward, currentMedia) {
-  //  console.log('processMediaRequest', currentMedia);
-
   const loadingMedia = yield select(makeSelectLoadingMedia());
-
-  //  console.log('loadingMedia', loadingMedia);
-
   if (loadingMedia) return;
-
-  //  console.log('processMediaRequest 2');
 
   yield put(setLoadingMedia(true));
   const order = yield select(makeSelectOptionsOrder());
   const star = yield select(makeSelectOptionsStar());
 
   const episode = yield select(makeSelectEpisode());
-
-  //  console.log('processMediaRequest', order, star, episode);
 
   let nxtEpisode =
     currentMedia.episodes[
@@ -161,6 +178,14 @@ export function* findNextMedia() {
   yield processMediaRequest(true, yield rollMedia());
 }
 
+export function* updateArkMedia() {
+  // Update the media if something has just been added to storage
+  yield put(setLoadingMedia(false));
+  yield put(requestUpdate());
+  yield put(flushMedia());
+  yield put(checkMedia());
+}
+
 export default function* mediaSagas() {
   //  console.log('mediaSagas');
   yield takeLatest(CHECK_MEDIA, requestMedia);
@@ -169,4 +194,5 @@ export default function* mediaSagas() {
   yield takeLatest(SET_SKIP_FORWARD, findNextMedia);
   yield takeLatest(SET_SHOW, setNextShow);
   yield takeLatest(SET_SELECTED_CHANNEL, findNextMedia);
+  yield takeLatest(SYNC_UPDATE, updateArkMedia);
 }

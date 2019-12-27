@@ -23,6 +23,7 @@ import {
   LOADING_SIGNED_URL,
   LOADING_MEDIA,
   SET_CURRENT_EPISODE,
+  SYNC_UPDATE,
 } from './constants';
 
 export function setMediaPlayerAvailable(playerAvailable) {
@@ -146,3 +147,16 @@ export function setShow(media) {
     media,
   };
 }
+
+export function syncUpdate() {
+  return {
+    type: SYNC_UPDATE,
+  };
+}
+
+export function flushMedia() {
+  return {
+    type: FLUSH_MEDIA,
+  };
+}
+

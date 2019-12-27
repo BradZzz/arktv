@@ -7,16 +7,22 @@ import { initialState } from './reducer';
 
 const selectLogin = state => state.login || initialState;
 
-const makeSelectLoginInfo = () =>
-  createSelector(
-    selectLogin,
-    loginState => loginState.loginInfo,
-  );
-
 const makeSelectLoadingInfo = () =>
   createSelector(
     selectLogin,
     loginState => loginState.loading,
   );
 
-export { selectLogin, makeSelectLoginInfo, makeSelectLoadingInfo };
+const makeSelectLoginInfo = () =>
+  createSelector(
+    selectLogin,
+    loginState => loginState.loginInfo,
+  );
+
+const makeSelectTokenInfo = () =>
+  createSelector(
+    selectLogin,
+    loginState => loginState.tokenInfo,
+  );
+
+export { selectLogin, makeSelectLoadingInfo, makeSelectLoginInfo, makeSelectTokenInfo };

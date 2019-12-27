@@ -15,7 +15,7 @@
  *    }
  */
 
-import { UPDATE_LOGIN, LOADING } from './constants';
+import { LOADING, UPDATE_LOGIN, UPDATE_TOKEN } from './constants';
 
 /**
  * Changes the input field of the form
@@ -24,6 +24,13 @@ import { UPDATE_LOGIN, LOADING } from './constants';
  *
  * @return {object} An action object with a type of CHANGE_USERNAME
  */
+export function loggingIn(loading) {
+  return {
+    type: LOADING,
+    loading,
+  };
+}
+
 export function updateLogin(loginInfo) {
   return {
     type: UPDATE_LOGIN,
@@ -31,9 +38,9 @@ export function updateLogin(loginInfo) {
   };
 }
 
-export function loggingIn(loading) {
+export function updateToken(tokenInfo) {
   return {
-    type: LOADING,
-    loading,
+    type: UPDATE_TOKEN,
+    tokenInfo,
   };
 }

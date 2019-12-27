@@ -8,10 +8,10 @@ import { createStructuredSelector } from 'reselect';
 import GoogleLogin from 'react-google-login';
 import { push } from 'connected-react-router';
 
-import { updateLogin } from './actions';
+import { updateLogin, updateToken } from './actions';
 
 export function LoginPage(props) {
-  const { onUpdateLogin, redirectLogin, login } = props;
+  const { onUpdateLogin, onUpdateToken, redirectLogin, login } = props;
 
   if (
     !(
@@ -24,6 +24,8 @@ export function LoginPage(props) {
 
   const responseGoogle = response => {
     try {
+      console.log('responseGoogle', response)
+      onUpdateToken(response.tokenId)
       onUpdateLogin(response.profileObj);
     } catch (err) {
       console.error(err);
@@ -47,6 +49,7 @@ export function LoginPage(props) {
 LoginPage.propTypes = {
   login: PropTypes.object,
   onUpdateLogin: PropTypes.func,
+  onUpdateToken: PropTypes.func,
   redirectLogin: PropTypes.func,
 };
 
@@ -55,6 +58,7 @@ const mapStateToProps = createStructuredSelector({});
 export function mapDispatchToProps(dispatch) {
   return {
     onUpdateLogin: creds => dispatch(updateLogin(creds)),
+    onUpdateToken: tkn => dispatch(updateToken(tkn)),
     redirectLogin: path => dispatch(push(path)),
   };
 }

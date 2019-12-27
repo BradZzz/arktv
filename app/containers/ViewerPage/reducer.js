@@ -20,6 +20,7 @@ import {
   LOADING_SIGNED_URL,
   LOADING_MEDIA,
   SET_CURRENT_EPISODE,
+  FLUSH_MEDIA,
 } from './constants';
 
 export const initialState = {
@@ -86,6 +87,9 @@ const MediaReducer = (state = initialState, action) =>
         break;
       case SET_MEDIA_ORDER:
         draft.options.order = action.order;
+        break;
+      case FLUSH_MEDIA:
+        draft.media = [];
         break;
     }
   });

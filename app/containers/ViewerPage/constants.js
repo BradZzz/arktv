@@ -22,3 +22,5 @@ export const CHECK_NEXT_MEDIA = 'app/MediaViewer/CHECK_NEXT_MEDIA';
 export const SET_SKIP_REWIND = 'app/MediaViewer/SET_SKIP_REWIND';
 export const SET_SKIP_FORWARD = 'app/MediaViewer/SET_SKIP_FORWARD';
 export const SET_SHOW = 'app/MediaViewer/SET_SHOW';
+export const SYNC_UPDATE = 'app/MediaViewer/SYNC_UPDATE';
+export const FLUSH_MEDIA = 'app/MediaViewer/FLUSH_MEDIA';

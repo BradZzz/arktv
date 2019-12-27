@@ -9,5 +9,6 @@
  * export const YOUR_ACTION_CONSTANT = 'yourproject/YourContainer/YOUR_ACTION_CONSTANT';
  */
 
-export const UPDATE_LOGIN = 'boilerplate/Login/UPDATE_LOGIN';
 export const LOADING = 'boilerplate/Login/LOADING';
+export const UPDATE_LOGIN = 'boilerplate/Login/UPDATE_LOGIN';
+export const UPDATE_TOKEN = 'boilerplate/Login/UPDATE_TOKEN';
