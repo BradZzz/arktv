@@ -535,8 +535,15 @@ function CastPlayer(props) {
     }
   } else {
     const castWrapper = new CastWrapper();
-    castWrapper.initializeCastPlayer();
-    onSelectPlayer(castWrapper);
+    window['__onGCastApiAvailable'] = function (isAvailable) {
+      if (isAvailable) {
+        console.log('chromecast available!')
+        castWrapper.initializeCastPlayer();
+        onSelectPlayer(castWrapper);
+      } else {
+        console.log('error loading chromecast')
+      }
+    };
   }
 
   return (
