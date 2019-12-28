@@ -79,7 +79,55 @@ const fard = [
   'tt0106115',
 ];
 
-export default function createChannels(medias) {
+export function PickRandom(min, max){
+  return min + Math.random() * (max - min)
+}
+
+export function CountByGenre(medias){
+  const genres = {};
+  for (const media of medias) {
+    for (const genre of media.Genre.split(', ')) {
+      if (!(genre in genres)) {
+        genres[genre] = 0
+      }
+      genres[genre] += 1
+    }
+  }
+  return genres
+}
+
+export function CountByRatings(medias){
+  const ratings = {};
+  for (const media of medias) {
+    const step1 = parseFloat(media.imdbRating)
+    const step2 = Math.round(step1)
+    const step3 = '' + step2
+    const rating = step3
+    if (!(rating in ratings)) {
+      ratings[rating] = { 'tv': 0, 'movie': 0 }
+    }
+    if (media.episodes.length > 1) {
+      ratings[rating]['tv'] += 1
+    } else {
+      ratings[rating]['movie'] += 1
+    }
+  }
+  return ratings
+}
+
+export function SplitByGenre(medias){
+  const genres = [];
+  for (const media of medias) {
+    for (const genre of media.Genre.split(', ')) {
+      if (!(genres.indexOf(genre) > -1)) {
+        genres.push(genre);
+      }
+    }
+  }
+  return genres
+}
+
+export function createChannels(medias) {
   const channels = [
     { name: 'Movie', filter: media => media.episodes.length === 1, media: [] },
     { name: 'TV', filter: media => media.episodes.length > 1, media: [] },
@@ -97,14 +145,7 @@ export default function createChannels(medias) {
     },
   ];
 
-  const genres = [];
-  for (const media of medias) {
-    for (const genre of media.Genre.split(', ')) {
-      if (!(genres.indexOf(genre) > -1)) {
-        genres.push(genre);
-      }
-    }
-  }
+  const genres = SplitByGenre(medias)
 
   for (const genre of genres) {
     channels.push({

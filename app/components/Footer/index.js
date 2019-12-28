@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
 import Header from 'components/Header';
+import BarChart from 'components/BarChart';
+import PieChart from 'components/PieChart';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -40,6 +42,7 @@ import {
   makeSelectOptionsPin,
   makeSelectOptionsStar,
   makeSelectOptionsOrder,
+  makeSelectMedia
 } from '../../containers/ViewerPage/selectors';
 import { makeSelectLocation } from '../../containers/App/selectors';
 
@@ -63,6 +66,7 @@ function Footer(props) {
     onSetOrder,
     onSkipRewind,
     onSkipForward,
+    media,
     location,
     channels,
     selectedChannel,
@@ -394,6 +398,26 @@ function Footer(props) {
 
   const mView = showMediaButtons ? buttonNavMedia : buttonNavInfo;
 
+  const analyticsView = (
+    <Grid container
+      direction="row"
+      justify="space-evenly"
+      alignItems="center">
+      <Grid item>
+        <h3>Genres</h3>
+        <div style={{ width: '600px', height: '400px' }}>
+          <PieChart media={media}/>
+        </div>
+      </Grid>
+      <Grid item>
+        <h3>Ratings</h3>
+        <div style={{ width: '600px', height: '400px' }}>
+          <BarChart media={media}/>
+        </div>
+      </Grid>
+    </Grid>
+  )
+
   return (
     <div
       style={{
@@ -415,7 +439,7 @@ function Footer(props) {
             setChannelChangerView(true);
           }}
         />
-        {showChannelChanger && location.pathname === '/viewer' ? mView : <></>}
+        {showChannelChanger && location.pathname === '/viewer' ? mView : analyticsView }
       </div>
       <div style={{ width: '100%' }}>
         <div
@@ -445,6 +469,7 @@ Footer.propTypes = {
   onSkipRewind: PropTypes.func,
   onSkipForward: PropTypes.func,
 
+  media: PropTypes.array,
   channels: PropTypes.array,
   selectedChannel: PropTypes.object,
   selected: PropTypes.object,
@@ -457,6 +482,7 @@ Footer.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
+  media: makeSelectMedia(),
   selectedChannel: makeSelectCurrentChannel(),
   channels: makeSelectChannels(),
   selected: makeSelectCurrentMedia(),

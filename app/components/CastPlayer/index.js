@@ -538,6 +538,7 @@ function CastPlayer(props) {
     window['__onGCastApiAvailable'] = function (isAvailable) {
       if (isAvailable) {
         console.log('chromecast available!')
+        console.log('window', window)
         castWrapper.initializeCastPlayer();
         onSelectPlayer(castWrapper);
       } else {
