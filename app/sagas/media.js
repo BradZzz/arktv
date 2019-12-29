@@ -36,7 +36,7 @@ import {
   makeSelectTokenInfo,
 } from '../containers/LoginPage/selectors';
 
-import createChannels from '../utils/mediaUtils';
+import { createChannels } from '../utils/mediaUtils';
 
 import mediaApi from '../utils/mediaApi';
 
