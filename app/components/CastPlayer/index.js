@@ -454,14 +454,15 @@ function CastPlayer(props) {
     onSelectPlayer,
   } = props;
 
-  //  console.log('props CastPlayer', props);
-
   const curMedia = {
     title: selected.Title,
     subtitle: selected.Plot,
     thumb: selected.Poster,
     url,
   };
+  
+  console.log('channel', channel);
+  console.log('curmedia', curMedia);
 
   const [seek, setSeek] = useState(0);
   const [isLocalPlayer, setIsLocalPlayer] = useState(true);
@@ -471,27 +472,76 @@ function CastPlayer(props) {
 
   const classes = useStyles();
 
-  /* eslint-disable-next-line no-unused-vars */
-  const handleSeek = (e, val) => {
-    player.handleSeek(val);
+
+  /*
+
+  TODO: Separate the code for the chromecast and local players
+
+  */
+
+  /* begin local code */
+
+  const handleLocalPlayerStateChange = function(state) {
+    if (
+      state.duration !== state.currentTime &&
+      state.currentTime > 0 &&
+      state.duration > 0
+    ) {
+      hasPlayedLocal = true;
+      onSelectLoadingMedia(false);
+    }
+    if (
+      !localLoading &&
+      playerAvailable && !player.checkLoaded() &&
+      state.ended &&
+      hasPlayedLocal &&
+      state.currentSrc === curMedia.url
+    ) {
+      localLoading = true;
+      player.setNextChannelMedia();
+    }
   };
 
-  /* eslint-disable-next-line no-unused-vars */
-  const handleVolume = (e, val) => {
-    player.handleVolume(val);
-  };
+  /* end local code */
+
+  /* begin chromecast code */
+  //Initialize button functions
 
   /* eslint-disable-next-line no-unused-vars */
-  const handlePause = (e, val) => {
-    player.handlePause();
-  };
+  let handleSeek = (e, val) => { };
 
   /* eslint-disable-next-line no-unused-vars */
-  const handlePlay = (e, val) => {
-    player.handlePlay();
-  };
+  let handleVolume = (e, val) => { };
+
+  /* eslint-disable-next-line no-unused-vars */
+  let handlePause = (e, val) => { };
+
+  /* eslint-disable-next-line no-unused-vars */
+  let handlePlay = (e, val) => { };
+
+  /* end chromecast code */
 
   if (playerAvailable) {
+    /* eslint-disable-next-line no-unused-vars */
+    handleSeek = (e, val) => {
+      player.handleSeek(val);
+    };
+
+    /* eslint-disable-next-line no-unused-vars */
+    handleVolume = (e, val) => {
+      player.handleVolume(val);
+    };
+
+    /* eslint-disable-next-line no-unused-vars */
+    handlePause = (e, val) => {
+      player.handlePause();
+    };
+
+    /* eslint-disable-next-line no-unused-vars */
+    handlePlay = (e, val) => {
+      player.handlePlay();
+    };
+
     // For the chromecast to access the seekbar locally and movie it with media
     player.setSeekBarRef(seek, setSeek);
     // A reference to the localplayer, so that chromecast can move it's seek and play when chromecast is stopped
@@ -509,26 +559,26 @@ function CastPlayer(props) {
       player.loadMedia(curMedia);
     }
 
-    const handleLocalPlayerStateChange = function(state) {
-      if (
-        state.duration !== state.currentTime &&
-        state.currentTime > 0 &&
-        state.duration > 0
-      ) {
-        hasPlayedLocal = true;
-        onSelectLoadingMedia(false);
-      }
-      if (
-        !localLoading &&
-        !player.checkLoaded() &&
-        state.ended &&
-        hasPlayedLocal &&
-        state.currentSrc === curMedia.url
-      ) {
-        localLoading = true;
-        player.setNextChannelMedia();
-      }
-    };
+//    const handleLocalPlayerStateChange = function(state) {
+//      if (
+//        state.duration !== state.currentTime &&
+//        state.currentTime > 0 &&
+//        state.duration > 0
+//      ) {
+//        hasPlayedLocal = true;
+//        onSelectLoadingMedia(false);
+//      }
+//      if (
+//        !localLoading &&
+//        !player.checkLoaded() &&
+//        state.ended &&
+//        hasPlayedLocal &&
+//        state.currentSrc === curMedia.url
+//      ) {
+//        localLoading = true;
+//        player.setNextChannelMedia();
+//      }
+//    };
 
     if ('subscribeToStateChange' in localPlayer) {
       localPlayer.subscribeToStateChange(handleLocalPlayerStateChange);
