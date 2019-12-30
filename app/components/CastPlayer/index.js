@@ -333,7 +333,11 @@ CastWrapper.prototype.setupRemotePlayer = function() {
   playerTarget.load = function(meta) {
     // The remote player isn't available. Load into the local player instead
     if (cast.framework.CastContext.getInstance().getCurrentSession() === null) {
-      this.playerHandler.localPlayer.load();
+      if ('load' in this.playerHandler.localPlayer) {
+        this.playerHandler.localPlayer.load();
+      } else {
+        console.log('error loading player', this.playerHandler)
+      }
       return;
     }
 
@@ -460,7 +464,7 @@ function CastPlayer(props) {
     thumb: selected.Poster,
     url,
   };
-  
+
   console.log('channel', channel);
   console.log('curmedia', curMedia);
 
@@ -492,7 +496,8 @@ function CastPlayer(props) {
     }
     if (
       !localLoading &&
-      playerAvailable && !player.checkLoaded() &&
+      playerAvailable &&
+      !player.checkLoaded() &&
       state.ended &&
       hasPlayedLocal &&
       state.currentSrc === curMedia.url

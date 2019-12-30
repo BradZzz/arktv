@@ -7,12 +7,20 @@ import PropTypes from 'prop-types';
 function LocalPlayer(props) {
   const { src, thumb, isLocal, setLocalPlayerRef } = props;
 
-  return (
+  let toggleLocal = isLocal
+  let toggleThumb = thumb
+
+  if (!src) {
+    toggleLocal = false
+    toggleThumb = 'https://media.istockphoto.com/vectors/television-icon-vector-tv-solid-logo-illustration-pictogram-isolated-vector-id669306300?k=6&m=669306300&s=170667a&w=0&h=MV9vflwxTRIhu1nuj_CU2k2H9pBJrzZTO7VLWUVaZXc='
+  }
+
+  let view = (
     <div style={{ width: '100%', margin: '0 auto' }}>
       <div
         style={{
-          display: isLocal ? 'None' : 'Block',
-          backgroundImage: `url(${thumb})`,
+          display: 'Block',
+          backgroundImage: `url(${toggleThumb})`,
           position: 'relative',
           height: '30em',
           backgroundRepeat: 'round',
@@ -30,7 +38,7 @@ function LocalPlayer(props) {
         />
         <img
           alt="now casting"
-          src={thumb}
+          src={toggleThumb}
           style={{
             position: 'absolute',
             left: '40%',
@@ -40,33 +48,43 @@ function LocalPlayer(props) {
           }}
         />
       </div>
-      <div
-        style={{
-          display: isLocal ? 'Block' : 'None',
-          position: 'relative',
-          height: '60vh',
-        }}
-      >
-        <Player
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-          }}
-          playsInline
-          ref={player => setLocalPlayerRef(player)}
-          videoId="video-1"
-          preload="auto"
-          fluid={false}
-          width="100%"
-          height="100%"
-          autoPlay
-        >
-          <source src={src} />
-        </Player>
-      </div>
     </div>
-  );
+  )
+
+  if (toggleLocal) {
+    console.log('loading local player')
+    view = (
+      <div style={{ width: '100%', margin: '0 auto' }}>
+        <div
+          style={{
+            display: 'Block',
+            position: 'relative',
+            height: '60vh',
+          }}
+        >
+          <Player
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+            }}
+            playsInline
+            ref={player => setLocalPlayerRef(player)}
+            videoId="video-1"
+            preload="auto"
+            fluid={false}
+            width="100%"
+            height="100%"
+            autoPlay
+          >
+            <source src={src} />
+          </Player>
+        </div>
+      </div>
+    )
+  }
+
+  return view
 }
 
 LocalPlayer.propTypes = {
