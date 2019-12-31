@@ -585,7 +585,7 @@ function CastPlayer(props) {
 //      }
 //    };
 
-    if ('subscribeToStateChange' in localPlayer) {
+    if (localPlayer && 'subscribeToStateChange' in localPlayer) {
       localPlayer.subscribeToStateChange(handleLocalPlayerStateChange);
     }
   } else {
