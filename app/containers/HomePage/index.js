@@ -112,7 +112,7 @@ export function HomePage(props) {
               </Grid>
               <Grid item style={{ width: '55%', padding: '2em 0' }}>
                 <Grid container direction="row">
-                  <Grid item style={{ fontSize: '2em', fontWeight: 'bold' }}>
+                  <Grid item style={{ fontSize: '1.8em', fontWeight: 'bold' }}>
                     {med.Title}
                   </Grid>
                   <Grid item style={{ padding: '.7em' }}>
@@ -181,7 +181,7 @@ export function HomePage(props) {
               </Grid>
               <Grid item style={{ width: '55%', padding: '2em 0' }}>
                 <Grid container direction="row">
-                  <Grid item style={{ fontSize: '2em', fontWeight: 'bold' }}>
+                  <Grid item style={{ fontSize: '1.8em', fontWeight: 'bold' }}>
                     {med.Title}
                   </Grid>
                   <Grid item style={{ padding: '.7em' }}>

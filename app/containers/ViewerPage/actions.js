@@ -24,6 +24,7 @@ import {
   LOADING_MEDIA,
   SET_CURRENT_EPISODE,
   SYNC_UPDATE,
+  FLUSH_MEDIA,
 } from './constants';
 
 export function setMediaPlayerAvailable(playerAvailable) {

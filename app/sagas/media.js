@@ -73,9 +73,8 @@ export function* requestMedia() {
 export function* requestUpdate() {
   try {
     const options = yield call(createHeader);
-    const reqSuf = `update_all`;
-    const resp = yield call(mediaApi.get, reqSuf, options);
-    console.info('update resp', resp.data);
+    const reqSuf = `update_all?load=soft`;
+    yield call(mediaApi.get, reqSuf, options);
   } catch (err) {
     console.error('err', err);
   }
@@ -181,9 +180,9 @@ export function* findNextMedia() {
 export function* updateArkMedia() {
   // Update the media if something has just been added to storage
   yield put(setLoadingMedia(false));
-  yield put(requestUpdate());
-  yield put(flushMedia());
-  yield put(checkMedia());
+  yield call(requestUpdate);
+  yield call(flushMedia);
+  yield call(checkMedia);
 }
 
 export default function* mediaSagas() {
