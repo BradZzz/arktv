@@ -1,5 +1,5 @@
 ## Current Version
-<img src = "./screens/demo.gif"/>
+<img src = "./screens/demo.gif" width="600"/>
 
 ## Description
 Custom media player designed to mimic real television from media stored in cloud services. The framework for this service is provided in this repository, but the endpoints that provide the specific media locations are absent due to copyright concerns. The website also has the ability to cast the media to external devices, making it convenient to use anywhere.
