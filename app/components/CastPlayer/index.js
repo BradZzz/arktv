@@ -190,6 +190,7 @@ function CastPlayer(props) {
   } else {
     const castWrapper = new CastWrapper();
     // Run the init to setup the player locally first.
+    castWrapper.setIsLocalPlayerRef(isLocalPlayer, setIsLocalPlayer);
     castWrapper.initializeCastPlayer();
     onSelectPlayer(castWrapper);
 
@@ -198,6 +199,7 @@ function CastPlayer(props) {
     /* eslint-disable-next-line no-underscore-dangle */
     window.__onGCastApiAvailable = function(isAvailable) {
       if (isAvailable) {
+        castWrapper.setIsLocalPlayerRef(isLocalPlayer, setIsLocalPlayer);
         castWrapper.initializeCastPlayer();
         onSelectPlayer(castWrapper);
       } else {
