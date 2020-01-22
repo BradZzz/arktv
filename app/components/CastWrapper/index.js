@@ -70,81 +70,6 @@ const PlayerHandler = function() {
 const CastWrapper = function() {
   this.playerHandler = new PlayerHandler(this);
   this.playerHandler.lastPosRecorded = 0;
-
-  /* Send the media url through here */
-  this.loadMedia = function(media) {
-    this.playerHandler.load(media);
-  };
-
-  /* Seek bar */
-  this.handleSeek = function(val) {
-    this.playerHandler.seekTo(val);
-  };
-
-  /* Set volume */
-  this.handleVolume = function(val) {
-    this.playerHandler.setVolume(val / parseFloat(100));
-  };
-
-  /* Handle toggle pause */
-  this.handlePause = function() {
-    this.playerHandler.pause();
-  };
-
-  /* Handle play */
-  this.handlePlay = function() {
-    this.playerHandler.play();
-  };
-
-  /* The current media being played */
-  this.currentMedia = function() {
-    return this.playerHandler.currentMedia;
-  };
-
-  /* Reference to the seekbar in the UI so the chromecast can call to it remotely */
-  this.setSeekBarRef = function(thisSeek, setSeek) {
-    this.playerHandler.thisSeek = thisSeek;
-    this.playerHandler.setSeek = setSeek;
-  };
-
-  /* Set whether media is playing locally or not */
-  this.setIsLocalPlayerRef = function(isLocalPlayer, setIsLocalPlayer) {
-    this.playerHandler.isLocalPlayer = isLocalPlayer;
-    this.playerHandler.setIsLocalPlayer = setIsLocalPlayer;
-  };
-
-  /* Set a reference to the local player here */
-  this.setLocalPlayerRef = function(localPlayer) {
-    this.playerHandler.localPlayer = localPlayer;
-  };
-
-  /* Allows chromecast to pick next show */
-  this.setMediaController = function(onSetMedia) {
-    this.playerHandler.onSetMedia = onSetMedia;
-  };
-
-  /* Sets the current channel for reference */
-  this.setChannel = function(channel) {
-    this.playerHandler.channel = channel;
-  };
-
-  /* Prevents the chromecast from loading another media until the next media loads correctly */
-  this.setMediaLoadingFlags = function(loadingMedia, onSelectLoadingMedia) {
-    this.playerHandler.loadingMedia = loadingMedia;
-    this.playerHandler.onSelectLoadingMedia = onSelectLoadingMedia;
-  };
-
-  /* Continue the current channel's media */
-  this.setNextChannelMedia = function() {
-    this.playerHandler.onSetMedia();
-  };
-
-  /* Check to see if the cast player is loaded */
-  this.checkLoaded = function() {
-    return (
-      cast.framework.CastContext.getInstance().getCurrentSession() !== null
-    );
-  };
 };
 
 /* Everything in here needs to be setup in another component */
@@ -155,12 +80,6 @@ CastWrapper.prototype.initializeCastPlayer = function() {
   // Google Cast Developer Console), or optionally
   // use the chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID
   options.receiverApplicationId = '72A3C8A4';
-
-  /* Here the local media needs to be set as default */
-  if (!chrome.cast) {
-    this.setPlayer(false);
-    return;
-  }
 
   // Auto join policy can be one of the following three:
   // ORIGIN_SCOPED - Auto connect from same appId and page origin
@@ -354,6 +273,81 @@ CastWrapper.prototype.setupRemotePlayer = function() {
   }.bind(this);
 
   this.playerHandler.setTarget(playerTarget);
+};
+
+/* Send the media url through here */
+CastWrapper.prototype.loadMedia = function(media) {
+  this.playerHandler.load(media);
+};
+
+/* Seek bar */
+CastWrapper.prototype.handleSeek = function(val) {
+  this.playerHandler.seekTo(val);
+};
+
+/* Set volume */
+CastWrapper.prototype.handleVolume = function(val) {
+  this.playerHandler.setVolume(val / parseFloat(100));
+};
+
+/* Handle toggle pause */
+CastWrapper.prototype.handlePause = function() {
+  this.playerHandler.pause();
+};
+
+/* Handle play */
+CastWrapper.prototype.handlePlay = function() {
+  this.playerHandler.play();
+};
+
+/* The current media being played */
+CastWrapper.prototype.currentMedia = function() {
+  return this.playerHandler.currentMedia;
+};
+
+/* Reference to the seekbar in the UI so the chromecast can call to it remotely */
+CastWrapper.prototype.setSeekBarRef = function(thisSeek, setSeek) {
+  this.playerHandler.thisSeek = thisSeek;
+  this.playerHandler.setSeek = setSeek;
+};
+
+/* Set whether media is playing locally or not */
+CastWrapper.prototype.setIsLocalPlayerRef = function(isLocalPlayer, setIsLocalPlayer) {
+  this.playerHandler.isLocalPlayer = isLocalPlayer;
+  this.playerHandler.setIsLocalPlayer = setIsLocalPlayer;
+};
+
+/* Set a reference to the local player here */
+CastWrapper.prototype.setLocalPlayerRef = function(localPlayer) {
+  this.playerHandler.localPlayer = localPlayer;
+};
+
+/* Allows chromecast to pick next show */
+CastWrapper.prototype.setMediaController = function(onSetMedia) {
+  this.playerHandler.onSetMedia = onSetMedia;
+};
+
+/* Sets the current channel for reference */
+CastWrapper.prototype.setChannel = function(channel) {
+  this.playerHandler.channel = channel;
+};
+
+/* Prevents the chromecast from loading another media until the next media loads correctly */
+CastWrapper.prototype.setMediaLoadingFlags = function(loadingMedia, onSelectLoadingMedia) {
+  this.playerHandler.loadingMedia = loadingMedia;
+  this.playerHandler.onSelectLoadingMedia = onSelectLoadingMedia;
+};
+
+/* Continue the current channel's media */
+CastWrapper.prototype.setNextChannelMedia = function() {
+  this.playerHandler.onSetMedia();
+};
+
+/* Check to see if the cast player is loaded */
+CastWrapper.prototype.checkLoaded = function() {
+  return (
+    cast.framework.CastContext.getInstance().getCurrentSession() !== null
+  );
 };
 
 export default CastWrapper;
