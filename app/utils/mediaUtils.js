@@ -32,6 +32,9 @@ const drulz = [
   'tt0106115',
   'tt0235923',
   'tt4731072',
+  'tt2297757',
+  'tt0175058',
+  'tt7908628'
 ];
 const fard = [
   'tt0397306',
@@ -77,6 +80,8 @@ const fard = [
   'tt0251439',
   'tt2058221',
   'tt0106115',
+  'tt2297757',
+  'tt0197148'
 ];
 
 export function PickRandom(min, max){
