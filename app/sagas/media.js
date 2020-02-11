@@ -24,6 +24,7 @@ import {
 } from '../containers/ViewerPage/constants';
 import {
   makeSelectMedia,
+  makeSelectChannels,
   makeSelectCurrentMedia,
   makeSelectEpisode,
   makeSelectOptionsOrder,
@@ -57,16 +58,21 @@ function* createHeader() {
 export function* requestMedia() {
   try {
     const options = yield call(createHeader);
-    const reqSuf = `get_media`;
-    const resp = yield call(mediaApi.get, reqSuf, options);
+//    const channels = yield call(makeSelectChannels());
+//    const reqSuf = `get_media`;
+//    const resp = yield call(mediaApi.get, reqSuf, options);
     const currentMedia = yield select(makeSelectMedia());
+    const channels = yield select(makeSelectChannels());
     if (currentMedia.length === 0) {
+      const reqSuf = `get_media`;
+      const resp = yield call(mediaApi.get, reqSuf, options);
       yield put(updateMedia(resp.data));
-      const channels = createChannels(resp.data);
-      yield put(updateChannels(channels));
+      yield put(updateChannels(createChannels(resp.data)));
+    } else if (channels.length === 0 && currentMedia.length > 0) {
+      yield put(updateChannels(createChannels(currentMedia)));
     }
   } catch (err) {
-    console.error('err', err);
+    console.error('err requestMedia', err);
   }
 }
 
