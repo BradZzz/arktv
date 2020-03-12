@@ -24,8 +24,7 @@ function PieChart(props) {
     })
   }
 
-  return (
-    <ResponsivePieCanvas
+  return <ResponsivePieCanvas
     data={data}
       margin={{ top: 40, right: 200, bottom: 40, left: 80 }}
     pixelRatio={1}

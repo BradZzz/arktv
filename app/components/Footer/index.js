@@ -121,15 +121,33 @@ function Footer(props) {
     },
   };
 
+//  const buttonNavInfo = (
+//    <ButtonGroup
+//      size="small"
+//      aria-label="small outlined button group"
+//      style={{ display: 'flex', height: '3em' }}
+//    >
+//      <Button style={{ flex: 1 }} onClick={buttonMeta.forward.onClick}>
+//        {buttonMeta.forward.icon}
+//      </Button>
+//      <Button style={{ flex: 1 }} onClick={buttonMeta.channels.onClick}>
+//        {buttonMeta.channels.icon}
+//      </Button>
+//      <Button style={{ flex: 1 }} onClick={buttonMeta.media.onClick}>
+//        {buttonMeta.media.icon}
+//      </Button>
+//      <Button style={{ flex: 1 }} onClick={buttonMeta.media_info.onClick}>
+//        {buttonMeta.media_info.icon}
+//      </Button>
+//    </ButtonGroup>
+//  );
+
   const buttonNavInfo = (
     <ButtonGroup
       size="small"
       aria-label="small outlined button group"
       style={{ display: 'flex', height: '3em' }}
     >
-      <Button style={{ flex: 1 }} onClick={buttonMeta.forward.onClick}>
-        {buttonMeta.forward.icon}
-      </Button>
       <Button style={{ flex: 1 }} onClick={buttonMeta.channels.onClick}>
         {buttonMeta.channels.icon}
       </Button>
@@ -399,7 +417,8 @@ function Footer(props) {
     mediaToggleFloggle = mediaInfoView;
   }
 
-  const mView = showMediaButtons ? buttonNavMedia : buttonNavInfo;
+//  const mView = showMediaButtons ? buttonNavMedia : buttonNavInfo;
+  const mView = buttonNavInfo;
 
   const analyticsView = (
     <Grid container direction="row" justify="space-evenly" alignItems="center">
