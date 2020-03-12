@@ -33,9 +33,7 @@ import {
   makeSelectCurrentChannel,
   makeSelectLoadingMedia,
 } from '../containers/ViewerPage/selectors';
-import {
-  makeSelectTokenInfo,
-} from '../containers/LoginPage/selectors';
+import { makeSelectTokenInfo } from '../containers/LoginPage/selectors';
 
 import { createChannels } from '../utils/mediaUtils';
 
@@ -49,8 +47,8 @@ function* createHeader() {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': '*',
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${idToken}`,
-    }
+      Authorization: `Bearer ${idToken}`,
+    },
   };
   return options;
 }
@@ -58,9 +56,9 @@ function* createHeader() {
 export function* requestMedia() {
   try {
     const options = yield call(createHeader);
-//    const channels = yield call(makeSelectChannels());
-//    const reqSuf = `get_media`;
-//    const resp = yield call(mediaApi.get, reqSuf, options);
+    //    const channels = yield call(makeSelectChannels());
+    //    const reqSuf = `get_media`;
+    //    const resp = yield call(mediaApi.get, reqSuf, options);
     const currentMedia = yield select(makeSelectMedia());
     const channels = yield select(makeSelectChannels());
     if (currentMedia.length === 0) {

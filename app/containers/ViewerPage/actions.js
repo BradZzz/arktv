@@ -160,4 +160,3 @@ export function flushMedia() {
     type: FLUSH_MEDIA,
   };
 }
-

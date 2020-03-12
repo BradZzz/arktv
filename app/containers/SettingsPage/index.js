@@ -15,15 +15,13 @@ import { compose } from 'redux';
 
 import H1 from 'components/H1';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import messages from './messages';
 import { unloadState } from '../../store/localStorage';
-import Grid from '@material-ui/core/Grid';
-import {
-  syncUpdate,
-} from '../ViewerPage/actions';
+import { syncUpdate } from '../ViewerPage/actions';
 
 function SettingsPage(props) {
-  const { onUpdateMedia } = props
+  const { onUpdateMedia } = props;
 
   const logout = response => {
     try {
@@ -49,16 +47,21 @@ function SettingsPage(props) {
       </H1>
       <Grid container direction="column">
         <Grid item>
-        <Button variant="contained" color="primary" onClick={onUpdateMedia} style={{ margin: '1em 0' }}>
-          Sync Media
-        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onUpdateMedia}
+            style={{ margin: '1em 0' }}
+          >
+            Sync Media
+          </Button>
         </Grid>
         <Grid item>
-        <GoogleLogout
-          clientId="1095795417803-8qaafo9b88j3kt61csjsi9mnkrjf037o.apps.googleusercontent.com"
-          buttonText="Logout"
-          onLogoutSuccess={logout}
-        />
+          <GoogleLogout
+            clientId="1095795417803-8qaafo9b88j3kt61csjsi9mnkrjf037o.apps.googleusercontent.com"
+            buttonText="Logout"
+            onLogoutSuccess={logout}
+          />
         </Grid>
       </Grid>
     </div>
@@ -69,9 +72,7 @@ SettingsPage.propTypes = {
   onUpdateMedia: PropTypes.func,
 };
 
-const mapStateToProps = createStructuredSelector({
-
-});
+const mapStateToProps = createStructuredSelector({});
 
 export function mapDispatchToProps(dispatch) {
   return {

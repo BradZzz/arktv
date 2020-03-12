@@ -24,8 +24,8 @@ export function LoginPage(props) {
 
   const responseGoogle = response => {
     try {
-      console.log('responseGoogle', response)
-      onUpdateToken(response.tokenId)
+      console.log('responseGoogle', response);
+      onUpdateToken(response.tokenId);
       onUpdateLogin(response.profileObj);
     } catch (err) {
       console.error(err);

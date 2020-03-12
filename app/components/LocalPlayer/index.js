@@ -7,12 +7,13 @@ import PropTypes from 'prop-types';
 function LocalPlayer(props) {
   const { src, thumb, isLocal, setLocalPlayerRef } = props;
 
-  let toggleLocal = isLocal
-  let toggleThumb = thumb
+  let toggleLocal = isLocal;
+  let toggleThumb = thumb;
 
   if (!src) {
-    toggleLocal = false
-    toggleThumb = 'https://media.istockphoto.com/vectors/television-icon-vector-tv-solid-logo-illustration-pictogram-isolated-vector-id669306300?k=6&m=669306300&s=170667a&w=0&h=MV9vflwxTRIhu1nuj_CU2k2H9pBJrzZTO7VLWUVaZXc='
+    toggleLocal = false;
+    toggleThumb =
+      'https://media.istockphoto.com/vectors/television-icon-vector-tv-solid-logo-illustration-pictogram-isolated-vector-id669306300?k=6&m=669306300&s=170667a&w=0&h=MV9vflwxTRIhu1nuj_CU2k2H9pBJrzZTO7VLWUVaZXc=';
   }
 
   let view = (
@@ -49,10 +50,10 @@ function LocalPlayer(props) {
         />
       </div>
     </div>
-  )
+  );
 
   if (toggleLocal) {
-    console.log('loading local player')
+    console.log('loading local player');
     view = (
       <div style={{ width: '100%', margin: '0 auto' }}>
         <div
@@ -81,10 +82,10 @@ function LocalPlayer(props) {
           </Player>
         </div>
       </div>
-    )
+    );
   }
 
-  return view
+  return view;
 }
 
 LocalPlayer.propTypes = {

@@ -312,7 +312,10 @@ CastWrapper.prototype.setSeekBarRef = function(thisSeek, setSeek) {
 };
 
 /* Set whether media is playing locally or not */
-CastWrapper.prototype.setIsLocalPlayerRef = function(isLocalPlayer, setIsLocalPlayer) {
+CastWrapper.prototype.setIsLocalPlayerRef = function(
+  isLocalPlayer,
+  setIsLocalPlayer,
+) {
   this.playerHandler.isLocalPlayer = isLocalPlayer;
   this.playerHandler.setIsLocalPlayer = setIsLocalPlayer;
 };
@@ -333,7 +336,10 @@ CastWrapper.prototype.setChannel = function(channel) {
 };
 
 /* Prevents the chromecast from loading another media until the next media loads correctly */
-CastWrapper.prototype.setMediaLoadingFlags = function(loadingMedia, onSelectLoadingMedia) {
+CastWrapper.prototype.setMediaLoadingFlags = function(
+  loadingMedia,
+  onSelectLoadingMedia,
+) {
   this.playerHandler.loadingMedia = loadingMedia;
   this.playerHandler.onSelectLoadingMedia = onSelectLoadingMedia;
 };
@@ -345,9 +351,7 @@ CastWrapper.prototype.setNextChannelMedia = function() {
 
 /* Check to see if the cast player is loaded */
 CastWrapper.prototype.checkLoaded = function() {
-  return (
-    cast.framework.CastContext.getInstance().getCurrentSession() !== null
-  );
+  return cast.framework.CastContext.getInstance().getCurrentSession() !== null;
 };
 
 export default CastWrapper;

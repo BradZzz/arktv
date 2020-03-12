@@ -25,4 +25,9 @@ const makeSelectTokenInfo = () =>
     loginState => loginState.tokenInfo,
   );
 
-export { selectLogin, makeSelectLoadingInfo, makeSelectLoginInfo, makeSelectTokenInfo };
+export {
+  selectLogin,
+  makeSelectLoadingInfo,
+  makeSelectLoginInfo,
+  makeSelectTokenInfo,
+};

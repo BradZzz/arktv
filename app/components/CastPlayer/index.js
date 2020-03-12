@@ -4,11 +4,17 @@
 import React, { useState } from 'react';
 
 import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Slider from '@material-ui/core/Slider';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
+import StarIcon from '@material-ui/icons/Star';
+import ReorderIcon from '@material-ui/icons/Reorder';
+import PinDropIcon from '@material-ui/icons/PinDrop';
+import FastForwardIcon from '@material-ui/icons/FastForward';
+import FastRewindIcon from '@material-ui/icons/FastRewind';
 import play from './images/play.png';
 import pause from './images/pause.png';
 import pauseHover from './images/pause-hover.png';
@@ -24,12 +30,20 @@ import {
   setMediaPlayerObject,
   setMediaPlayerAvailable,
   setLoadingMedia,
+  setMediaPin,
+  setMediaStar,
+  setMediaOrder,
+  setSkipRewind,
+  setSkipForward,
 } from '../../containers/ViewerPage/actions';
 import {
   makeSelectPlayerAvailable,
   makeSelectPlayer,
   makeSelectLoadingMedia,
   makeSelectSignedUrl,
+  makeSelectOptionsPin,
+  makeSelectOptionsStar,
+  makeSelectOptionsOrder,
 } from '../../containers/ViewerPage/selectors';
 
 const useStyles = makeStyles(() => ({
@@ -42,7 +56,6 @@ const useStyles = makeStyles(() => ({
     margin: '.5em 1em',
   },
   mediaWrap: {
-    height: '8em',
     background: '#000000',
     position: 'relative',
   },
@@ -69,9 +82,14 @@ const useStyles = makeStyles(() => ({
   audioSlider: {
     margin: '.8em 1em',
   },
-  play: {
+  button: {
     height: '3em',
     margin: '1em',
+  },
+  buttonSmall: {
+    margin: '0 1em',
+  },
+  play: {
     backgroundImage: `url("${play}")`,
     '&:hover': {
       backgroundImage: `url("${playHover}")`,
@@ -81,8 +99,6 @@ const useStyles = makeStyles(() => ({
     },
   },
   pause: {
-    height: '3em',
-    margin: '1em',
     backgroundImage: `url("${pause}")`,
     '&:hover': {
       backgroundImage: `url("${pauseHover}")`,
@@ -104,6 +120,14 @@ function CastPlayer(props) {
     loadingMedia,
     onSelectLoadingMedia,
     onSelectPlayer,
+    pin,
+    star,
+    order,
+    onSetPin,
+    onSetStar,
+    onSetOrder,
+    onSkipRewind,
+    onSkipForward,
   } = props;
 
   const curMedia = {
@@ -157,27 +181,23 @@ function CastPlayer(props) {
   /* end local code */
 
   /* eslint-disable-next-line no-unused-vars */
-  let handleSeek = (e, val) => {
-    if(player)
-      player.handleSeek(val);
+  const handleSeek = (e, val) => {
+    if (player) player.handleSeek(val);
   };
 
   /* eslint-disable-next-line no-unused-vars */
-  let handleVolume = (e, val) => {
-    if(player)
-      player.handleVolume(val);
+  const handleVolume = (e, val) => {
+    if (player) player.handleVolume(val);
   };
 
   /* eslint-disable-next-line no-unused-vars */
-  let handlePause = (e, val) => {
-    if(player)
-      player.handlePause();
+  const handlePause = (e, val) => {
+    if (player) player.handlePause();
   };
 
   /* eslint-disable-next-line no-unused-vars */
-  let handlePlay = (e, val) => {
-    if(player)
-      player.handlePlay();
+  const handlePlay = (e, val) => {
+    if (player) player.handlePlay();
   };
 
   if (playerAvailable && 'setSeekBarRef' in player) {
@@ -205,13 +225,13 @@ function CastPlayer(props) {
     const castWrapper = new CastWrapper();
     onSelectPlayer(castWrapper);
 
-    window['__onGCastApiAvailable'] = function (isAvailable) {
+    window.__onGCastApiAvailable = function(isAvailable) {
       if (isAvailable) {
-        console.log('chromecast available!')
+        console.log('chromecast available!');
         castWrapper.initializeCastPlayer();
         onSelectPlayer(castWrapper);
       } else {
-        console.log('error loading chromecast')
+        console.log('error loading chromecast');
       }
     };
   }
@@ -245,16 +265,57 @@ function CastPlayer(props) {
         <div style={{ display: 'inline-flex' }}>
           <Button
             id="play"
-            className={classes.play}
+            className={[classes.play, classes.button].join(' ')}
             onClick={handlePlay}
-            style={{ display: isLocalPlayer ? 'None' : 'Block' }}
+            style={{
+              display: 'Block',
+              visibility: isLocalPlayer ? 'hidden' : 'initial',
+            }}
           />
           <Button
             id="pause"
-            className={classes.pause}
+            className={[classes.pause, classes.button].join(' ')}
             onClick={handlePause}
-            style={{ display: isLocalPlayer ? 'None' : 'Block' }}
+            style={{
+              display: 'Block',
+              visibility: isLocalPlayer ? 'hidden' : 'initial',
+            }}
           />
+          <Button
+            className={[classes.buttonSmall].join(' ')}
+            style={{ color: 'white', marginLeft: '5em' }}
+            onClick={() => onSkipRewind()}
+          >
+            <FastRewindIcon />
+          </Button>
+          <Button
+            className={[classes.buttonSmall].join(' ')}
+            style={{ color: star ? 'red' : 'white' }}
+            onClick={() => onSetStar(!star)}
+          >
+            <StarIcon />
+          </Button>
+          <Button
+            className={[classes.buttonSmall].join(' ')}
+            style={{ color: order ? 'red' : 'white' }}
+            onClick={() => onSetOrder(!order)}
+          >
+            <ReorderIcon />
+          </Button>
+          <Button
+            className={[classes.buttonSmall].join(' ')}
+            style={{ color: pin ? 'red' : 'white' }}
+            onClick={() => onSetPin(!pin)}
+          >
+            <PinDropIcon />
+          </Button>
+          <Button
+            className={[classes.buttonSmall].join(' ')}
+            style={{ color: 'white' }}
+            onClick={() => onSkipForward()}
+          >
+            <FastForwardIcon />
+          </Button>
           <div
             className={classes.audioWrap}
             style={{ display: isLocalPlayer ? 'None' : 'flex' }}
@@ -295,6 +356,11 @@ CastPlayer.propTypes = {
   channel: PropTypes.object,
   onSetMedia: PropTypes.func,
   onSelectPlayer: PropTypes.func,
+  onSetPin: PropTypes.func,
+  onSetStar: PropTypes.func,
+  onSetOrder: PropTypes.func,
+  onSkipRewind: PropTypes.func,
+  onSkipForward: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -302,6 +368,10 @@ const mapStateToProps = createStructuredSelector({
   player: makeSelectPlayer(),
   url: makeSelectSignedUrl(),
   loadingMedia: makeSelectLoadingMedia(),
+
+  pin: makeSelectOptionsPin(),
+  star: makeSelectOptionsStar(),
+  order: makeSelectOptionsOrder(),
 });
 
 export function mapDispatchToProps(dispatch) {
@@ -309,6 +379,11 @@ export function mapDispatchToProps(dispatch) {
     onSelectAvailable: avail => dispatch(setMediaPlayerAvailable(avail)),
     onSelectPlayer: player => dispatch(setMediaPlayerObject(player)),
     onSelectLoadingMedia: loading => dispatch(setLoadingMedia(loading)),
+    onSkipRewind: () => dispatch(setSkipRewind()),
+    onSetPin: pin => dispatch(setMediaPin(pin)),
+    onSetStar: star => dispatch(setMediaStar(star)),
+    onSetOrder: order => dispatch(setMediaOrder(order)),
+    onSkipForward: () => dispatch(setSkipForward()),
     dispatch,
   };
 }

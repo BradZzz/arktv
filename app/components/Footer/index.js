@@ -42,7 +42,7 @@ import {
   makeSelectOptionsPin,
   makeSelectOptionsStar,
   makeSelectOptionsOrder,
-  makeSelectMedia
+  makeSelectMedia,
 } from '../../containers/ViewerPage/selectors';
 import { makeSelectLocation } from '../../containers/App/selectors';
 
@@ -250,7 +250,7 @@ function Footer(props) {
   const seasonTxt = episode && episode.split('/')[2].substring(0, 2);
   const episodeTxt = episode && episode.split('/')[2].substring(2, 4);
 
-  console.log('seasonTxt', seasonTxt, episodeTxt)
+  console.log('seasonTxt', seasonTxt, episodeTxt);
 
   const showEps = (
     <Grid container>
@@ -264,7 +264,10 @@ function Footer(props) {
   );
   const noShowEps = <></>;
 
-  const episodeInfo = 'episodes' in selected && selected.episodes.length > 1 ? showEps : noShowEps
+  const episodeInfo =
+    'episodes' in selected && selected.episodes.length > 1
+      ? showEps
+      : noShowEps;
 
   const mediaInfoView =
     initialState.currentMedia === selected ? (
@@ -298,7 +301,7 @@ function Footer(props) {
             </a>
           </Grid>
           <Grid container>
-            { episodeInfo }
+            {episodeInfo}
             <Grid container>
               <Grid item style={{ margin: '1em 0', fontStyle: 'italic' }}>
                 {selected.Plot}
@@ -399,24 +402,21 @@ function Footer(props) {
   const mView = showMediaButtons ? buttonNavMedia : buttonNavInfo;
 
   const analyticsView = (
-    <Grid container
-      direction="row"
-      justify="space-evenly"
-      alignItems="center">
+    <Grid container direction="row" justify="space-evenly" alignItems="center">
       <Grid item>
         <h3>Genres</h3>
         <div style={{ width: '600px', height: '400px' }}>
-          <PieChart media={media}/>
+          <PieChart media={media} />
         </div>
       </Grid>
       <Grid item>
         <h3>Ratings</h3>
         <div style={{ width: '600px', height: '400px' }}>
-          <BarChart media={media}/>
+          <BarChart media={media} />
         </div>
       </Grid>
     </Grid>
-  )
+  );
 
   return (
     <div
@@ -439,7 +439,9 @@ function Footer(props) {
             setChannelChangerView(true);
           }}
         />
-        {showChannelChanger && location.pathname === '/viewer' ? mView : analyticsView }
+        {showChannelChanger && location.pathname === '/viewer'
+          ? mView
+          : analyticsView}
       </div>
       <div style={{ width: '100%' }}>
         <div

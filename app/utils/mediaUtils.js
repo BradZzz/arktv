@@ -34,7 +34,7 @@ const drulz = [
   'tt4731072',
   'tt2297757',
   'tt0175058',
-  'tt7908628'
+  'tt7908628',
 ];
 const fard = [
   'tt0397306',
@@ -81,46 +81,46 @@ const fard = [
   'tt2058221',
   'tt0106115',
   'tt2297757',
-  'tt0197148'
+  'tt0197148',
 ];
 
-export function PickRandom(min, max){
-  return min + Math.random() * (max - min)
+export function PickRandom(min, max) {
+  return min + Math.random() * (max - min);
 }
 
-export function CountByGenre(medias){
+export function CountByGenre(medias) {
   const genres = {};
   for (const media of medias) {
     for (const genre of media.Genre.split(', ')) {
       if (!(genre in genres)) {
-        genres[genre] = 0
+        genres[genre] = 0;
       }
-      genres[genre] += 1
+      genres[genre] += 1;
     }
   }
-  return genres
+  return genres;
 }
 
-export function CountByRatings(medias){
+export function CountByRatings(medias) {
   const ratings = {};
   for (const media of medias) {
-    const step1 = parseFloat(media.imdbRating)
-    const step2 = Math.round(step1)
-    const step3 = '' + step2
-    const rating = step3
+    const step1 = parseFloat(media.imdbRating);
+    const step2 = Math.round(step1);
+    const step3 = `${step2}`;
+    const rating = step3;
     if (!(rating in ratings)) {
-      ratings[rating] = { 'tv': 0, 'movie': 0 }
+      ratings[rating] = { tv: 0, movie: 0 };
     }
     if (media.episodes.length > 1) {
-      ratings[rating]['tv'] += 1
+      ratings[rating].tv += 1;
     } else {
-      ratings[rating]['movie'] += 1
+      ratings[rating].movie += 1;
     }
   }
-  return ratings
+  return ratings;
 }
 
-export function SplitByGenre(medias){
+export function SplitByGenre(medias) {
   const genres = [];
   for (const media of medias) {
     for (const genre of media.Genre.split(', ')) {
@@ -129,7 +129,7 @@ export function SplitByGenre(medias){
       }
     }
   }
-  return genres
+  return genres;
 }
 
 export function createChannels(medias) {
@@ -150,7 +150,7 @@ export function createChannels(medias) {
     },
   ];
 
-  const genres = SplitByGenre(medias)
+  const genres = SplitByGenre(medias);
 
   for (const genre of genres) {
     channels.push({
