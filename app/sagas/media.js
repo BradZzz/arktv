@@ -7,7 +7,7 @@ import {
   updateMedia,
   setMediaSignedUrl,
   updateChannels,
-  //  setChannel,
+  setChannel,
   setCurrentEpisode,
   setLoadingMedia,
   checkMedia,
@@ -32,12 +32,14 @@ import {
   makeSelectOptionsPin,
   makeSelectCurrentChannel,
   makeSelectLoadingMedia,
+  makeSelectSignedUrl
 } from '../containers/ViewerPage/selectors';
 import { makeSelectTokenInfo } from '../containers/LoginPage/selectors';
 
 import { createChannels } from '../utils/mediaUtils';
 
 import mediaApi from '../utils/mediaApi';
+import _ from 'underscore';
 
 // Utils
 function* createHeader() {
@@ -64,8 +66,15 @@ export function* requestMedia() {
     if (currentMedia.length === 0) {
       const reqSuf = `get_media`;
       const resp = yield call(mediaApi.get, reqSuf, options);
-      yield put(updateMedia(resp.data));
-      yield put(updateChannels(createChannels(resp.data)));
+      console.log("requestMedia", resp.data)
+      const media = _.map(resp.data,function(m) {
+        return {
+          Title: m.Title, Actors: m.Actors, Awards: m.Awards, Genre: m.Genre, Writer: m.Writer, Director: m.Director, Ratings: m.Ratings, Plot: m.Plot,
+          Poster: m.Poster, Released: m.Released, Runtime: m.Runtime, created: m.created, episodes: m.episodes, imdbID: m.imdbID,
+          imdbRating: m.imdbRating, imdbVotes: m.imdbVotes }
+      })
+      yield put(updateMedia(media));
+      yield put(updateChannels(createChannels(media)));
     } else if (channels.length === 0 && currentMedia.length > 0) {
       yield put(updateChannels(createChannels(currentMedia)));
     }
@@ -92,9 +101,7 @@ export function* requestSignedURl(nxtEpisode) {
     const resp = yield call(mediaApi.get, reqSuf, options);
     yield put(setMediaSignedUrl(resp.data));
     if (!window.location.href.includes('/viewer')) {
-      setTimeout(() => {
-        window.location.href = '/viewer';
-      }, 1500);
+      window.location.href = '/viewer';
     }
   } catch (err) {
     console.error('err', err);
@@ -102,6 +109,9 @@ export function* requestSignedURl(nxtEpisode) {
 }
 
 export function* processMediaRequest(fastForward, currentMedia) {
+   console.log("processMediaRequest: ",fastForward, currentMedia)
+   console.log("currentMedia.episodes.length: ", currentMedia.episodes.length)
+
   const loadingMedia = yield select(makeSelectLoadingMedia());
   if (loadingMedia) return;
 
@@ -135,13 +145,24 @@ export function* processMediaRequest(fastForward, currentMedia) {
     }
   }
 
-  //  console.log('processMediaRequest nxtEpisode', nxtEpisode);
+  console.log('processMediaRequest nxtEpisode', nxtEpisode);
 
   yield requestSignedURl(nxtEpisode);
 }
 
 export function* setNextShow(action) {
+//  console.log("setNextShow: ", action)
   yield put(setMedia(action.media));
+  /* Set the channel here */
+  let channels = yield select(makeSelectChannels());
+  const tv = _.find(channels,function(channel){ return channel.name.toLowerCase() === 'tv' })
+  const movie = _.find(channels,function(channel){ return channel.name.toLowerCase() === 'movie' })
+  if (action.media.episodes.length > 1) {
+    yield put(setChannel(tv));
+  } else {
+    yield put(setChannel(movie));
+  }
+//  yield put(setMedia(action.media));
   yield processMediaRequest(true, action.media);
 }
 
