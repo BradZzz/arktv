@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 
+import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Slider from '@material-ui/core/Slider';
@@ -44,6 +45,7 @@ import {
   makeSelectOptionsPin,
   makeSelectOptionsStar,
   makeSelectOptionsOrder,
+  makeSelectEpisode,
 } from '../../containers/ViewerPage/selectors';
 
 const useStyles = makeStyles(() => ({
@@ -128,6 +130,7 @@ function CastPlayer(props) {
     onSetOrder,
     onSkipRewind,
     onSkipForward,
+    episode,
   } = props;
 
   const curMedia = {
@@ -200,6 +203,20 @@ function CastPlayer(props) {
     if (player) player.handlePlay();
   };
 
+  const handleRewind = e => {
+    if (player) {
+      console.log(player);
+      player.onSkipRewind();
+    }
+  };
+
+  const handleForward = e => {
+    if (player) {
+      console.log(player);
+      player.onSkipForward();
+    }
+  };
+
   if (playerAvailable && 'setSeekBarRef' in player) {
     // For the chromecast to access the seekbar locally and movie it with media
     player.setSeekBarRef(seek, setSeek);
@@ -209,6 +226,8 @@ function CastPlayer(props) {
     player.setIsLocalPlayerRef(isLocalPlayer, setIsLocalPlayer);
     // Allows the chromecast to pick the next show
     player.setMediaController(onSetMedia);
+    // Allows chromecast to skip forward and backward without losing connection
+    player.setBackForwardController(onSkipRewind, onSkipForward);
     // Allows the chromecast to change channels
     player.setChannel(channel);
     // Prevents the chromecast from loading another media until the next media loads correctly
@@ -222,6 +241,8 @@ function CastPlayer(props) {
       localPlayer.subscribeToStateChange(handleLocalPlayerStateChange);
     }
   } else {
+    console.log('Chromecast refreshed!');
+
     const castWrapper = new CastWrapper();
     onSelectPlayer(castWrapper);
 
@@ -235,6 +256,44 @@ function CastPlayer(props) {
       }
     };
   }
+
+  const seasonTxt = episode && episode.split('/')[2].substring(0, 2);
+  const episodeTxt = episode && episode.split('/')[2].substring(2, 4);
+
+  console.log('seasonTxt', seasonTxt, episodeTxt);
+
+  const showEps = (
+    <Grid container style={{ color: 'white', margin: '.5em' }}>
+      <Grid container>
+        <Grid item style={{ marginRight: '.5em' }}>
+          {curMedia.title}
+        </Grid>
+      </Grid>
+      <Grid container>
+        <Grid item style={{ marginRight: '.5em' }}>
+          <b>Season:</b> {seasonTxt}
+        </Grid>
+        <Grid item>
+          <b>Episode:</b> {episodeTxt}
+        </Grid>
+      </Grid>
+    </Grid>
+  );
+
+  const noShowEps = (
+    <Grid container style={{ color: 'white', margin: '.5em' }}>
+      <Grid container>
+        <Grid item style={{ marginRight: '.5em' }}>
+          {curMedia.title}
+        </Grid>
+      </Grid>
+    </Grid>
+  );
+
+  const episodeInfo =
+    'episodes' in selected && selected.episodes.length > 1
+      ? showEps
+      : noShowEps;
 
   return (
     <div style={{ width: '100%' }}>
@@ -271,7 +330,9 @@ function CastPlayer(props) {
               display: 'Block',
               visibility: isLocalPlayer ? 'hidden' : 'initial',
             }}
-          />
+          >
+            <span />
+          </Button>
           <Button
             id="pause"
             className={[classes.pause, classes.button].join(' ')}
@@ -280,39 +341,41 @@ function CastPlayer(props) {
               display: 'Block',
               visibility: isLocalPlayer ? 'hidden' : 'initial',
             }}
-          />
+          >
+            <span />
+          </Button>
           <Button
-            className={[classes.buttonSmall].join(' ')}
+            className={classes.buttonSmall}
             style={{ color: 'white', marginLeft: '5em' }}
-            onClick={() => onSkipRewind()}
+            onClick={() => handleRewind()}
           >
             <FastRewindIcon />
           </Button>
           <Button
-            className={[classes.buttonSmall].join(' ')}
+            className={classes.buttonSmall}
             style={{ color: star ? 'red' : 'white' }}
             onClick={() => onSetStar(!star)}
           >
             <StarIcon />
           </Button>
           <Button
-            className={[classes.buttonSmall].join(' ')}
+            className={classes.buttonSmall}
             style={{ color: order ? 'red' : 'white' }}
             onClick={() => onSetOrder(!order)}
           >
             <ReorderIcon />
           </Button>
           <Button
-            className={[classes.buttonSmall].join(' ')}
+            className={classes.buttonSmall}
             style={{ color: pin ? 'red' : 'white' }}
             onClick={() => onSetPin(!pin)}
           >
             <PinDropIcon />
           </Button>
           <Button
-            className={[classes.buttonSmall].join(' ')}
+            className={classes.buttonSmall}
             style={{ color: 'white' }}
-            onClick={() => onSkipForward()}
+            onClick={() => handleForward()}
           >
             <FastForwardIcon />
           </Button>
@@ -332,6 +395,7 @@ function CastPlayer(props) {
             />
             <div className={classes.audioOn} />
           </div>
+          {episodeInfo}
           <div className={classes.castWrap}>
             <google-cast-launcher id="castbutton" />
           </div>
@@ -368,6 +432,7 @@ const mapStateToProps = createStructuredSelector({
   player: makeSelectPlayer(),
   url: makeSelectSignedUrl(),
   loadingMedia: makeSelectLoadingMedia(),
+  episode: makeSelectEpisode(),
 
   pin: makeSelectOptionsPin(),
   star: makeSelectOptionsStar(),

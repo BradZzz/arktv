@@ -200,6 +200,7 @@ CastWrapper.prototype.setupRemotePlayer = function() {
   }.bind(this);
 
   playerTarget.seekTo = function(percent) {
+    console.log('percent: ', percent);
     const seek = (this.remotePlayer.duration / parseFloat(100)) * percent;
     console.info('playerTarget.seekTo', seek);
     this.remotePlayer.currentTime = seek;
@@ -258,6 +259,8 @@ CastWrapper.prototype.setupRemotePlayer = function() {
     }
     request.autoplay = true;
 
+    const self = this;
+
     cast.framework.CastContext.getInstance()
       .getCurrentSession()
       .loadMedia(request)
@@ -267,7 +270,7 @@ CastWrapper.prototype.setupRemotePlayer = function() {
         },
         function(errorCode) {
           console.error('Cast Error:', errorCode);
-          this.playerHandler.setPlayerState(PLAYER_STATE.IDLE);
+          self.playerHandler.setPlayerState(PLAYER_STATE.IDLE);
         },
       );
   }.bind(this);
@@ -305,6 +308,14 @@ CastWrapper.prototype.currentMedia = function() {
   return this.playerHandler.currentMedia;
 };
 
+CastWrapper.prototype.onSkipRewind = function() {
+  this.playerHandler.onSkipRewind();
+};
+
+CastWrapper.prototype.onSkipForward = function() {
+  this.playerHandler.onSkipForward();
+};
+
 /* Reference to the seekbar in the UI so the chromecast can call to it remotely */
 CastWrapper.prototype.setSeekBarRef = function(thisSeek, setSeek) {
   this.playerHandler.thisSeek = thisSeek;
@@ -328,6 +339,15 @@ CastWrapper.prototype.setLocalPlayerRef = function(localPlayer) {
 /* Allows chromecast to pick next show */
 CastWrapper.prototype.setMediaController = function(onSetMedia) {
   this.playerHandler.onSetMedia = onSetMedia;
+};
+
+/* Allows chromecast to skip forward and backward without losing connection */
+CastWrapper.prototype.setBackForwardController = function(
+  onSkipRewind,
+  onSkipForward,
+) {
+  this.playerHandler.onSkipRewind = onSkipRewind;
+  this.playerHandler.onSkipForward = onSkipForward;
 };
 
 /* Sets the current channel for reference */

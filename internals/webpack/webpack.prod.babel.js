@@ -24,7 +24,7 @@ module.exports = require('./webpack.base.babel')({
   },
 
   optimization: {
-    minimize: true,
+    minimize: false,
     minimizer: [
       new TerserPlugin({
         terserOptions: {
