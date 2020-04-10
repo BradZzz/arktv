@@ -35,9 +35,9 @@ const drulz = [
   'tt2297757',
   'tt0175058',
   'tt7908628',
-  'tt8146754'
+  'tt8146754',
 ];
-const fard = [
+const riar = [
   'tt0397306',
   'tt1486217',
   'tt0103359',
@@ -84,7 +84,8 @@ const fard = [
   'tt2297757',
   'tt0197148',
   'tt8146754',
-  'tt0416394'
+  'tt0416394',
+  'tt0370194',
 ];
 
 export function PickRandom(min, max) {
@@ -140,7 +141,7 @@ export function createChannels(medias) {
     { name: 'Movie', filter: media => media.episodes.length === 1, media: [] },
     { name: 'TV', filter: media => media.episodes.length > 1, media: [] },
     { name: 'Drulz', filter: media => drulz.includes(media.imdbID), media: [] },
-    { name: 'Riar', filter: media => fard.includes(media.imdbID), media: [] },
+    { name: 'Riar', filter: media => riar.includes(media.imdbID), media: [] },
     {
       name: 'Awesome Sauce',
       filter: media => parseFloat(media.imdbRating) > 7.2,
