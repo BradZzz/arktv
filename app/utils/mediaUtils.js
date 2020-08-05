@@ -36,6 +36,8 @@ const drulz = [
   'tt0175058',
   'tt7908628',
   'tt8146754',
+  'tt6994156',
+  'tt8910922',
 ];
 const riar = [
   'tt0397306',
@@ -86,6 +88,9 @@ const riar = [
   'tt8146754',
   'tt0416394',
   'tt0370194',
+  'tt6994156',
+  'tt8910922',
+  'tt7658402',
 ];
 
 export function PickRandom(min, max) {
